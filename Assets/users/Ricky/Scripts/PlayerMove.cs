@@ -43,6 +43,7 @@ public class PlayerMove : MonoBehaviour
     
     private GameObject camera_obj;  //カメラオブジェクト
     
+    private Vector2 input_direction;        //インプット方向
     private SMASHSTATE smash_state;         //プレイヤーの叩く状態
     private float turn_smooth_velocity;     //回転速度
     private float smash_power_num;          //叩く力の数値
@@ -56,31 +57,72 @@ public class PlayerMove : MonoBehaviour
         camera_obj = GameObject.FindGameObjectWithTag("MainCamera");
         
         is_grounded = false;
+        input_direction = Vector2.zero;
     }
 
     // Update is called once per frame
     void Update()
     {
+        input_direction = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         
+        if (smash_power_num >= 100.0f)
+        {
+            smash_power_level = SMASHLEVEL.BIG;
+        }
+        else if (smash_power_num >= smash_threshold)
+        {
+            smash_power_level = SMASHLEVEL.SMALL;
+        }
+        else
+        {
+            smash_power_level = SMASHLEVEL.NONE;
+        }
     }
     
     void FixedUpdate() 
     {
-        float horizontal = Input.GetAxisRaw("Horizontal");
-        float vertical = Input.GetAxisRaw("Vertical");
-        Vector3 direction = new Vector3(horizontal, 0.0f, vertical).normalized;
-        
-        if (direction.magnitude >= 0.1f && smash_state == SMASHSTATE.NORMAL)
+        switch (smash_state)
         {
-            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + camera_obj.transform.eulerAngles.y;
-            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turn_smooth_velocity, turn_smooth_time);
-            transform.rotation = Quaternion.Euler(0.0f, angle, 0.0f);
+            case SMASHSTATE.NORMAL:
+            if (input_direction != Vector2.zero)
+            {
+                Move();
+            }
             
-            Vector3 move_dir = Quaternion.Euler(0.0f, targetAngle, 0.0f) * Vector3.forward;
-            rb.velocity = new Vector3(move_dir.normalized.x * speed, rb.velocity.y, move_dir.normalized.z * speed);
+            if (is_grounded)
+            {
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    smash_state = SMASHSTATE.HOLDING;
+                }
+            }
+            
+            smash_power_num = 0.0f;
+            
+            break;
+            case SMASHSTATE.HOLDING:
+            if (Input.GetKeyUp(KeyCode.Space))
+            {
+                smash_state = SMASHSTATE.SMASHING;
+            }
+            
+            if (smash_power_num >= 100.0f)
+            {
+                smash_power_num = 100.0f;
+            }
+            else
+            {
+                smash_power_num += Time.deltaTime * 10.0f;
+            }
+            
+            break;
+            case SMASHSTATE.SMASHING:
+            Jump();
+            smash_state = SMASHSTATE.NORMAL;
+            break;
         }
         
-        if (is_grounded)
+        /* if (is_grounded)
         {
             if (Input.GetKey(KeyCode.Space) && smash_state != SMASHSTATE.SMASHING)
             {
@@ -118,6 +160,21 @@ public class PlayerMove : MonoBehaviour
         else
         {
             smash_power_num = 0.0f;
+        } */
+    }
+    
+    void Move()
+    {
+        Vector3 direction = new Vector3(input_direction.x, 0.0f, input_direction.y).normalized;
+        
+        if (direction.magnitude >= 0.1f)
+        {
+            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + camera_obj.transform.eulerAngles.y;
+            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turn_smooth_velocity, turn_smooth_time);
+            transform.rotation = Quaternion.Euler(0.0f, angle, 0.0f);
+            
+            Vector3 move_dir = Quaternion.Euler(0.0f, targetAngle, 0.0f) * Vector3.forward;
+            rb.velocity = new Vector3(move_dir.normalized.x * speed, rb.velocity.y, move_dir.normalized.z * speed);
         }
     }
     
