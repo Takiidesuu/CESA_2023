@@ -1,25 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerMove : MonoBehaviour
 {
     enum SMASHSTATE
     {
-        NORMAL = 0,
-        HOLDING,
-        SMASHING,
-        
-        MAX
+        NORMAL = 0,     //通常状態
+        HOLDING,        //力を溜めてる状態
+        SMASHING,       //力を放ってる状態
     }
     
     enum SMASHLEVEL
     {
-        NONE,
-        SMALL,
-        BIG,
-        
-        MAX
+        NONE,       //溜めなし
+        SMALL,      //溜め小
+        BIG,        //溜め大
     }
     
     [Header("Player Param")]
@@ -38,10 +35,13 @@ public class PlayerMove : MonoBehaviour
     private Rigidbody rb;           //リギッドボディー
     private CapsuleCollider col;    //コライダー
     
+    private MainInputControls input_system;
+    
     private bool is_grounded;       //地面についているか
     private bool is_holding_smash;  //叩く力を貯めているか
     
     private GameObject camera_obj;  //カメラオブジェクト
+    private GameObject hammer_obj;  //ハンマーオブジェクト
     
     private Vector2 input_direction;        //インプット方向
     private SMASHSTATE smash_state;         //プレイヤーの叩く状態
@@ -49,13 +49,24 @@ public class PlayerMove : MonoBehaviour
     private float smash_power_num;          //叩く力の数値
     private SMASHLEVEL smash_power_level;   //叩く力の段階
     
+    private void Awake() 
+    {
+        input_system = new MainInputControls();
+    }
+    
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();             //リギッドボディー取得
         col = GetComponent<CapsuleCollider>();      //コライダー取得
-        camera_obj = GameObject.FindGameObjectWithTag("MainCamera");
         
+        camera_obj = GameObject.FindGameObjectWithTag("MainCamera");    //カメラオブジェクト取得
+        hammer_obj = GameObject.FindGameObjectWithTag("Hammer");        //ハンマーオブジェクトを取得
+        
+        input_system.Player.Smash.performed += HoldSmash;
+        input_system.Player.Smash.canceled += ReleaseSmash;
+        
+        //変数を初期化する
         is_grounded = false;
         input_direction = Vector2.zero;
     }
@@ -63,104 +74,57 @@ public class PlayerMove : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        input_direction = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-        
-        if (smash_power_num >= 100.0f)
-        {
-            smash_power_level = SMASHLEVEL.BIG;
-        }
-        else if (smash_power_num >= smash_threshold)
-        {
-            smash_power_level = SMASHLEVEL.SMALL;
-        }
-        else
-        {
-            smash_power_level = SMASHLEVEL.NONE;
-        }
+        //インプット方向を取得
+        input_direction = input_system.Player.WASD.ReadValue<Vector2>();
     }
     
     void FixedUpdate() 
     {
+        //叩く状態によって、更新を変える
         switch (smash_state)
         {
-            case SMASHSTATE.NORMAL:
+            case SMASHSTATE.NORMAL:     //通常状態
+            
+            //インプット方向があったら、移動させる
             if (input_direction != Vector2.zero)
             {
                 Move();
             }
             
-            if (is_grounded)
-            {
-                if (Input.GetKeyDown(KeyCode.Space))
-                {
-                    smash_state = SMASHSTATE.HOLDING;
-                }
-            }
-            
             smash_power_num = 0.0f;
             
             break;
-            case SMASHSTATE.HOLDING:
-            if (Input.GetKeyUp(KeyCode.Space))
-            {
-                smash_state = SMASHSTATE.SMASHING;
-            }
+            case SMASHSTATE.HOLDING:    //力を溜めてる状態
             
+            //溜めた力を加算する
             if (smash_power_num >= 100.0f)
             {
                 smash_power_num = 100.0f;
             }
             else
             {
-                smash_power_num += Time.deltaTime * 10.0f;
+                smash_power_num += Time.deltaTime * 33.0f;
             }
             
-            break;
-            case SMASHSTATE.SMASHING:
-            Jump();
-            smash_state = SMASHSTATE.NORMAL;
-            break;
-        }
-        
-        /* if (is_grounded)
-        {
-            if (Input.GetKey(KeyCode.Space) && smash_state != SMASHSTATE.SMASHING)
-            {
-                is_holding_smash = true;
-                smash_state = SMASHSTATE.HOLDING;
-            }
-            
-            if (Input.GetKeyUp(KeyCode.Space) && smash_state == SMASHSTATE.HOLDING)
-            {
-                smash_state = SMASHSTATE.SMASHING;
-            }
-            
-            if (smash_state == SMASHSTATE.SMASHING)
-            {
-                Jump();
-                smash_state = SMASHSTATE.NORMAL;
-            }
-        }
-        else
-        {
-            is_holding_smash = false;
-        }
-        
-        if (is_holding_smash)
-        {
+            //溜めた力によって、力の段階を変える
             if (smash_power_num >= 100.0f)
             {
-                smash_power_num = 100.0f;
+                smash_power_level = SMASHLEVEL.BIG;
+            }
+            else if (smash_power_num >= smash_threshold)
+            {
+                smash_power_level = SMASHLEVEL.SMALL;
             }
             else
             {
-                smash_power_num += Time.deltaTime * 10.0f;
+                smash_power_level = SMASHLEVEL.NONE;
             }
+            
+            break;
+            case SMASHSTATE.SMASHING:   //力を放ってる状態
+            
+            break;
         }
-        else
-        {
-            smash_power_num = 0.0f;
-        } */
     }
     
     void Move()
@@ -178,9 +142,34 @@ public class PlayerMove : MonoBehaviour
         }
     }
     
-    void Jump()
+    private void HoldSmash(InputAction.CallbackContext obj)
+    {   
+        //地面についていたら、力を溜める可能にする
+        if (is_grounded && hammer_obj.GetComponent<HammerScript>().GetThrowState())
+        {
+            smash_state = SMASHSTATE.HOLDING;
+        }
+    }
+    
+    private void ReleaseSmash(InputAction.CallbackContext obj)
     {
-        rb.AddForce(Vector3.up * jump_power * 10.0f * (smash_power_num * 2.0f / 100.0f), ForceMode.Impulse);
+        if (smash_state == SMASHSTATE.HOLDING)
+        {
+            switch (smash_power_level)
+            {
+                case SMASHLEVEL.NONE:
+                rb.AddForce(Vector3.up * jump_power, ForceMode.Impulse);
+                break;
+                case SMASHLEVEL.SMALL:
+                hammer_obj.GetComponent<HammerScript>().ThrowHammer();
+                break;
+                case SMASHLEVEL.BIG:
+                
+                break;
+            }
+            
+            smash_state = SMASHSTATE.NORMAL;
+        }
     }
     
     private void OnCollisionEnter(Collision other) 
@@ -205,5 +194,15 @@ public class PlayerMove : MonoBehaviour
         {
             is_grounded = false;
         }
+    }
+    
+    private void OnEnable() 
+    {
+        input_system.Enable();
+    }
+    
+    private void OnDisable() 
+    {
+        input_system.Disable();
     }
 }
