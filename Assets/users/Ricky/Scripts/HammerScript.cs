@@ -26,7 +26,7 @@ public class HammerScript : MonoBehaviour
         rb.AddForce(dir * 100.0f, ForceMode.Impulse);
         
         ready_to_throw = false;
-        move_scalar = 10.0f;
+        move_scalar = 2.0f;
     }
     
     // Start is called before the first frame update
@@ -39,7 +39,7 @@ public class HammerScript : MonoBehaviour
         
         Physics.IgnoreCollision(player_obj.GetComponent<Collider>(), this.GetComponent<Collider>(), true);
         
-        move_scalar = 10.0f;
+        move_scalar = 2.0f;
         
         ready_to_throw = false;
     }
@@ -47,21 +47,23 @@ public class HammerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {   
-        if (rb.velocity == Vector3.zero)
+        if (Vector3.Distance(this.transform.position, player_hand_pos.transform.position) < 1.5f)
         {
-            move_scalar += Time.deltaTime * 10.0f;
-            this.transform.position = Vector3.MoveTowards(this.transform.position, player_hand_pos.transform.position, move_scalar);
-            
+            ready_to_throw = true;
+            this.transform.position = player_hand_pos.transform.position;
         }
         else
         {
-            rb.velocity = Vector3.MoveTowards(rb.velocity, Vector3.zero, move_scalar * Time.deltaTime * 30.0f);
-            Debug.Log(rb.velocity);
+            if (rb.velocity == Vector3.zero)
+            {
+                move_scalar += Time.deltaTime * 4.0f;
+                this.transform.position = Vector3.MoveTowards(this.transform.position, player_hand_pos.transform.position, Time.deltaTime * 80.0f * move_scalar);
+            }
+            else
+            {   
+                rb.velocity = Vector3.MoveTowards(rb.velocity, Vector3.zero, Time.deltaTime * 80.0f);
+            }
         }
-        
-        if (this.transform.position == player_hand_pos.transform.position)
-        {
-            ready_to_throw = true;
-        }
+       
     }
 }

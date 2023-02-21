@@ -34,6 +34,7 @@ public class PlayerMove : MonoBehaviour
     //コンポネント
     private Rigidbody rb;           //リギッドボディー
     private CapsuleCollider col;    //コライダー
+    private ConstantForce constantForce;    //カスタム重力用のコンスタントフォース
     
     private MainInputControls input_system;
     
@@ -48,6 +49,8 @@ public class PlayerMove : MonoBehaviour
     private float turn_smooth_velocity;     //回転速度
     private float smash_power_num;          //叩く力の数値
     private SMASHLEVEL smash_power_level;   //叩く力の段階
+    
+    public ParticleSystem partSystem;
     
     private void Awake() 
     {
@@ -93,8 +96,16 @@ public class PlayerMove : MonoBehaviour
             
             smash_power_num = 0.0f;
             
+            var emis = partSystem.emission;
+            emis.enabled = false;
+            
             break;
             case SMASHSTATE.HOLDING:    //力を溜めてる状態
+            
+            var emisss = partSystem.emission;
+            emisss.enabled = true;
+            
+            var mainColor = partSystem.main;
             
             //溜めた力を加算する
             if (smash_power_num >= 100.0f)
@@ -110,14 +121,20 @@ public class PlayerMove : MonoBehaviour
             if (smash_power_num >= 100.0f)
             {
                 smash_power_level = SMASHLEVEL.BIG;
+                mainColor.startColor = new Color(1.0f, 0.0f, 0.0f);
+                emisss.rateOverTime = 100.0f;
             }
             else if (smash_power_num >= smash_threshold)
             {
                 smash_power_level = SMASHLEVEL.SMALL;
+                mainColor.startColor = new Color(0.0f, 1.0f, 0.0f);
+                emisss.rateOverTime = 50.0f;
             }
             else
             {
                 smash_power_level = SMASHLEVEL.NONE;
+                mainColor.startColor = new Color(0.0f, 0.0f, 1.0f);
+                emisss.rateOverTime = 10.0f;
             }
             
             break;
@@ -125,6 +142,8 @@ public class PlayerMove : MonoBehaviour
             
             break;
         }
+        
+        GravityForce();
     }
     
     void Move()
@@ -138,8 +157,13 @@ public class PlayerMove : MonoBehaviour
             transform.rotation = Quaternion.Euler(0.0f, angle, 0.0f);
             
             Vector3 move_dir = Quaternion.Euler(0.0f, targetAngle, 0.0f) * Vector3.forward;
-            rb.velocity = new Vector3(move_dir.normalized.x * speed, rb.velocity.y, move_dir.normalized.z * speed);
+            rb.velocity = new Vector3(move_dir.normalized.x * speed, rb.velocity.y, rb.velocity.z);
         }
+    }
+    
+    void GravityForce()
+    {
+        
     }
     
     private void HoldSmash(InputAction.CallbackContext obj)
