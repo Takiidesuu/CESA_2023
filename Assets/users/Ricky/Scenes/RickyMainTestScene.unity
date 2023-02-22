@@ -189,7 +189,7 @@ MonoBehaviour:
   m_Priority: 10
   m_StandbyUpdate: 2
   m_LookAt: {fileID: 0}
-  m_Follow: {fileID: 1666782446}
+  m_Follow: {fileID: 1177391155}
   m_Lens:
     FieldOfView: 60
     OrthographicSize: 5
@@ -213,7 +213,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 221362620}
   m_LocalRotation: {x: -0.16543974, y: -0.36125958, z: 0.065294094, w: -0.9153458}
-  m_LocalPosition: {x: 0, y: 23.509998, z: -12}
+  m_LocalPosition: {x: 0, y: 24.529999, z: -25}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1407106283}
@@ -320,7 +320,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 24
+  m_Constraints: 56
   m_CollisionDetection: 0
 --- !u!136 &1177391158
 CapsuleCollider:
@@ -563,6 +563,7 @@ GameObject:
   - component: {fileID: 1407106283}
   - component: {fileID: 1407106285}
   - component: {fileID: 1407106284}
+  - component: {fileID: 1407106286}
   m_Layer: 0
   m_Name: cm
   m_TagString: Untagged
@@ -596,11 +597,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6043bde05a7fc4cba197d06915c1e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Damping: {x: 1.5, y: 1.5, z: 1}
-  ShoulderOffset: {x: 0, y: 3, z: -10}
+  Damping: {x: 0.5, y: 1, z: 1}
+  ShoulderOffset: {x: 0, y: 4, z: -20}
   VerticalArmLength: 0.4
   CameraSide: 1
-  CameraDistance: 2
+  CameraDistance: 5
   CameraCollisionFilter:
     serializedVersion: 2
     m_Bits: 0
@@ -618,6 +619,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac0b09e7857660247b1477e93731de29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1407106286
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1407106282}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4c41ac9245b87c4192012080077d830, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Damping: 0.5
 --- !u!1 &1666782445
 GameObject:
   m_ObjectHideFlags: 0
@@ -5491,7 +5505,7 @@ GameObject:
   - component: {fileID: 1858177209}
   - component: {fileID: 1858177208}
   - component: {fileID: 1858177207}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5653,7 +5667,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1863336166}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 23.509998, z: -12}
+  m_LocalPosition: {x: 0, y: 24.529999, z: -25}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -5744,7 +5758,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &2041850148
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -32,9 +32,9 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private float smash_threshold = 50.0f;
     
     //コンポネント
-    private Rigidbody rb;           //リギッドボディー
-    private CapsuleCollider col;    //コライダー
-    private ConstantForce constantForce;    //カスタム重力用のコンスタントフォース
+    private Rigidbody rb;                   //リギッドボディー
+    private CapsuleCollider col;            //コライダー
+    private ConstantForce gravity_force;    //重力用のコンスタントフォース
     
     private MainInputControls input_system;
     
@@ -43,6 +43,7 @@ public class PlayerMove : MonoBehaviour
     
     private GameObject camera_obj;  //カメラオブジェクト
     private GameObject hammer_obj;  //ハンマーオブジェクト
+    private SphereCollider ground_check_col;    //地面判定用のコライダー
     
     private Vector2 input_direction;        //インプット方向
     private SMASHSTATE smash_state;         //プレイヤーの叩く状態
@@ -50,6 +51,7 @@ public class PlayerMove : MonoBehaviour
     private float smash_power_num;          //叩く力の数値
     private SMASHLEVEL smash_power_level;   //叩く力の段階
     
+    private GameObject last_ground_obj;     //最後に当たった地面
     public ParticleSystem partSystem;
     
     private void Awake() 
@@ -60,11 +62,13 @@ public class PlayerMove : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        rb = GetComponent<Rigidbody>();             //リギッドボディー取得
-        col = GetComponent<CapsuleCollider>();      //コライダー取得
+        rb = GetComponent<Rigidbody>();                 //リギッドボディー取得
+        col = GetComponent<CapsuleCollider>();          //コライダー取得
+        gravity_force = GetComponent<ConstantForce>();  //コンスタントフォース取得
         
         camera_obj = GameObject.FindGameObjectWithTag("MainCamera");    //カメラオブジェクト取得
         hammer_obj = GameObject.FindGameObjectWithTag("Hammer");        //ハンマーオブジェクトを取得
+        ground_check_col = transform.GetChild(1).GetComponent<SphereCollider>();
         
         input_system.Player.Smash.performed += HoldSmash;
         input_system.Player.Smash.canceled += ReleaseSmash;
@@ -146,24 +150,80 @@ public class PlayerMove : MonoBehaviour
         GravityForce();
     }
     
+    private void LateUpdate() 
+    {
+        this.transform.localEulerAngles = new Vector3(0, 0, this.transform.localEulerAngles.z);
+    }
+    
     void Move()
     {
         Vector3 direction = new Vector3(input_direction.x, 0.0f, input_direction.y).normalized;
         
         if (direction.magnitude >= 0.1f)
         {
-            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + camera_obj.transform.eulerAngles.y;
+            /* float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + camera_obj.transform.eulerAngles.y;
             float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turn_smooth_velocity, turn_smooth_time);
-            transform.rotation = Quaternion.Euler(0.0f, angle, 0.0f);
+            transform.rotation = Quaternion.Euler(0.0f, angle, 0.0f); */
             
-            Vector3 move_dir = Quaternion.Euler(0.0f, targetAngle, 0.0f) * Vector3.forward;
-            rb.velocity = new Vector3(move_dir.normalized.x * speed, rb.velocity.y, rb.velocity.z);
+            Vector3 targetDirection = new Vector3(direction.x, 0.0f, 0.0f);
+            targetDirection = Camera.main.transform.TransformDirection(targetDirection);
+            
+            rb.velocity = new Vector3(targetDirection.normalized.x * speed, rb.velocity.y, rb.velocity.z);
         }
     }
     
     void GravityForce()
     {
+        int ground_layer_mask = 1 << 6;
+        ground_layer_mask = ~ground_layer_mask;
         
+        Vector3 gravity_point;
+        
+        RaycastHit hit;
+        if (Physics.Raycast(this.transform.position - this.transform.up * -0.5f, this.transform.up * -1.0f, out hit, 10.0f, ground_layer_mask))
+        {
+            gravity_point = hit.point;
+            last_ground_obj = hit.transform.gameObject;
+        }
+        else
+        {
+            if (last_ground_obj != null)
+            {
+                gravity_point = last_ground_obj.transform.position;
+            }
+            else
+            {
+                gravity_point = Vector3.zero;
+            }
+        }
+        
+        Vector3 gravity_direction = new Vector3(this.transform.position.x - gravity_point.x, this.transform.position.y - gravity_point.y, 0.0f).normalized;
+        
+        gravity_force.force =  gravity_direction * -9.81f * 8.0f;
+        
+        Vector3 new_rotation = Vector3.RotateTowards(transform.up, gravity_direction, 50.0f, 0.0f);
+        Vector3 set_rotation = Vector3.MoveTowards(this.transform.localRotation.eulerAngles, new_rotation, Time.deltaTime * 10.0f);
+        this.transform.rotation = Quaternion.LookRotation(this.transform.forward, set_rotation);
+        
+        /* float dot_prod = Vector3.Dot(Vector3.up, gravity_direction);
+        float mag_one = Vector3.Magnitude(Vector3.up);
+        float mag_two = Vector3.Magnitude(gravity_direction);
+        float first_result = dot_prod / mag_one / mag_two;
+        
+        float offset_angle = Mathf.Acos(first_result);
+        
+        this.transform.eulerAngles = new Vector3(0.0f, 0.0f, offset_angle * Mathf.Rad2Deg); */
+    }
+    
+    void GroundCheck()
+    {
+        if (last_ground_obj != null)
+        {
+            //Vector3 distance_to_ground = Vector3.Distance(this.transform.position, )
+        }
+        
+        RaycastHit hit;
+        //if (Physics.SphereCast(this.transform.position, )))
     }
     
     private void HoldSmash(InputAction.CallbackContext obj)
