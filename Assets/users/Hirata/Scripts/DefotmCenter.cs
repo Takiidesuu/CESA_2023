@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using Deform;
 
+//[ExecuteInEditMode]
+
 public class DefotmCenter : MonoBehaviour
 {
-    private GameObject[] ChildMeshObject;   //メッシュがあるオブジェクトを格納
+    public GameObject[] ChildMeshObject;   //メッシュがあるオブジェクトを格納
+    public Deformable[] ChildDefotmbles;
+    public SAMeshCollider[] ChildMeshCollider;
 
     void Start()
     {
@@ -15,6 +19,8 @@ public class DefotmCenter : MonoBehaviour
             if (transform.GetChild(i).GetComponent<MeshRenderer>())
                 meshcount++;
         ChildMeshObject = new GameObject[meshcount];
+        ChildDefotmbles = new Deformable[meshcount];
+        ChildMeshCollider = new SAMeshCollider[meshcount];
         meshcount = 0;
         for (int i = 0; i < transform.childCount; i++)
         {
@@ -26,9 +32,14 @@ public class DefotmCenter : MonoBehaviour
         }
 
         //メッシュがあるものにDeformコンポーネントを追加
-        foreach(GameObject gameObject in ChildMeshObject)
-            gameObject.AddComponent<Deformable>();
-        
+        for (int i = 0; i < ChildMeshObject.Length; i++)
+        {
+            if (!ChildMeshObject[i].GetComponent<Deformable>())
+                ChildDefotmbles[i] = ChildMeshObject[i].AddComponent<Deformable>();
+
+            if (!ChildMeshObject[i].GetComponent<SAMeshCollider>())
+                ChildMeshCollider[i] = ChildMeshObject[i].AddComponent<SAMeshCollider>();
+        }
     }
 
     void Update()
