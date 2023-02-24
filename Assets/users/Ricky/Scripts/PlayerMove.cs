@@ -52,6 +52,7 @@ public class PlayerMove : MonoBehaviour
     private SMASHLEVEL smash_power_level;   //叩く力の段階
     
     private GameObject last_ground_obj;     //最後に当たった地面
+    private Vector3 ray_hit_point;
     public ParticleSystem partSystem;
     
     private void Awake() 
@@ -174,56 +175,62 @@ public class PlayerMove : MonoBehaviour
     
     void GravityForce()
     {
-        int ground_layer_mask = 1 << 6;
-        ground_layer_mask = ~ground_layer_mask;
+        GroundCheck();
+        
+        int ground_layer_mask = 6;
         
         Vector3 gravity_point;
         
-        RaycastHit hit;
-        if (Physics.Raycast(this.transform.position - this.transform.up * -0.5f, this.transform.up * -1.0f, out hit, 10.0f, ground_layer_mask))
+        if (last_ground_obj != null)
         {
-            gravity_point = hit.point;
-            last_ground_obj = hit.transform.gameObject;
+            gravity_point = ray_hit_point;
         }
         else
         {
-            if (last_ground_obj != null)
-            {
-                gravity_point = last_ground_obj.transform.position;
-            }
-            else
-            {
-                gravity_point = Vector3.zero;
-            }
+            gravity_point = Vector3.zero;
         }
         
         Vector3 gravity_direction = new Vector3(this.transform.position.x - gravity_point.x, this.transform.position.y - gravity_point.y, 0.0f).normalized;
         
-        gravity_force.force =  gravity_direction * -9.81f * 8.0f;
+        gravity_force.force =  gravity_direction * -9.81f * 2.0f;
         
         Vector3 new_rotation = Vector3.RotateTowards(transform.up, gravity_direction, 50.0f, 0.0f);
         Vector3 set_rotation = Vector3.MoveTowards(this.transform.localRotation.eulerAngles, new_rotation, Time.deltaTime * 10.0f);
         this.transform.rotation = Quaternion.LookRotation(this.transform.forward, set_rotation);
-        
-        /* float dot_prod = Vector3.Dot(Vector3.up, gravity_direction);
-        float mag_one = Vector3.Magnitude(Vector3.up);
-        float mag_two = Vector3.Magnitude(gravity_direction);
-        float first_result = dot_prod / mag_one / mag_two;
-        
-        float offset_angle = Mathf.Acos(first_result);
-        
-        this.transform.eulerAngles = new Vector3(0.0f, 0.0f, offset_angle * Mathf.Rad2Deg); */
     }
     
     void GroundCheck()
     {
-        if (last_ground_obj != null)
+        LayerMask ground_layer_mask = LayerMask.GetMask("Ground");
+        
+        float sphere_size = 0.1f;
+        RaycastHit hit;
+        if (Physics.Raycast(this.transform.position, this.transform.up * -1.0f, out hit,Mathf.Infinity, ground_layer_mask))
         {
-            //Vector3 distance_to_ground = Vector3.Distance(this.transform.position, )
+            sphere_size = Vector3.Distance(this.transform.position, hit.point);
         }
         
-        RaycastHit hit;
-        //if (Physics.SphereCast(this.transform.position, )))
+        Collider[] hit_grounds;
+        GameObject new_gravity = null;
+        hit_grounds = Physics.OverlapSphere(this.transform.position, sphere_size, ground_layer_mask);
+        float distance_check = 50.0f;
+        foreach (var current in hit_grounds)
+        {
+            Vector3 direction_to_col = new Vector3(current.transform.position.x - this.transform.position.x, current.transform.position.y - this.transform.position.y, 0.0f).normalized;
+            if (Physics.SphereCast(this.transform.position, sphere_size, direction_to_col, out hit, Mathf.Infinity, ground_layer_mask))
+            {
+                float distance_to_current = Vector3.Distance(this.transform.position, hit.point);
+                Debug.Log(current.gameObject.name + "  " + distance_to_current);
+                if (distance_to_current < distance_check)
+                {
+                    ray_hit_point = hit.point;
+                    new_gravity = current.gameObject;
+                    distance_check = distance_to_current;
+                }
+            }
+        }
+        
+        last_ground_obj = new_gravity;
     }
     
     private void HoldSmash(InputAction.CallbackContext obj)
