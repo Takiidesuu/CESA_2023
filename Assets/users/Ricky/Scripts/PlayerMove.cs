@@ -249,7 +249,7 @@ public class PlayerMove : MonoBehaviour
             switch (smash_power_level)
             {
                 case SMASHLEVEL.NONE:
-                rb.AddForce(Vector3.up * jump_power, ForceMode.Impulse);
+                rb.AddForce(this.transform.up * jump_power, ForceMode.Impulse);
                 break;
                 case SMASHLEVEL.SMALL:
                 hammer_obj.GetComponent<HammerScript>().ThrowHammer();
