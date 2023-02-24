@@ -217,7 +217,7 @@ public class PlayerMove : MonoBehaviour
         foreach (var current in hit_grounds)
         {
             Vector3 direction_to_col = new Vector3(current.transform.position.x - this.transform.position.x, current.transform.position.y - this.transform.position.y, 0.0f).normalized;
-            if (Physics.SphereCast(this.transform.position, sphere_size, direction_to_col, out hit, Mathf.Infinity, ground_layer_mask))
+            if (Physics.Raycast(this.transform.position, direction_to_col, out hit, Mathf.Infinity, ground_layer_mask))
             {
                 float distance_to_current = Vector3.Distance(this.transform.position, hit.point);
                 Debug.Log(current.gameObject.name + "  " + distance_to_current);
