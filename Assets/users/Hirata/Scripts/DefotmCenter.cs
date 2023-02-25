@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using Deform;
 
+[ExecuteInEditMode]
+
 public class DefotmCenter : MonoBehaviour
 {
-    private GameObject[] ChildMeshObject;   //メッシュがあるオブジェクトを格納
+    public GameObject[] ChildMeshObject;   //メッシュがあるオブジェクトを格納
+    public Deformable[] ChildDefotmbles;
+    public SAMeshColliderBuilder SAMeshColliderBuilder;
 
     void Start()
     {
@@ -15,6 +19,7 @@ public class DefotmCenter : MonoBehaviour
             if (transform.GetChild(i).GetComponent<MeshRenderer>())
                 meshcount++;
         ChildMeshObject = new GameObject[meshcount];
+        ChildDefotmbles = new Deformable[meshcount];
         meshcount = 0;
         for (int i = 0; i < transform.childCount; i++)
         {
@@ -26,13 +31,25 @@ public class DefotmCenter : MonoBehaviour
         }
 
         //メッシュがあるものにDeformコンポーネントを追加
-        foreach(GameObject gameObject in ChildMeshObject)
-            gameObject.AddComponent<Deformable>();
-        
+        for (int i = 0; i < ChildMeshObject.Length; i++)
+        {
+            if (!ChildMeshObject[i].GetComponent<Deformable>())
+                ChildDefotmbles[i] = ChildMeshObject[i].AddComponent<Deformable>();
+            else
+                ChildDefotmbles[i] = ChildMeshObject[i].GetComponent<Deformable>();
+        }
+
+        //メッシュコライダー適用
+        if (!gameObject.GetComponent<SAMeshColliderBuilder>())
+            SAMeshColliderBuilder = gameObject.AddComponent<SAMeshColliderBuilder>();
+        else
+            SAMeshColliderBuilder = gameObject.GetComponent<SAMeshColliderBuilder>();
+        SAMeshColliderBuilder.reducerProperty.shapeType = SAColliderBuilderCommon.ShapeType.Mesh;
+        SAMeshColliderBuilder.reducerProperty.meshType = SAColliderBuilderCommon.MeshType.Raw;
     }
 
     void Update()
     {
-        
+
     }
 }
