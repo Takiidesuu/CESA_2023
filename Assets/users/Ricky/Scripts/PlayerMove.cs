@@ -84,6 +84,8 @@ public class PlayerMove : MonoBehaviour
     {
         //インプット方向を取得
         input_direction = input_system.Player.WASD.ReadValue<Vector2>();
+        
+        CheckIsGrounded();
     }
     
     void FixedUpdate() 
@@ -162,10 +164,6 @@ public class PlayerMove : MonoBehaviour
         
         if (direction.magnitude >= 0.1f)
         {
-            /* float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + camera_obj.transform.eulerAngles.y;
-            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turn_smooth_velocity, turn_smooth_time);
-            transform.rotation = Quaternion.Euler(0.0f, angle, 0.0f); */
-            
             Vector3 targetDirection = new Vector3(direction.x, 0.0f, 0.0f);
             targetDirection = Camera.main.transform.TransformDirection(targetDirection);
             
@@ -176,8 +174,6 @@ public class PlayerMove : MonoBehaviour
     void GravityForce()
     {
         GroundCheck();
-        
-        int ground_layer_mask = 6;
         
         Vector3 gravity_point;
         
@@ -192,7 +188,7 @@ public class PlayerMove : MonoBehaviour
         
         Vector3 gravity_direction = new Vector3(this.transform.position.x - gravity_point.x, this.transform.position.y - gravity_point.y, 0.0f).normalized;
         
-        gravity_force.force =  gravity_direction * -9.81f * 2.0f;
+        gravity_force.force =  gravity_direction * -9.81f * 5.0f;
         
         Vector3 new_rotation = Vector3.RotateTowards(transform.up, gravity_direction, 50.0f, 0.0f);
         Vector3 set_rotation = Vector3.MoveTowards(this.transform.localRotation.eulerAngles, new_rotation, Time.deltaTime * 10.0f);
@@ -220,7 +216,6 @@ public class PlayerMove : MonoBehaviour
             if (Physics.Raycast(this.transform.position, direction_to_col, out hit, Mathf.Infinity, ground_layer_mask))
             {
                 float distance_to_current = Vector3.Distance(this.transform.position, hit.point);
-                Debug.Log(current.gameObject.name + "  " + distance_to_current);
                 if (distance_to_current < distance_check)
                 {
                     ray_hit_point = hit.point;
@@ -231,6 +226,16 @@ public class PlayerMove : MonoBehaviour
         }
         
         last_ground_obj = new_gravity;
+    }
+    
+    private void CheckIsGrounded()
+    {
+        LayerMask ground_layer_mask = LayerMask.GetMask("Ground");
+        RaycastHit hit;
+        
+        Debug.Log(Physics.Raycast(this.transform.position - this.transform.up, this.transform.up * -1.0f, out hit, 1.0f, ground_layer_mask));
+        
+        is_grounded = Physics.Raycast(this.transform.position - this.transform.up, this.transform.up * -1.0f, out hit, 1.0f, ground_layer_mask);
     }
     
     private void HoldSmash(InputAction.CallbackContext obj)
