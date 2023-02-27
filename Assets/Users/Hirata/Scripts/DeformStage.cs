@@ -5,11 +5,11 @@ using Deform;
 
 [ExecuteInEditMode]
 
-public class DefotmCenter : MonoBehaviour
+public class DeformStage : MonoBehaviour
 {
-    public GameObject[] ChildMeshObject;   //メッシュがあるオブジェクトを格納
-    public Deformable[] ChildDefotmbles;
-    public SAMeshColliderBuilder SAMeshColliderBuilder;
+    private GameObject[] ChildMeshObject;   //メッシュがあるオブジェクトを格納
+    private Deformable[] ChildDefotmbles;
+    private SAMeshColliderBuilder SAMeshColliderBuilder;
 
     void Start()
     {
@@ -46,10 +46,12 @@ public class DefotmCenter : MonoBehaviour
             SAMeshColliderBuilder = gameObject.GetComponent<SAMeshColliderBuilder>();
         SAMeshColliderBuilder.reducerProperty.shapeType = SAColliderBuilderCommon.ShapeType.Mesh;
         SAMeshColliderBuilder.reducerProperty.meshType = SAColliderBuilderCommon.MeshType.Raw;
-    }
 
-    void Update()
-    {
-
+        for (int i = 0; i < ChildMeshObject.Length; i++)
+        {
+            ChildMeshObject[i].transform.GetChild(0).GetChild(0).gameObject.transform.rotation = Quaternion.Euler(0, 0, 0);
+            ChildDefotmbles[i].ColliderRecalculation = ColliderRecalculation.Auto;
+            ChildDefotmbles[i].MeshCollider = ChildMeshObject[i].transform.GetChild(0).GetChild(0).gameObject.GetComponent<MeshCollider>();
+        }
     }
 }
