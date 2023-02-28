@@ -11,8 +11,15 @@ public class DeformStage : MonoBehaviour
     private Deformable[] ChildDefotmbles;
     private SAMeshColliderBuilder SAMeshColliderBuilder;
 
+    private GameObject point_down;          //へこむポイントオブジェクト
+
+    private GroundCheck ground_check;
+
     void Start()
     {
+        point_down = (GameObject)Resources.Load("PointDown");           //へこむオブジェクト取得
+        ground_check = GameObject.FindWithTag("Player").transform.GetChild(1).GetComponent<GroundCheck>();
+
         //開始時にメッシュがあるオブジェクトを検索格納
         int meshcount = 0;
         for (int i = 0; i < transform.childCount; i++)
@@ -52,6 +59,18 @@ public class DeformStage : MonoBehaviour
             ChildMeshObject[i].transform.GetChild(0).GetChild(0).gameObject.transform.rotation = Quaternion.Euler(0, 0, 0);
             ChildDefotmbles[i].ColliderRecalculation = ColliderRecalculation.Auto;
             ChildDefotmbles[i].MeshCollider = ChildMeshObject[i].transform.GetChild(0).GetChild(0).gameObject.GetComponent<MeshCollider>();
+        }
+    }
+
+    public void AddDeformpointDown(Transform transform, float angle)
+    {
+        GameObject pointdown;
+        pointdown = Instantiate(point_down, transform.position, Quaternion.Euler(-90 + angle, -90, 90), this.transform);
+
+        GameObject[] gameObjects = ground_check.GetHitGround();
+        foreach(GameObject gameObject in gameObjects)
+        {
+            gameObject.transform.parent.parent.GetComponent<Deformable>().AddDeformer(pointdown.GetComponent<RadialCurveDeformer>());
         }
     }
 }
