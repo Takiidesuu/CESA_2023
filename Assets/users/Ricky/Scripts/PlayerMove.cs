@@ -54,7 +54,12 @@ public class PlayerMove : MonoBehaviour
     private GameObject last_ground_obj;     //最後に当たった地面
     private Vector3 ray_hit_point;
     public ParticleSystem partSystem;
-    
+
+    /// <summary>
+    /// 平田
+    /// </summary>
+    private DeformStage deform_stage;
+
     private void Awake() 
     {
         input_system = new MainInputControls();
@@ -66,7 +71,8 @@ public class PlayerMove : MonoBehaviour
         rb = GetComponent<Rigidbody>();                 //リギッドボディー取得
         col = GetComponent<CapsuleCollider>();          //コライダー取得
         gravity_force = GetComponent<ConstantForce>();  //コンスタントフォース取得
-        
+        deform_stage = GameObject.FindWithTag("Stage").GetComponent<DeformStage>();
+
         camera_obj = GameObject.FindGameObjectWithTag("MainCamera");    //カメラオブジェクト取得
         hammer_obj = GameObject.FindGameObjectWithTag("Hammer");        //ハンマーオブジェクトを取得
         ground_check_col = transform.GetChild(1).GetComponent<SphereCollider>();
@@ -254,6 +260,7 @@ public class PlayerMove : MonoBehaviour
             switch (smash_power_level)
             {
                 case SMASHLEVEL.NONE:
+                    deform_stage.AddDeformpointDown(transform, transform.eulerAngles.z);
                 rb.AddForce(this.transform.up * jump_power, ForceMode.Impulse);
                 break;
                 case SMASHLEVEL.SMALL:
