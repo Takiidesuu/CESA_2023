@@ -29,7 +29,7 @@ public class CameraMove : MonoBehaviour
         camera_component.farClipPlane = far;
         
         transform.position = player_pos.position + camera_offset;
-        //transform.rotation = player_pos.rotation;
+        transform.rotation = Quaternion.Euler(0.0f, 0.0f, -player_pos.transform.eulerAngles.x);
     }
     
     private void LateUpdate() 

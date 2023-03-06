@@ -63,6 +63,7 @@ public class PlayerMove : MonoBehaviour
     
     public ParticleSystem partSystem;
     private Vector3 ground_dir;
+    private Vector3 target_dir;
 
     /// <summary>
     /// 平田
@@ -91,6 +92,8 @@ public class PlayerMove : MonoBehaviour
         //変数を初期化する
         is_grounded = false;
         input_direction = Vector2.zero;
+        
+        target_dir = Vector3.zero;
     }
 
     // Update is called once per frame
@@ -103,7 +106,9 @@ public class PlayerMove : MonoBehaviour
     }
     
     void FixedUpdate() 
-    {
+    {   
+        //RotateToAdjustToGroundSlope(hit);
+        
         //叩く状態によって、更新を変える
         switch (smash_state)
         {
@@ -166,11 +171,12 @@ public class PlayerMove : MonoBehaviour
         
         Vector3 set_ground_dir = CheckFloorAngle();
         ground_dir = Vector3.Lerp(ground_dir, set_ground_dir, Time.deltaTime * rotation_speed);
+        ground_dir = set_ground_dir;
         
         Vector3 gravity_dir;
         
         RaycastHit hit;
-        if (Physics.Raycast(this.transform.position - this.transform.up * 0.25f, -ground_dir, out hit, 10.0f, LayerMask.GetMask("Ground")))
+        if (Physics.Raycast(this.transform.position - this.transform.up * 0.25f, -ground_dir.normalized, out hit, 10.0f, LayerMask.GetMask("Ground")))
         {
             gravity_dir = this.transform.position - hit.point;
         }
@@ -179,16 +185,17 @@ public class PlayerMove : MonoBehaviour
             gravity_dir = transform.up;
         }
         
-        gravity_force.relativeForce = gravity_dir * -9.81f * 3.0f;
+        gravity_force.relativeForce = gravity_dir.normalized * -9.81f * 3.0f;
         
-        /* Vector3 new_rotation = Vector3.RotateTowards(transform.up, ground_dir, 50.0f, 0.0f);
-        Vector3 set_rotation = Vector3.MoveTowards(this.transform.localRotation.eulerAngles, new_rotation, Time.deltaTime * 10.0f);
-        this.transform.rotation = Quaternion.LookRotation(this.transform.forward, set_rotation); */
+        gravity_dir = Vector3.ProjectOnPlane(transform.forward, hit.normal).normalized;
+        
+        Vector3 new_rot = Vector3.RotateTowards(transform.up, gravity_dir, 50.0f, 0.0f);
+        transform.rotation = Quaternion.LookRotation(gravity_dir);
     }
     
     private void LateUpdate() 
     {
-        this.transform.localEulerAngles = new Vector3(this.transform.localEulerAngles.x, this.transform.localEulerAngles.y, 0.0f);
+        //this.transform.localEulerAngles = new Vector3(this.transform.localEulerAngles.x, this.transform.localEulerAngles.y, 0.0f);
     }
     
     void Move()
@@ -196,24 +203,16 @@ public class PlayerMove : MonoBehaviour
         Vector3 direction = new Vector3(input_direction.x, 0.0f, 0.0f).normalized;
         
         if (direction.magnitude >= 0.1f)
-        {
-            if (direction.x > 0.0f)
-            {
-                y_angle += Time.deltaTime * 4.0f;
-            }
-            if (direction.x < 0.0f)
-            {
-                y_angle -= Time.deltaTime * 4.0f;
-            }
-            y_angle = Mathf.Clamp(y_angle, -90.0f, 90.0f);
-            
-            this.transform.localEulerAngles = new Vector3(this.transform.localEulerAngles.x, y_angle, this.transform.localEulerAngles.z);
-            
+        {   
             Vector3 targetDirection = new Vector3(direction.x, 0.0f, 0.0f);
             targetDirection = Camera.main.transform.TransformDirection(targetDirection);
             
             rb.velocity = new Vector3(targetDirection.normalized.x * speed, rb.velocity.y, rb.velocity.z);
+            
+            target_dir = direction;
         }
+        
+        transform.rotation = Quaternion.LookRotation(target_dir.normalized, transform.up);
     }
     
     private void CheckIsGrounded()
@@ -238,9 +237,27 @@ public class PlayerMove : MonoBehaviour
         Vector3 dir_offset_back = this.transform.up * -1.0f - this.transform.forward * 0.2f;
         dir_offset_back.Normalize();
         
-        Physics.Raycast(feet_pos + this.transform.forward * 0.2f, dir_offset_front, out hit_front, 10.0f, ground_layer_mask);
-        Physics.Raycast(feet_pos, this.transform.up * -1.0f, out hit_centre, 10.0f, ground_layer_mask);
-        Physics.Raycast(feet_pos - this.transform.forward * 0.2f, dir_offset_back, out hit_back, 10.0f, ground_layer_mask);
+        bool found_ground = false;
+        
+        found_ground = Physics.Raycast(feet_pos + this.transform.forward * 0.2f, dir_offset_front, out hit_front, 10.0f, ground_layer_mask);
+        
+        if (!found_ground)
+        {
+            found_ground = Physics.Raycast(feet_pos, this.transform.up * -1.0f, out hit_centre, 10.0f, ground_layer_mask);
+        }
+        else
+        {
+            Physics.Raycast(feet_pos, this.transform.up * -1.0f, out hit_centre, 10.0f, ground_layer_mask);
+        }
+        
+        if (!found_ground)
+        {
+            found_ground = Physics.Raycast(feet_pos - this.transform.forward * 0.2f, dir_offset_back, out hit_back, 10.0f, ground_layer_mask);
+        }
+        else
+        {
+            Physics.Raycast(feet_pos - this.transform.forward * 0.2f, dir_offset_back, out hit_back, 10.0f, ground_layer_mask);
+        }
         
         Debug.DrawRay(feet_pos + this.transform.forward * 0.2f, dir_offset_front, Color.red);
         Debug.DrawRay(feet_pos, this.transform.up * -1.0f, Color.red);
@@ -248,22 +265,70 @@ public class PlayerMove : MonoBehaviour
         
         Vector3 hit_dir = transform.up;
         
-        if (hit_front.transform != null)
+        if (found_ground)
         {
-            hit_dir += hit_front.normal;
+            if (hit_front.transform != null)
+            {
+                hit_dir += hit_front.normal;
+            }
+            if (hit_centre.transform != null)
+            {
+                hit_dir += hit_centre.normal;
+            }
+            if (hit_back.transform != null)
+            {
+                hit_dir += hit_back.normal;
+            }
         }
-        if (hit_centre.transform != null)
+        else
         {
-            hit_dir += hit_centre.normal;
-        }
-        if (hit_back.transform != null)
-        {
-            hit_dir += hit_back.normal;
+            float sphere_size = 40.0f;
+            Collider[] col_info = Physics.OverlapSphere(this.transform.position, sphere_size, ground_layer_mask);
+            float distance_check = 40.0f;
+            foreach (var current in col_info)
+            {
+                RaycastHit ground_hit;
+                if (Physics.Raycast(this.transform.position, current.transform.position, out ground_hit, 40.0f, ground_layer_mask))
+                {
+                    float distance_to_ground = Vector3.Distance(this.transform.position, ground_hit.point);
+                    if (distance_to_ground < distance_check)
+                    {
+                        hit_dir = this.transform.position - ground_hit.point;
+                        distance_check = distance_to_ground;
+                    }
+                }
+            }
         }
         
         Debug.DrawLine(transform.position, transform.position + (hit_dir.normalized * 5f), Color.blue);
         
         return hit_dir.normalized;
+    }
+    
+    private void RotateToAdjustToGroundSlope(RaycastHit hitInfo)
+    {
+        Vector3 normal = hitInfo.normal;
+ 
+        //Normal
+        Debug.DrawLine(rb.position, rb.position + normal * 3, Color.cyan);
+ 
+        Vector3 rotationInEuler = DecomposeRotationInAxis(normal);
+ 
+        //this.transform.rotation = Quaternion.Lerp(this.transform.rotation, Quaternion.Euler(rotationInEuler), rotation_speed * Time.deltaTime);
+    }
+ 
+    private Vector3 DecomposeRotationInAxis(Vector3 normal)
+    {
+        Vector3 projectionOnZplane = Vector3.ProjectOnPlane(normal, this.transform.forward);
+        Vector3 projectionOnXplane = Vector3.ProjectOnPlane(normal, this.transform.right);
+ 
+        Debug.DrawLine(rb.position + normal * 3, rb.position + normal * 3 - projectionOnZplane * 3, Color.cyan);
+        Debug.DrawLine(rb.position + normal * 3, rb.position + normal * 3 - projectionOnXplane * 3, Color.magenta);
+ 
+        float xAngleRotation = Vector3.SignedAngle(projectionOnZplane, normal, this.transform.right);
+        float zAngleRotation = Vector3.SignedAngle(projectionOnXplane, normal, this.transform.forward);
+ 
+        return new Vector3(xAngleRotation, y_angle, 0.0f);
     }
     
     private void HoldSmash(InputAction.CallbackContext obj)
