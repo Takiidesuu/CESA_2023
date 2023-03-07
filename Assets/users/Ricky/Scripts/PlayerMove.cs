@@ -22,6 +22,8 @@ public class PlayerMove : MonoBehaviour
     [Header("Player Param")]
     [Tooltip("移動速度")]
     [SerializeField] private float speed = 5.0f;
+    [Tooltip("減速速度")]
+    [SerializeField] private float deceleration_speed = 5.0f;
     [Tooltip("回転の滑らかさ")]
     [SerializeField] private float turn_smooth_time = 1.0f;
     
@@ -34,12 +36,12 @@ public class PlayerMove : MonoBehaviour
     //コンポネント
     private Rigidbody rb;                   //リギッドボディー
     private CapsuleCollider col;            //コライダー
-    private ConstantForce gravity_force;    //重力用のコンスタントフォース
     
     private MainInputControls input_system;
     
     private bool is_grounded;       //地面についているか
     private bool is_holding_smash;  //叩く力を貯めているか
+    private Vector3 gravity_dir;    //重力の方向
     
     private GameObject camera_obj;  //カメラオブジェクト
     private GameObject hammer_obj;  //ハンマーオブジェクト
@@ -80,7 +82,6 @@ public class PlayerMove : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();                 //リギッドボディー取得
         col = GetComponent<CapsuleCollider>();          //コライダー取得
-        gravity_force = GetComponent<ConstantForce>();  //コンスタントフォース取得
         deform_stage = GameObject.FindWithTag("Stage").GetComponent<DeformStage>();
 
         camera_obj = GameObject.FindGameObjectWithTag("MainCamera");    //カメラオブジェクト取得
@@ -88,6 +89,7 @@ public class PlayerMove : MonoBehaviour
         
         input_system.Player.Smash.performed += HoldSmash;
         input_system.Player.Smash.canceled += ReleaseSmash;
+        input_system.Player.Flip.performed += FlipCharacter;
         
         //変数を初期化する
         is_grounded = false;
@@ -103,6 +105,14 @@ public class PlayerMove : MonoBehaviour
         input_direction = input_system.Player.WASD.ReadValue<Vector2>();
         
         CheckIsGrounded();
+        
+        if (rb.velocity.x != 0.0f)
+        {
+            float vel_to_change = rb.velocity.x;
+            float delta = 0.0f - vel_to_change;
+            vel_to_change += delta * Time.deltaTime * deceleration_speed;
+            rb.velocity = new Vector3(vel_to_change, rb.velocity.y, 0.0f);
+        }
     }
     
     void FixedUpdate() 
@@ -173,8 +183,6 @@ public class PlayerMove : MonoBehaviour
         ground_dir = Vector3.Lerp(ground_dir, set_ground_dir, Time.deltaTime * rotation_speed);
         ground_dir = set_ground_dir;
         
-        Vector3 gravity_dir;
-        
         RaycastHit hit;
         if (Physics.Raycast(this.transform.position - this.transform.up * 0.25f, -ground_dir.normalized, out hit, 10.0f, LayerMask.GetMask("Ground")))
         {
@@ -192,17 +200,11 @@ public class PlayerMove : MonoBehaviour
         transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotation_speed * Time.deltaTime);
         
         rb.AddForce(ground_dir.normalized * -9.81f * 10.0f);
-        gravity_force.relativeForce = ground_dir.normalized * -9.81f * 100.0f;
-        
-        /* gravity_dir = Vector3.ProjectOnPlane(transform.forward, hit.normal).normalized;
-        
-        Vector3 new_rot = Vector3.RotateTowards(transform.up, gravity_dir, 50.0f, 0.0f);
-        transform.rotation = Quaternion.LookRotation(gravity_dir); */
     }
     
     private void LateUpdate() 
     {
-        //this.transform.localEulerAngles = new Vector3(this.transform.localEulerAngles.x, y_angle, 0.0f);
+        //this.transform.eulerAngles = new Vector3(this.transform.eulerAngles.x, y_angle, 0.0f);
     }
     
     void Move()
@@ -214,12 +216,8 @@ public class PlayerMove : MonoBehaviour
             Vector3 targetDirection = new Vector3(direction.x, 0.0f, 0.0f);
             targetDirection = Camera.main.transform.TransformDirection(targetDirection);
             
-            rb.velocity = new Vector3(targetDirection.x * speed, rb.velocity.y, rb.velocity.z);
-            
-            if (direction.x > 0.0f) y_angle = 90.0f; else y_angle = -90.0f;
+            rb.velocity = new Vector3(targetDirection.x * speed * 2.0f, rb.velocity.y, rb.velocity.z);
         }
-        
-        //transform.rotation = Quaternion.LookRotation(target_dir.normalized, transform.up);
     }
     
     private void CheckIsGrounded()
@@ -312,32 +310,6 @@ public class PlayerMove : MonoBehaviour
         return hit_dir.normalized;
     }
     
-    private void RotateToAdjustToGroundSlope(RaycastHit hitInfo)
-    {
-        Vector3 normal = hitInfo.normal;
- 
-        //Normal
-        Debug.DrawLine(rb.position, rb.position + normal * 3, Color.cyan);
- 
-        Vector3 rotationInEuler = DecomposeRotationInAxis(normal);
- 
-        //this.transform.rotation = Quaternion.Lerp(this.transform.rotation, Quaternion.Euler(rotationInEuler), rotation_speed * Time.deltaTime);
-    }
- 
-    private Vector3 DecomposeRotationInAxis(Vector3 normal)
-    {
-        Vector3 projectionOnZplane = Vector3.ProjectOnPlane(normal, this.transform.forward);
-        Vector3 projectionOnXplane = Vector3.ProjectOnPlane(normal, this.transform.right);
- 
-        Debug.DrawLine(rb.position + normal * 3, rb.position + normal * 3 - projectionOnZplane * 3, Color.cyan);
-        Debug.DrawLine(rb.position + normal * 3, rb.position + normal * 3 - projectionOnXplane * 3, Color.magenta);
- 
-        float xAngleRotation = Vector3.SignedAngle(projectionOnZplane, normal, this.transform.right);
-        float zAngleRotation = Vector3.SignedAngle(projectionOnXplane, normal, this.transform.forward);
- 
-        return new Vector3(xAngleRotation, y_angle, 0.0f);
-    }
-    
     private void HoldSmash(InputAction.CallbackContext obj)
     {   
         //地面についていたら、力を溜める可能にする
@@ -354,7 +326,10 @@ public class PlayerMove : MonoBehaviour
             switch (smash_power_level)
             {
                 case SMASHLEVEL.NONE:
-                deform_stage.AddDeformpointDown(transform, transform.eulerAngles.z);
+                if (deform_stage)
+                {
+                    deform_stage.AddDeformpointDown(transform, transform.eulerAngles.z);
+                }
                 rb.AddForce(this.transform.up * jump_power, ForceMode.Impulse);
                 break;
                 case SMASHLEVEL.SMALL:
@@ -366,6 +341,35 @@ public class PlayerMove : MonoBehaviour
             }
             
             smash_state = SMASHSTATE.NORMAL;
+        }
+    }
+    
+    private void FlipCharacter(InputAction.CallbackContext obj)
+    {
+        Debug.Log("test");
+        RaycastHit hit_info;
+        if (Physics.Raycast(this.transform.position + transform.up * -0.25f, -ground_dir, out hit_info, 10.0f, LayerMask.GetMask("Ground")))
+        {
+            float dis = Vector3.Distance(this.transform.position, hit_info.point);
+            Vector3 new_pos;
+            
+            while (true)
+            {
+                Vector3 check_pos = this.transform.position + -ground_dir * dis;
+                Collider[] hit_col = Physics.OverlapSphere(check_pos, 0.5f, LayerMask.GetMask("Ground"));
+                if (hit_col.Length == 0)
+                {
+                    new_pos = check_pos;
+                    break;
+                }
+                else
+                {
+                    dis += 1.0f;
+                }
+            }
+            
+            transform.Rotate(new Vector3(180.0f, 0.0f, 0.0f), Space.World);
+            this.transform.position = new_pos;
         }
     }
     
