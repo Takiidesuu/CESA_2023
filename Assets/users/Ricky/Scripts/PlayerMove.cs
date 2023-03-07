@@ -185,17 +185,24 @@ public class PlayerMove : MonoBehaviour
             gravity_dir = transform.up;
         }
         
-        gravity_force.relativeForce = gravity_dir.normalized * -9.81f * 3.0f;
+        // Finds desired rotation relative to surface normal
+        var targetRotation = Quaternion.FromToRotation(transform.up, ground_dir) * transform.rotation;
+ 
+        // Apply rotation and gravity
+        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotation_speed * Time.deltaTime);
         
-        gravity_dir = Vector3.ProjectOnPlane(transform.forward, hit.normal).normalized;
+        rb.AddForce(ground_dir.normalized * -9.81f * 10.0f);
+        gravity_force.relativeForce = ground_dir.normalized * -9.81f * 100.0f;
+        
+        /* gravity_dir = Vector3.ProjectOnPlane(transform.forward, hit.normal).normalized;
         
         Vector3 new_rot = Vector3.RotateTowards(transform.up, gravity_dir, 50.0f, 0.0f);
-        transform.rotation = Quaternion.LookRotation(gravity_dir);
+        transform.rotation = Quaternion.LookRotation(gravity_dir); */
     }
     
     private void LateUpdate() 
     {
-        //this.transform.localEulerAngles = new Vector3(this.transform.localEulerAngles.x, this.transform.localEulerAngles.y, 0.0f);
+        //this.transform.localEulerAngles = new Vector3(this.transform.localEulerAngles.x, y_angle, 0.0f);
     }
     
     void Move()
@@ -207,12 +214,12 @@ public class PlayerMove : MonoBehaviour
             Vector3 targetDirection = new Vector3(direction.x, 0.0f, 0.0f);
             targetDirection = Camera.main.transform.TransformDirection(targetDirection);
             
-            rb.velocity = new Vector3(targetDirection.normalized.x * speed, rb.velocity.y, rb.velocity.z);
+            rb.velocity = new Vector3(targetDirection.x * speed, rb.velocity.y, rb.velocity.z);
             
-            target_dir = direction;
+            if (direction.x > 0.0f) y_angle = 90.0f; else y_angle = -90.0f;
         }
         
-        transform.rotation = Quaternion.LookRotation(target_dir.normalized, transform.up);
+        //transform.rotation = Quaternion.LookRotation(target_dir.normalized, transform.up);
     }
     
     private void CheckIsGrounded()
