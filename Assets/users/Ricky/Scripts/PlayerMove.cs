@@ -198,7 +198,7 @@ public class PlayerMove : MonoBehaviour
         LayerMask ground_layer_mask = LayerMask.GetMask("Ground");
         RaycastHit hit;
         
-        is_grounded = Physics.Raycast(this.transform.position - this.transform.up, this.transform.up * -1.0f, out hit, 1.0f, ground_layer_mask);
+        is_grounded = Physics.Raycast(this.transform.position + this.transform.up * 0.25f, this.transform.up * -1.0f, out hit, 2.0f, ground_layer_mask);
     }
     
     private void HoldSmash(InputAction.CallbackContext obj)
@@ -238,14 +238,16 @@ public class PlayerMove : MonoBehaviour
     private void FlipCharacter(InputAction.CallbackContext obj)
     {
         RaycastHit hit_info;
-        if (Physics.Raycast(this.transform.position + transform.up * -0.25f, -ground_dir, out hit_info, 10.0f, LayerMask.GetMask("Ground")))
+        if (Physics.Raycast(this.transform.position + this.transform.up * 0.25f, this.transform.up * -1.0f, out hit_info, 5.0f, LayerMask.GetMask("Ground")))
         {
+            Debug.Log("ssss");
+            
             float dis = Vector3.Distance(this.transform.position, hit_info.point);
             Vector3 new_pos;
             
             while (true)
             {
-                Vector3 check_pos = this.transform.position + -ground_dir * dis;
+                Vector3 check_pos = this.transform.position + -this.transform.up * dis;
                 Collider[] hit_col = Physics.OverlapSphere(check_pos, 0.5f, LayerMask.GetMask("Ground"));
                 if (hit_col.Length == 0)
                 {
