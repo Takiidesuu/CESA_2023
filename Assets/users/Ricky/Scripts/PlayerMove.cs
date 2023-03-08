@@ -22,6 +22,8 @@ public class PlayerMove : MonoBehaviour
     [Header("Player Param")]
     [Tooltip("移動速度")]
     [SerializeField] private float speed = 5.0f;
+    [Tooltip("減速速度")]
+    [SerializeField] private float deceleration_speed = 5.0f;
     [Tooltip("回転の滑らかさ")]
     [SerializeField] private float turn_smooth_time = 1.0f;
     
@@ -34,26 +36,36 @@ public class PlayerMove : MonoBehaviour
     //コンポネント
     private Rigidbody rb;                   //リギッドボディー
     private CapsuleCollider col;            //コライダー
-    private ConstantForce gravity_force;    //重力用のコンスタントフォース
     
     private MainInputControls input_system;
     
     private bool is_grounded;       //地面についているか
     private bool is_holding_smash;  //叩く力を貯めているか
+    private Vector3 gravity_dir;    //重力の方向
     
     private GameObject camera_obj;  //カメラオブジェクト
     private GameObject hammer_obj;  //ハンマーオブジェクト
-    private SphereCollider ground_check_col;    //地面判定用のコライダー
     
     private Vector2 input_direction;        //インプット方向
     private SMASHSTATE smash_state;         //プレイヤーの叩く状態
     private float turn_smooth_velocity;     //回転速度
     private float smash_power_num;          //叩く力の数値
     private SMASHLEVEL smash_power_level;   //叩く力の段階
+
+    [Tooltip("重力")]
+    [SerializeField] private float downward_force = 12.0f;
+    [Tooltip("重力の加速")]
+    [SerializeField] private float gravity_acceleration = 2.0f;
+    private float actual_gravity;
+
+    [Tooltip("回転速度")]
+    [SerializeField] private float rotation_speed = 20.0f;
     
-    private GameObject last_ground_obj;     //最後に当たった地面
-    private Vector3 ray_hit_point;
+    private float y_angle = 90.0f;
+    
     public ParticleSystem partSystem;
+    private Vector3 ground_dir;
+    private Vector3 target_dir;
 
     /// <summary>
     /// 平田
@@ -70,19 +82,20 @@ public class PlayerMove : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();                 //リギッドボディー取得
         col = GetComponent<CapsuleCollider>();          //コライダー取得
-        gravity_force = GetComponent<ConstantForce>();  //コンスタントフォース取得
         deform_stage = GameObject.FindWithTag("Stage").GetComponent<DeformStage>();
 
         camera_obj = GameObject.FindGameObjectWithTag("MainCamera");    //カメラオブジェクト取得
         hammer_obj = GameObject.FindGameObjectWithTag("Hammer");        //ハンマーオブジェクトを取得
-        ground_check_col = transform.GetChild(1).GetComponent<SphereCollider>();
         
         input_system.Player.Smash.performed += HoldSmash;
         input_system.Player.Smash.canceled += ReleaseSmash;
+        input_system.Player.Flip.performed += FlipCharacter;
         
         //変数を初期化する
         is_grounded = false;
         input_direction = Vector2.zero;
+        
+        target_dir = Vector3.zero;
     }
 
     // Update is called once per frame
@@ -92,10 +105,18 @@ public class PlayerMove : MonoBehaviour
         input_direction = input_system.Player.WASD.ReadValue<Vector2>();
         
         CheckIsGrounded();
+        
+        if (rb.velocity.x != 0.0f)
+        {
+            float vel_to_change = rb.velocity.x;
+            float delta = 0.0f - vel_to_change;
+            vel_to_change += delta * Time.deltaTime * deceleration_speed;
+            rb.velocity = new Vector3(vel_to_change, rb.velocity.y, 0.0f);
+        }
     }
     
     void FixedUpdate() 
-    {
+    {   
         //叩く状態によって、更新を変える
         switch (smash_state)
         {
@@ -155,91 +176,27 @@ public class PlayerMove : MonoBehaviour
             
             break;
         }
-        
-        GravityForce();
-    }
-    
-    private void LateUpdate() 
-    {
-        this.transform.localEulerAngles = new Vector3(0, 0, this.transform.localEulerAngles.z);
     }
     
     void Move()
     {
-        Vector3 direction = new Vector3(input_direction.x, 0.0f, input_direction.y).normalized;
+        Vector3 direction = new Vector3(input_direction.x, 0.0f, 0.0f).normalized;
         
         if (direction.magnitude >= 0.1f)
-        {
+        {   
             Vector3 targetDirection = new Vector3(direction.x, 0.0f, 0.0f);
             targetDirection = Camera.main.transform.TransformDirection(targetDirection);
             
-            rb.velocity = new Vector3(targetDirection.normalized.x * speed, rb.velocity.y, rb.velocity.z);
+            var locVel = transform.InverseTransformDirection(rb.velocity);
+            locVel.z = direction.x * speed;
+            rb.velocity = transform.TransformDirection(locVel);
         }
-    }
-    
-    void GravityForce()
-    {
-        GroundCheck();
-        
-        Vector3 gravity_point;
-        
-        if (last_ground_obj != null)
-        {
-            gravity_point = ray_hit_point;
-        }
-        else
-        {
-            gravity_point = Vector3.zero;
-        }
-        
-        Vector3 gravity_direction = new Vector3(this.transform.position.x - gravity_point.x, this.transform.position.y - gravity_point.y, 0.0f).normalized;
-        
-        gravity_force.force =  gravity_direction * -9.81f * 5.0f;
-        
-        Vector3 new_rotation = Vector3.RotateTowards(transform.up, gravity_direction, 50.0f, 0.0f);
-        Vector3 set_rotation = Vector3.MoveTowards(this.transform.localRotation.eulerAngles, new_rotation, Time.deltaTime * 10.0f);
-        this.transform.rotation = Quaternion.LookRotation(this.transform.forward, set_rotation);
-    }
-    
-    void GroundCheck()
-    {
-        LayerMask ground_layer_mask = LayerMask.GetMask("Ground");
-        
-        float sphere_size = 0.1f;
-        RaycastHit hit;
-        if (Physics.Raycast(this.transform.position, this.transform.up * -1.0f, out hit,Mathf.Infinity, ground_layer_mask))
-        {
-            sphere_size = Vector3.Distance(this.transform.position, hit.point);
-        }
-        
-        Collider[] hit_grounds;
-        GameObject new_gravity = null;
-        hit_grounds = Physics.OverlapSphere(this.transform.position, sphere_size, ground_layer_mask);
-        float distance_check = 50.0f;
-        foreach (var current in hit_grounds)
-        {
-            Vector3 direction_to_col = new Vector3(current.transform.position.x - this.transform.position.x, current.transform.position.y - this.transform.position.y, 0.0f).normalized;
-            if (Physics.Raycast(this.transform.position, direction_to_col, out hit, Mathf.Infinity, ground_layer_mask))
-            {
-                float distance_to_current = Vector3.Distance(this.transform.position, hit.point);
-                if (distance_to_current < distance_check)
-                {
-                    ray_hit_point = hit.point;
-                    new_gravity = current.gameObject;
-                    distance_check = distance_to_current;
-                }
-            }
-        }
-        
-        last_ground_obj = new_gravity;
     }
     
     private void CheckIsGrounded()
     {
         LayerMask ground_layer_mask = LayerMask.GetMask("Ground");
         RaycastHit hit;
-        
-        Debug.Log(Physics.Raycast(this.transform.position - this.transform.up, this.transform.up * -1.0f, out hit, 1.0f, ground_layer_mask));
         
         is_grounded = Physics.Raycast(this.transform.position - this.transform.up, this.transform.up * -1.0f, out hit, 1.0f, ground_layer_mask);
     }
@@ -260,11 +217,14 @@ public class PlayerMove : MonoBehaviour
             switch (smash_power_level)
             {
                 case SMASHLEVEL.NONE:
-                    deform_stage.AddDeformpointDown(transform, transform.eulerAngles.z);
-                rb.AddForce(this.transform.up * jump_power, ForceMode.Impulse);
+                if (deform_stage)
+                {
+                    deform_stage.AddDeformpointDown(transform, -transform.eulerAngles.z);
+                }
                 break;
                 case SMASHLEVEL.SMALL:
                 hammer_obj.GetComponent<HammerScript>().ThrowHammer();
+                rb.AddForce(this.transform.up * jump_power, ForceMode.Impulse);
                 break;
                 case SMASHLEVEL.BIG:
                 
@@ -272,6 +232,34 @@ public class PlayerMove : MonoBehaviour
             }
             
             smash_state = SMASHSTATE.NORMAL;
+        }
+    }
+    
+    private void FlipCharacter(InputAction.CallbackContext obj)
+    {
+        RaycastHit hit_info;
+        if (Physics.Raycast(this.transform.position + transform.up * -0.25f, -ground_dir, out hit_info, 10.0f, LayerMask.GetMask("Ground")))
+        {
+            float dis = Vector3.Distance(this.transform.position, hit_info.point);
+            Vector3 new_pos;
+            
+            while (true)
+            {
+                Vector3 check_pos = this.transform.position + -ground_dir * dis;
+                Collider[] hit_col = Physics.OverlapSphere(check_pos, 0.5f, LayerMask.GetMask("Ground"));
+                if (hit_col.Length == 0)
+                {
+                    new_pos = check_pos;
+                    break;
+                }
+                else
+                {
+                    dis += 1.0f;
+                }
+            }
+            
+            transform.Rotate(new Vector3(180.0f, 0.0f, 0.0f), Space.World);
+            this.transform.position = new_pos;
         }
     }
     
