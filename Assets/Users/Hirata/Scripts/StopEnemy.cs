@@ -24,6 +24,5 @@ public class StopEnemy : MonoBehaviour
             rb.velocity *= speed;
             is_stop = false;
          }
-        Debug.Log(rb.velocity);
     }
 }

@@ -56,6 +56,7 @@ public class PlayerMove : MonoBehaviour
     /// 平田
     /// </summary>
     private DeformStage deform_stage;
+    private bool is_flip;
 
     private void Awake() 
     {
@@ -78,6 +79,7 @@ public class PlayerMove : MonoBehaviour
         
         //変数を初期化する
         is_grounded = false;
+        is_flip = false;
         input_direction = Vector2.zero;
     }
 
@@ -93,6 +95,8 @@ public class PlayerMove : MonoBehaviour
         {
             rb.velocity = Vector3.MoveTowards(rb.velocity, Vector3.zero, deceleration_speed * Time.deltaTime * 4.0f);
         }
+
+        Debug.Log(transform.localEulerAngles);
     }
     
     void FixedUpdate() 
@@ -197,14 +201,12 @@ public class PlayerMove : MonoBehaviour
             switch (smash_power_level)
             {
                 case SMASHLEVEL.NONE:
-                if (deform_stage)
-                {
-                    deform_stage.AddDeformpointDown(transform, -transform.eulerAngles.z);
-                }
+                    if (deform_stage)
+                        deform_stage.AddDeformpointDown(transform, -transform.eulerAngles.z,is_flip);
                 break;
                 case SMASHLEVEL.SMALL:
-                hammer_obj.GetComponent<HammerScript>().ThrowHammer();
-                rb.AddForce(this.transform.up * jump_power, ForceMode.Impulse);
+                    hammer_obj.GetComponent<HammerScript>().ThrowHammer();
+                    rb.AddForce(this.transform.up * jump_power, ForceMode.Impulse);
                 break;
                 case SMASHLEVEL.BIG:
                 
@@ -238,8 +240,9 @@ public class PlayerMove : MonoBehaviour
                 }
             }
             
-            transform.Rotate(new Vector3(180.0f, 180.0f, 0.0f), Space.World);
+            transform.Rotate(new Vector3(180.0f, 0.0f, 0.0f), Space.World);
             this.transform.position = new_pos;
+            if (is_flip) is_flip = false; else is_flip = true;
         }
     }
     

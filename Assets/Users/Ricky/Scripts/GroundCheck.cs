@@ -23,7 +23,6 @@ public class GroundCheck : MonoBehaviour
         foreach (hit_object hit in hit_ground)
         {
             hit.is_lastframe++;
-            Debug.Log(hit.obj.name);
         }
         bool is_frame = true;
         while (is_frame)

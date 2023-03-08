@@ -62,10 +62,13 @@ public class DeformStage : MonoBehaviour
         }
     }
 
-    public void AddDeformpointDown(Transform transform, float angle)
+    public void AddDeformpointDown(Transform transform, float angle, bool isflip)
     {
         GameObject pointdown;
-        pointdown = Instantiate(point_down, transform.position, Quaternion.Euler(-90 + angle, -90, 90), this.transform);
+        if (isflip)
+            pointdown = Instantiate(point_down, transform.position, Quaternion.Euler(-90 + angle, -90, 90), this.transform);
+        else
+            pointdown = Instantiate(point_down, transform.position, Quaternion.Euler(-90 + angle - 180.0f, -90, 90), this.transform);
 
         GameObject[] gameObjects = ground_check.GetHitGround();
         foreach(GameObject gameObject in gameObjects)
