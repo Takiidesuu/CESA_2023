@@ -49,14 +49,14 @@ public class GravityControl : MonoBehaviour
         RaycastHit hit_back;
         
         Vector3 feet_pos = this.transform.position - this.transform.up * 0.2f;
-        Vector3 dir_offset_front = this.transform.up * -1.0f + this.transform.forward * 0.2f;
+        Vector3 dir_offset_front = this.transform.up * -1.0f + this.transform.right * 0.2f;
         dir_offset_front.Normalize();
-        Vector3 dir_offset_back = this.transform.up * -1.0f - this.transform.forward * 0.2f;
+        Vector3 dir_offset_back = this.transform.up * -1.0f - this.transform.right * 0.2f;
         dir_offset_back.Normalize();
         
         bool found_ground = false;
         
-        found_ground = Physics.Raycast(feet_pos + this.transform.forward * 0.2f, dir_offset_front, out hit_front, 10.0f, ground_layer_mask);
+        found_ground = Physics.Raycast(feet_pos + this.transform.right * 0.2f, dir_offset_front, out hit_front, 10.0f, ground_layer_mask);
         
         if (!found_ground)
         {
@@ -69,16 +69,16 @@ public class GravityControl : MonoBehaviour
         
         if (!found_ground)
         {
-            found_ground = Physics.Raycast(feet_pos - this.transform.forward * 0.2f, dir_offset_back, out hit_back, 10.0f, ground_layer_mask);
+            found_ground = Physics.Raycast(feet_pos - this.transform.right * 0.2f, dir_offset_back, out hit_back, 10.0f, ground_layer_mask);
         }
         else
         {
-            Physics.Raycast(feet_pos - this.transform.forward * 0.2f, dir_offset_back, out hit_back, 10.0f, ground_layer_mask);
+            Physics.Raycast(feet_pos - this.transform.right * 0.2f, dir_offset_back, out hit_back, 10.0f, ground_layer_mask);
         }
         
-        Debug.DrawRay(feet_pos + this.transform.forward * 0.2f, dir_offset_front, Color.red);
+        Debug.DrawRay(feet_pos + this.transform.right * 0.2f, dir_offset_front, Color.red);
         Debug.DrawRay(feet_pos, this.transform.up * -1.0f, Color.red);
-        Debug.DrawRay(feet_pos - this.transform.forward * 0.2f, dir_offset_back, Color.red);
+        Debug.DrawRay(feet_pos - this.transform.right * 0.2f, dir_offset_back, Color.red);
         
         Vector3 hit_dir = transform.up;
         

@@ -41,31 +41,16 @@ public class PlayerMove : MonoBehaviour
     
     private bool is_grounded;       //地面についているか
     private bool is_holding_smash;  //叩く力を貯めているか
-    private Vector3 gravity_dir;    //重力の方向
     
     private GameObject camera_obj;  //カメラオブジェクト
     private GameObject hammer_obj;  //ハンマーオブジェクト
     
     private Vector2 input_direction;        //インプット方向
     private SMASHSTATE smash_state;         //プレイヤーの叩く状態
-    private float turn_smooth_velocity;     //回転速度
     private float smash_power_num;          //叩く力の数値
     private SMASHLEVEL smash_power_level;   //叩く力の段階
-
-    [Tooltip("重力")]
-    [SerializeField] private float downward_force = 12.0f;
-    [Tooltip("重力の加速")]
-    [SerializeField] private float gravity_acceleration = 2.0f;
-    private float actual_gravity;
-
-    [Tooltip("回転速度")]
-    [SerializeField] private float rotation_speed = 20.0f;
-    
-    private float y_angle = 90.0f;
     
     public ParticleSystem partSystem;
-    private Vector3 ground_dir;
-    private Vector3 target_dir;
 
     /// <summary>
     /// 平田
@@ -94,8 +79,6 @@ public class PlayerMove : MonoBehaviour
         //変数を初期化する
         is_grounded = false;
         input_direction = Vector2.zero;
-        
-        target_dir = Vector3.zero;
     }
 
     // Update is called once per frame
@@ -106,12 +89,9 @@ public class PlayerMove : MonoBehaviour
         
         CheckIsGrounded();
         
-        if (rb.velocity.x != 0.0f)
+        if (rb.velocity.magnitude > 0.0f && is_grounded)
         {
-            float vel_to_change = rb.velocity.x;
-            float delta = 0.0f - vel_to_change;
-            vel_to_change += delta * Time.deltaTime * deceleration_speed;
-            rb.velocity = new Vector3(vel_to_change, rb.velocity.y, 0.0f);
+            rb.velocity = Vector3.MoveTowards(rb.velocity, Vector3.zero, deceleration_speed * Time.deltaTime * 4.0f);
         }
     }
     
@@ -188,7 +168,7 @@ public class PlayerMove : MonoBehaviour
             targetDirection = Camera.main.transform.TransformDirection(targetDirection);
             
             var locVel = transform.InverseTransformDirection(rb.velocity);
-            locVel.z = direction.x * speed;
+            locVel.x = direction.x * speed;
             rb.velocity = transform.TransformDirection(locVel);
         }
     }
@@ -240,8 +220,6 @@ public class PlayerMove : MonoBehaviour
         RaycastHit hit_info;
         if (Physics.Raycast(this.transform.position + this.transform.up * 0.25f, this.transform.up * -1.0f, out hit_info, 5.0f, LayerMask.GetMask("Ground")))
         {
-            Debug.Log("ssss");
-            
             float dis = Vector3.Distance(this.transform.position, hit_info.point);
             Vector3 new_pos;
             
@@ -260,7 +238,7 @@ public class PlayerMove : MonoBehaviour
                 }
             }
             
-            transform.Rotate(new Vector3(180.0f, 0.0f, 0.0f), Space.World);
+            transform.Rotate(new Vector3(180.0f, 180.0f, 0.0f), Space.World);
             this.transform.position = new_pos;
         }
     }
