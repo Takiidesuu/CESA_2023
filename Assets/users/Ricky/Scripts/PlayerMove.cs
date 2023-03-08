@@ -216,7 +216,12 @@ public class PlayerMove : MonoBehaviour
             Vector3 targetDirection = new Vector3(direction.x, 0.0f, 0.0f);
             targetDirection = Camera.main.transform.TransformDirection(targetDirection);
             
-            rb.velocity = new Vector3(targetDirection.x * speed * 2.0f, rb.velocity.y, rb.velocity.z);
+            var locVel = transform.InverseTransformDirection(rb.velocity);
+            locVel.z = direction.x * speed;
+            Debug.Log(locVel);
+            rb.velocity = transform.TransformDirection(locVel);
+            Debug.Log(rb.velocity + " velocity");
+            //rb.velocity = new Vector3(targetDirection.x * speed * 2.0f, rb.velocity.y, rb.velocity.z);
         }
     }
     
