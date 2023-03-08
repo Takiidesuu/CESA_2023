@@ -7,13 +7,13 @@ using Deform;
 
 public class DeformStage : MonoBehaviour
 {
-    private GameObject[] ChildMeshObject;   //メッシュがあるオブジェクトを格納
-    private Deformable[] ChildDefotmbles;
-    private SAMeshColliderBuilder SAMeshColliderBuilder;
+    public GameObject[] ChildMeshObject;   //メッシュがあるオブジェクトを格納
+    public Deformable[] ChildDefotmbles;
+    public SAMeshColliderBuilder SAMeshColliderBuilder;
 
-    private GameObject point_down;          //へこむポイントオブジェクト
+    public GameObject point_down;          //へこむポイントオブジェクト
 
-    private GroundCheck ground_check;
+    public GroundCheck ground_check;
 
     void Start()
     {
