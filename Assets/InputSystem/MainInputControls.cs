@@ -44,6 +44,15 @@ public partial class @MainInputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Flip"",
+                    ""type"": ""Button"",
+                    ""id"": ""7a70d981-681c-4cac-a5a3-46471c0d065f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -211,6 +220,28 @@ public partial class @MainInputControls : IInputActionCollection2, IDisposable
                     ""action"": ""Smash"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""31a49987-a25e-4966-ae3a-ae19591c0e39"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KeyboardMouse"",
+                    ""action"": ""Flip"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4f7027ff-21b7-45de-83dd-783ef583e4b0"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Controller"",
+                    ""action"": ""Flip"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -249,6 +280,7 @@ public partial class @MainInputControls : IInputActionCollection2, IDisposable
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_WASD = m_Player.FindAction("WASD", throwIfNotFound: true);
         m_Player_Smash = m_Player.FindAction("Smash", throwIfNotFound: true);
+        m_Player_Flip = m_Player.FindAction("Flip", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -310,12 +342,14 @@ public partial class @MainInputControls : IInputActionCollection2, IDisposable
     private IPlayerActions m_PlayerActionsCallbackInterface;
     private readonly InputAction m_Player_WASD;
     private readonly InputAction m_Player_Smash;
+    private readonly InputAction m_Player_Flip;
     public struct PlayerActions
     {
         private @MainInputControls m_Wrapper;
         public PlayerActions(@MainInputControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @WASD => m_Wrapper.m_Player_WASD;
         public InputAction @Smash => m_Wrapper.m_Player_Smash;
+        public InputAction @Flip => m_Wrapper.m_Player_Flip;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -331,6 +365,9 @@ public partial class @MainInputControls : IInputActionCollection2, IDisposable
                 @Smash.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSmash;
                 @Smash.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSmash;
                 @Smash.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSmash;
+                @Flip.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFlip;
+                @Flip.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFlip;
+                @Flip.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFlip;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -341,6 +378,9 @@ public partial class @MainInputControls : IInputActionCollection2, IDisposable
                 @Smash.started += instance.OnSmash;
                 @Smash.performed += instance.OnSmash;
                 @Smash.canceled += instance.OnSmash;
+                @Flip.started += instance.OnFlip;
+                @Flip.performed += instance.OnFlip;
+                @Flip.canceled += instance.OnFlip;
             }
         }
     }
@@ -367,5 +407,6 @@ public partial class @MainInputControls : IInputActionCollection2, IDisposable
     {
         void OnWASD(InputAction.CallbackContext context);
         void OnSmash(InputAction.CallbackContext context);
+        void OnFlip(InputAction.CallbackContext context);
     }
 }
