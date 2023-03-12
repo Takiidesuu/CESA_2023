@@ -202,7 +202,7 @@ public class PlayerMove : MonoBehaviour
             {
                 case SMASHLEVEL.NONE:
                     if (deform_stage)
-                        deform_stage.AddDeformpointDown(transform, -transform.eulerAngles.z,is_flip);
+                        deform_stage.AddDeformpointDown(transform, transform.eulerAngles.z,is_flip);
                 break;
                 case SMASHLEVEL.SMALL:
                     hammer_obj.GetComponent<HammerScript>().ThrowHammer();
