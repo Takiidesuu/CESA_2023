@@ -95,6 +95,7 @@ public class PlayerMove : MonoBehaviour
         input_system.Player.Smash.performed += HoldSmash;
         input_system.Player.Smash.canceled += ReleaseSmash;
         input_system.Player.Flip.performed += FlipCharacter;
+        input_system.Player.Rotate.performed += RotateGround;
         
         //変数を初期化する
         is_grounded = false;
@@ -295,6 +296,7 @@ public class PlayerMove : MonoBehaviour
         {
             is_grounded = true;
             ground_obj = hit.transform.gameObject;
+            Debug.Log(ground_obj.name);
         }
         else
         {
@@ -360,6 +362,14 @@ public class PlayerMove : MonoBehaviour
             transform.Rotate(new Vector3(180.0f, 0.0f, 0.0f), Space.World);
             this.transform.position = new_pos;
             if (is_flip) is_flip = false; else is_flip = true;
+        }
+    }
+    
+    private void RotateGround(InputAction.CallbackContext obj)
+    {
+        if (is_grounded)
+        {
+            ground_obj.transform.root.gameObject.GetComponent<StageRotation>().StartRotate();
         }
     }
     

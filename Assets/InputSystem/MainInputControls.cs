@@ -53,6 +53,15 @@ public partial class @MainInputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Rotate"",
+                    ""type"": ""Button"",
+                    ""id"": ""847e06d1-6333-4eab-943f-dd3f379ff8fb"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -242,6 +251,28 @@ public partial class @MainInputControls : IInputActionCollection2, IDisposable
                     ""action"": ""Flip"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""aeb94f1d-59a0-4d48-95ee-7b4e6476b17a"",
+                    ""path"": ""<Keyboard>/leftCtrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KeyboardMouse"",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""41b3ff7c-ad2a-471b-a381-93c6fb860f7b"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Controller"",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -281,6 +312,7 @@ public partial class @MainInputControls : IInputActionCollection2, IDisposable
         m_Player_WASD = m_Player.FindAction("WASD", throwIfNotFound: true);
         m_Player_Smash = m_Player.FindAction("Smash", throwIfNotFound: true);
         m_Player_Flip = m_Player.FindAction("Flip", throwIfNotFound: true);
+        m_Player_Rotate = m_Player.FindAction("Rotate", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -343,6 +375,7 @@ public partial class @MainInputControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_WASD;
     private readonly InputAction m_Player_Smash;
     private readonly InputAction m_Player_Flip;
+    private readonly InputAction m_Player_Rotate;
     public struct PlayerActions
     {
         private @MainInputControls m_Wrapper;
@@ -350,6 +383,7 @@ public partial class @MainInputControls : IInputActionCollection2, IDisposable
         public InputAction @WASD => m_Wrapper.m_Player_WASD;
         public InputAction @Smash => m_Wrapper.m_Player_Smash;
         public InputAction @Flip => m_Wrapper.m_Player_Flip;
+        public InputAction @Rotate => m_Wrapper.m_Player_Rotate;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -368,6 +402,9 @@ public partial class @MainInputControls : IInputActionCollection2, IDisposable
                 @Flip.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFlip;
                 @Flip.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFlip;
                 @Flip.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFlip;
+                @Rotate.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRotate;
+                @Rotate.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRotate;
+                @Rotate.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRotate;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -381,6 +418,9 @@ public partial class @MainInputControls : IInputActionCollection2, IDisposable
                 @Flip.started += instance.OnFlip;
                 @Flip.performed += instance.OnFlip;
                 @Flip.canceled += instance.OnFlip;
+                @Rotate.started += instance.OnRotate;
+                @Rotate.performed += instance.OnRotate;
+                @Rotate.canceled += instance.OnRotate;
             }
         }
     }
@@ -408,5 +448,6 @@ public partial class @MainInputControls : IInputActionCollection2, IDisposable
         void OnWASD(InputAction.CallbackContext context);
         void OnSmash(InputAction.CallbackContext context);
         void OnFlip(InputAction.CallbackContext context);
+        void OnRotate(InputAction.CallbackContext context);
     }
 }

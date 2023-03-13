@@ -30,12 +30,12 @@ public class CameraMove : MonoBehaviour
                 distance_from_obj = target_obj_size.y;
             }
             
-            distance_from_obj *= 2.0f;
+            distance_from_obj *= distance;
         }
         else
         {
             target_obj = player_obj;
-            distance_from_obj = distance * 2.0f;
+            distance_from_obj = distance * 10.0f;
         }
         
         transform.position = new Vector3(target_obj.transform.position.x, target_obj.transform.position.y, target_obj.transform.position.z - distance_from_obj);
