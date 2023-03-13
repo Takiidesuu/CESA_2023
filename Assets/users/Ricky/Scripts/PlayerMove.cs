@@ -217,16 +217,13 @@ public class PlayerMove : MonoBehaviour
                         //右のほうにいる
                         if (Camera.main.WorldToScreenPoint(this.transform.position).x >= Screen.width / 2)
                         {
-                            Debug.Log("aaa1");
                             //下の方にいる
                             if (Camera.main.WorldToScreenPoint(this.transform.position).y <= Screen.height / 2)
                             {
-                                Debug.Log("aaa2");
                                 move_value = -direction.x;
                             }
                             else    //上の方にいる
                             {
-                                Debug.Log("aaa1");
                                 move_value = direction.x;
                             }
                         }
@@ -296,7 +293,6 @@ public class PlayerMove : MonoBehaviour
         {
             is_grounded = true;
             ground_obj = hit.transform.gameObject;
-            Debug.Log(ground_obj.name);
         }
         else
         {
