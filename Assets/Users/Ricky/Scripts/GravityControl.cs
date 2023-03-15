@@ -8,11 +8,11 @@ public class GravityControl : MonoBehaviour
     [SerializeField] private float gravity_power = 5.0f;
     [Tooltip("回転速度")]
     [SerializeField] private float rotation_speed = 20.0f;
-    
+
     private Rigidbody rb;
-    
+
     private Vector3 gravity_dir;
-    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -23,41 +23,41 @@ public class GravityControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
-    
-    private void FixedUpdate() 
+
+    private void FixedUpdate()
     {
         Vector3 set_ground_dir = CheckFloorAngle();
         gravity_dir = set_ground_dir;
-        
+
         // Finds desired rotation relative to surface normal
         var targetRotation = Quaternion.FromToRotation(transform.up, gravity_dir) * transform.rotation;
- 
+
         // Apply rotation and gravity
         transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotation_speed * Time.deltaTime);
-        
+
         rb.AddForce(gravity_dir.normalized * -9.81f * gravity_power);
     }
-    
+
     private Vector3 CheckFloorAngle()
     {
         LayerMask ground_layer_mask = LayerMask.GetMask("Ground");
-        
+
         RaycastHit hit_front;
         RaycastHit hit_centre;
         RaycastHit hit_back;
-        
+
         Vector3 feet_pos = this.transform.position - this.transform.up * 0.2f;
         Vector3 dir_offset_front = this.transform.up * -1.0f + this.transform.right * 0.2f;
         dir_offset_front.Normalize();
         Vector3 dir_offset_back = this.transform.up * -1.0f - this.transform.right * 0.2f;
         dir_offset_back.Normalize();
-        
+
         bool found_ground = false;
-        
+
         found_ground = Physics.Raycast(feet_pos + this.transform.right * 0.2f, dir_offset_front, out hit_front, 10.0f, ground_layer_mask);
-        
+
         if (!found_ground)
         {
             found_ground = Physics.Raycast(feet_pos, this.transform.up * -1.0f, out hit_centre, 10.0f, ground_layer_mask);
@@ -66,7 +66,7 @@ public class GravityControl : MonoBehaviour
         {
             Physics.Raycast(feet_pos, this.transform.up * -1.0f, out hit_centre, 10.0f, ground_layer_mask);
         }
-        
+
         if (!found_ground)
         {
             found_ground = Physics.Raycast(feet_pos - this.transform.right * 0.2f, dir_offset_back, out hit_back, 10.0f, ground_layer_mask);
@@ -75,13 +75,13 @@ public class GravityControl : MonoBehaviour
         {
             Physics.Raycast(feet_pos - this.transform.right * 0.2f, dir_offset_back, out hit_back, 10.0f, ground_layer_mask);
         }
-        
+
         Debug.DrawRay(feet_pos + this.transform.right * 0.2f, dir_offset_front, Color.red);
         Debug.DrawRay(feet_pos, this.transform.up * -1.0f, Color.red);
         Debug.DrawRay(feet_pos - this.transform.right * 0.2f, dir_offset_back, Color.red);
-        
+
         Vector3 hit_dir = transform.up;
-        
+
         if (found_ground)
         {
             if (hit_front.transform != null)
@@ -116,9 +116,9 @@ public class GravityControl : MonoBehaviour
                 }
             }
         }
-        
+
         Debug.DrawLine(transform.position, transform.position + (hit_dir.normalized * 5f), Color.blue);
-        
+
         return hit_dir.normalized;
     }
 }
