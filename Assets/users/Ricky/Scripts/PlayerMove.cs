@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PlayerMove : MonoBehaviour
 {
@@ -72,6 +73,11 @@ public class PlayerMove : MonoBehaviour
     private DeformStage deform_stage;
     private bool is_flip;
     
+    public bool GetSmashingState()
+    {
+        return smash_state != SMASHSTATE.NORMAL ? true : false;
+    }
+    
     public GameObject GetGroundObj()
     {
         return ground_obj;
@@ -96,6 +102,10 @@ public class PlayerMove : MonoBehaviour
         input_system.Player.Smash.canceled += ReleaseSmash;
         input_system.Player.Flip.performed += FlipCharacter;
         input_system.Player.Rotate.performed += RotateGround;
+        
+        //プロト用インプット
+        input_system.Prototype.ReloadScene.performed += ProtoReloadScene;
+        input_system.Prototype.EndScene.performed += ProtoEndScene;
         
         //変数を初期化する
         is_grounded = false;
@@ -367,6 +377,16 @@ public class PlayerMove : MonoBehaviour
         {
             ground_obj.transform.root.gameObject.GetComponent<StageRotation>().StartRotate();
         }
+    }
+    
+    private void ProtoReloadScene(InputAction.CallbackContext obj)
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+    
+    private void ProtoEndScene(InputAction.CallbackContext obj)
+    {
+        Application.Quit();
     }
     
     private void OnCollisionEnter(Collision other) 
