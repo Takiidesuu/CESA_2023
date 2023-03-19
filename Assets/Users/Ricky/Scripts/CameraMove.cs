@@ -5,7 +5,7 @@ using UnityEngine;
 public class CameraMove : MonoBehaviour 
 {
     [Tooltip("プレイヤーからの距離")]
-    [SerializeField] private float distance = 40.0f;
+    [SerializeField] private float distance = 5.0f;
     [Tooltip("プレイヤーの回転についていくか")]
     [SerializeField] private bool follow_player_rot = false;
     
@@ -18,15 +18,34 @@ public class CameraMove : MonoBehaviour
     
     private void LateUpdate() 
     {
-        transform.position = new Vector3(player_obj.transform.position.x, player_obj.transform.position.y, player_obj.transform.position.z - distance);
+        float distance_from_obj;
+        GameObject target_obj = player_obj.GetComponent<PlayerMove>().GetGroundObj();
         
-        if (follow_player_rot)
+        if (target_obj)
         {
-            transform.LookAt(player_obj.transform, player_obj.transform.up);
+            Vector3 target_obj_size = target_obj.GetComponent<Collider>().bounds.size;
+            distance_from_obj = target_obj_size.x;
+            if (distance_from_obj < target_obj_size.y)
+            {
+                distance_from_obj = target_obj_size.y;
+            }
+            
+            distance_from_obj *= distance;
         }
         else
         {
-            transform.LookAt(player_obj.transform, Vector3.up);
+            target_obj = player_obj;
+            distance_from_obj = distance * 10.0f;
+        }
+        
+        transform.position = new Vector3(target_obj.transform.position.x, target_obj.transform.position.y, target_obj.transform.position.z - distance_from_obj);
+        if (follow_player_rot)
+        {
+            transform.LookAt(target_obj.transform, target_obj.transform.up);
+        }
+        else
+        {
+            transform.LookAt(target_obj.transform, Vector3.up);
         }
     }
 }

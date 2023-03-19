@@ -19,6 +19,15 @@ public class PlayerMove : MonoBehaviour
         BIG,        //溜め大
     }
     
+    enum MOVEDIR
+    {
+        NONE,
+        UP,
+        RIGHT,
+        DOWN,
+        LEFT,
+    }
+    
     [Header("Player Param")]
     [Tooltip("移動速度")]
     [SerializeField] private float speed = 5.0f;
@@ -38,8 +47,13 @@ public class PlayerMove : MonoBehaviour
     private CapsuleCollider col;            //コライダー
     
     private MainInputControls input_system;
+    private bool input_check_pos;
+    private float move_value;
+    private float input_modifier;
+    private Vector2 move_dir;
     
     private bool is_grounded;       //地面についているか
+    private GameObject ground_obj;  //ついてる地面
     private bool is_holding_smash;  //叩く力を貯めているか
     
     private GameObject camera_obj;  //カメラオブジェクト
@@ -57,6 +71,11 @@ public class PlayerMove : MonoBehaviour
     /// </summary>
     private DeformStage deform_stage;
     private bool is_flip;
+    
+    public GameObject GetGroundObj()
+    {
+        return ground_obj;
+    }
 
     private void Awake() 
     {
@@ -76,11 +95,15 @@ public class PlayerMove : MonoBehaviour
         input_system.Player.Smash.performed += HoldSmash;
         input_system.Player.Smash.canceled += ReleaseSmash;
         input_system.Player.Flip.performed += FlipCharacter;
+        input_system.Player.Rotate.performed += RotateGround;
         
         //変数を初期化する
         is_grounded = false;
         is_flip = false;
         input_direction = Vector2.zero;
+        input_check_pos = true;
+        move_value = 0.0f;
+        move_dir = Vector2.zero;
     }
 
     // Update is called once per frame
@@ -91,12 +114,12 @@ public class PlayerMove : MonoBehaviour
         
         CheckIsGrounded();
         
-        if (rb.velocity.magnitude > 0.0f && is_grounded)
+        if (rb.velocity.magnitude > 0.0f && is_grounded && input_direction != Vector2.zero)
         {
             rb.velocity = Vector3.MoveTowards(rb.velocity, Vector3.zero, deceleration_speed * Time.deltaTime * 4.0f);
         }
 
-        Debug.Log(transform.localEulerAngles);
+        //Debug.Log(transform.localEulerAngles);
     }
     
     void FixedUpdate() 
@@ -110,6 +133,11 @@ public class PlayerMove : MonoBehaviour
             if (input_direction != Vector2.zero)
             {
                 Move();
+            }
+            else
+            {
+                input_check_pos = true;
+                move_dir = Vector2.zero;
             }
             
             smash_power_num = 0.0f;
@@ -164,15 +192,94 @@ public class PlayerMove : MonoBehaviour
     
     void Move()
     {
-        Vector3 direction = new Vector3(input_direction.x, 0.0f, 0.0f).normalized;
+        Vector3 direction = new Vector3(input_direction.x, input_direction.y, 0.0f);
         
-        if (direction.magnitude >= 0.1f)
-        {   
-            Vector3 targetDirection = new Vector3(direction.x, 0.0f, 0.0f);
+        if (direction.magnitude >= 0.015f)
+        { 
+            if (Mathf.Abs(direction.x) >= Mathf.Abs(direction.y))
+            {
+                direction.y = 0.0f;
+            }
+            else
+            {
+                direction.x = 0.0f;
+            }
+            
+            Vector2 norm_input = direction.normalized;
+            
+            if (norm_input != move_dir)
+            {
+                if (input_check_pos)
+                {
+                    //左右移動
+                    if (Mathf.Abs(norm_input.x) > 0.0f)
+                    {
+                        //右のほうにいる
+                        if (Camera.main.WorldToScreenPoint(this.transform.position).x >= Screen.width / 2)
+                        {
+                            //下の方にいる
+                            if (Camera.main.WorldToScreenPoint(this.transform.position).y <= Screen.height / 2)
+                            {
+                                move_value = -direction.x;
+                            }
+                            else    //上の方にいる
+                            {
+                                move_value = direction.x;
+                            }
+                        }
+                        else    //左の方にいる
+                        {
+                            //下の方にいる
+                            if (Camera.main.WorldToScreenPoint(this.transform.position).y <= Screen.height / 2)
+                            {
+                                move_value = -direction.x;
+                            }
+                            else
+                            {
+                                move_value = direction.x;
+                            }
+                        }
+                    }
+                    else    //上下移動
+                    {
+                        //右のほうにいる
+                        if (Camera.main.WorldToScreenPoint(this.transform.position).x >= Screen.width / 2)
+                        {
+                            //下の方にいる
+                            if (Camera.main.WorldToScreenPoint(this.transform.position).y <= Screen.height / 2)
+                            {
+                                move_value = -direction.y;
+                            }
+                            else
+                            {
+                                move_value = -direction.y;
+                            }
+                        }
+                        else
+                        {
+                            //下の方にいる
+                            if (Camera.main.WorldToScreenPoint(this.transform.position).y <= Screen.height / 2)
+                            {
+                                move_value = direction.y;
+                            }
+                            else
+                            {
+                                move_value = direction.y;
+                            }
+                        }
+                    }
+                    
+                    input_check_pos = false;
+                }
+                
+                move_dir = norm_input;
+            }
+            
+            Vector3 targetDirection = new Vector3(direction.x * input_modifier, 0.0f, 0.0f);
             targetDirection = Camera.main.transform.TransformDirection(targetDirection);
             
             var locVel = transform.InverseTransformDirection(rb.velocity);
-            locVel.x = direction.x * speed;
+            locVel.x = move_value * speed;
             rb.velocity = transform.TransformDirection(locVel);
         }
     }
@@ -182,7 +289,15 @@ public class PlayerMove : MonoBehaviour
         LayerMask ground_layer_mask = LayerMask.GetMask("Ground");
         RaycastHit hit;
         
-        is_grounded = Physics.Raycast(this.transform.position + this.transform.up * 0.25f, this.transform.up * -1.0f, out hit, 2.0f, ground_layer_mask);
+        if (Physics.Raycast(this.transform.position + this.transform.up * 0.25f, this.transform.up * -1.0f, out hit, 2.0f, ground_layer_mask))
+        {
+            is_grounded = true;
+            ground_obj = hit.transform.gameObject;
+        }
+        else
+        {
+            is_grounded = false;
+        }
     }
     
     private void HoldSmash(InputAction.CallbackContext obj)
@@ -243,6 +358,14 @@ public class PlayerMove : MonoBehaviour
             transform.Rotate(new Vector3(180.0f, 0.0f, 0.0f), Space.World);
             this.transform.position = new_pos;
             if (is_flip) is_flip = false; else is_flip = true;
+        }
+    }
+    
+    private void RotateGround(InputAction.CallbackContext obj)
+    {
+        if (is_grounded)
+        {
+            ground_obj.transform.root.gameObject.GetComponent<StageRotation>().StartRotate();
         }
     }
     

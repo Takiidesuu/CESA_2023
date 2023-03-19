@@ -1,4 +1,4 @@
-using UnityEngine;
+/* using UnityEngine;
 using UnityEditor;
 public class ShowComments : MonoBehaviour
 {
@@ -8,7 +8,7 @@ public class ShowComments : MonoBehaviour
         EditorApplication.hierarchyWindowItemOnGUI += AddCommentsField;
     }
     /// <summary>
-    /// Hierarchy‚ÉMyComments‚Ì“à—e‚ð•\Ž¦‚·‚é
+    /// Hierarchyï¿½ï¿½MyCommentsï¿½Ì“ï¿½ï¿½eï¿½ï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     private static void AddCommentsField(int instanceID, Rect rc)
     {
@@ -24,4 +24,4 @@ public class ShowComments : MonoBehaviour
             }
         }
     }
-}
+} */

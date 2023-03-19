@@ -1,15 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class StageRotation : MonoBehaviour
 {
-    public bool is_rotation;
+    private bool is_rotation;
 
-    public float rotationSpeed = 30f; // ‰ñ“]‘¬“x
-    private float rotationAngle = 180f; // ‰ñ“]Šp“x
+    public float rotationSpeed = 30f; // ï¿½ï¿½]ï¿½ï¿½ï¿½x
+    private float rotationAngle = 180f; // ï¿½ï¿½]ï¿½pï¿½x
 
-    private float currentAngle = 0f; // Œ»İ‚Ì‰ñ“]Šp“x
+    private float currentAngle = 0f; // ï¿½ï¿½ï¿½İ‚Ì‰ï¿½]ï¿½pï¿½x
+    
+    public void StartRotate()
+    {
+        is_rotation = true;
+    }
+    
+    private void Start() 
+    {
+        is_rotation = false;
+    }
 
     void Update()
     {
