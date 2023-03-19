@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Deform;
 
-[ExecuteInEditMode]
+//[ExecuteInEditMode]
 
 public class DeformStage : MonoBehaviour
 {
@@ -127,11 +127,13 @@ public class DeformStage : MonoBehaviour
         //ìñÇΩÇ¡ÇƒÇ¢ÇÈèÍçáêFÇïœâª
         if (hit_electrical)
         {
-            GetComponent<MeshRenderer>().material.color = new Color(Mathf.Sin(Time.time), Mathf.Sin(Time.time), 1, 1);
+            for (int i = 0; i < ChildMeshObject.Length; i++)
+                ChildMeshObject[i].GetComponent<MeshRenderer>().material.color = new Color(Mathf.Abs(Mathf.Sin(Time.time) / 2 + 0.5f), Mathf.Abs(Mathf.Sin(Time.time)/2+0.5f), 0, 1);
         }
         else
         {
-            GetComponent<MeshRenderer>().material.color = Color.green;
+            for (int i = 0; i < ChildMeshObject.Length; i++)
+                ChildMeshObject[i].GetComponent<MeshRenderer>().material.color = Color.gray;
         }
     }
 

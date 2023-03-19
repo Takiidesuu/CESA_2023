@@ -26,7 +26,7 @@ public class ElectricalPower : MonoBehaviour
     {
         if (other.gameObject.layer == 6)
         {
-            deformstage = GetComponent<DeformStage>();
+            deformstage = other.transform.root.GetComponent<DeformStage>();
             deformstage.IsElectricalPower(true);
             is_stage_hit = true;
             nothit_count = 0;
