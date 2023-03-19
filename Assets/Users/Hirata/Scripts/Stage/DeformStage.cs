@@ -20,7 +20,9 @@ public class DeformStage : MonoBehaviour
 
     private GameObject player_gameobject;                             //プレイヤー
     private GroundCheck ground_check;                                 //ステージの地面がどれかのチェック
-    public bool hit_electrical;                                      //電源に当たっているか
+    private bool hit_electrical;                                      //電源に当たっているか
+    private Material electric_floor;                                  //電源に当たった際のマテリアル
+    private Material floor;                                           //当たっていない際のマテリアル
 
     [SerializeField] private bool is_reverse;                         //全てを反転 （仮）
 
@@ -70,6 +72,10 @@ public class DeformStage : MonoBehaviour
             ChildDefotmbles[i].ColliderRecalculation = ColliderRecalculation.Auto;
             ChildDefotmbles[i].MeshCollider = ChildMeshObject[i].transform.GetChild(0).GetChild(0).gameObject.GetComponent<MeshCollider>();
         }
+
+        //マテリアル取得
+        electric_floor = (Material)Resources.Load("ElectricFloor");
+        floor= (Material)Resources.Load("Floor");
     }
 
     private void Update()
@@ -128,12 +134,12 @@ public class DeformStage : MonoBehaviour
         if (hit_electrical)
         {
             for (int i = 0; i < ChildMeshObject.Length; i++)
-                ChildMeshObject[i].GetComponent<MeshRenderer>().material.color = new Color(Mathf.Abs(Mathf.Sin(Time.time) / 2 + 0.5f), Mathf.Abs(Mathf.Sin(Time.time)/2+0.5f), 0, 1);
+                ChildMeshObject[i].GetComponent<MeshRenderer>().material = electric_floor;
         }
         else
         {
             for (int i = 0; i < ChildMeshObject.Length; i++)
-                ChildMeshObject[i].GetComponent<MeshRenderer>().material.color = Color.gray;
+                ChildMeshObject[i].GetComponent<MeshRenderer>().material = floor;
         }
     }
 
