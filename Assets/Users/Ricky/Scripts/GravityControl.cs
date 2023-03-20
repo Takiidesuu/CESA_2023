@@ -23,7 +23,7 @@ public class GravityControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        
     }
 
     private void FixedUpdate()
@@ -101,7 +101,7 @@ public class GravityControl : MonoBehaviour
         {
             float sphere_size = 40.0f;
             Collider[] col_info = Physics.OverlapSphere(this.transform.position, sphere_size, ground_layer_mask);
-            float distance_check = 40.0f;
+            float distance_check = sphere_size;
             foreach (var current in col_info)
             {
                 RaycastHit ground_hit;
@@ -110,7 +110,7 @@ public class GravityControl : MonoBehaviour
                     float distance_to_ground = Vector3.Distance(this.transform.position, ground_hit.point);
                     if (distance_to_ground < distance_check)
                     {
-                        hit_dir = this.transform.position - ground_hit.point;
+                        hit_dir = ground_hit.point - this.transform.position;
                         distance_check = distance_to_ground;
                     }
                 }

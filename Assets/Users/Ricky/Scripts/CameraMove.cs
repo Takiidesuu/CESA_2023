@@ -6,22 +6,28 @@ public class CameraMove : MonoBehaviour
 {
     [Tooltip("プレイヤーからの距離")]
     [SerializeField] private float distance = 5.0f;
-    [Tooltip("プレイヤーの回転についていくか")]
-    [SerializeField] private bool follow_player_rot = false;
     
     [Tooltip("元の位置に戻る速度")]
     [SerializeField] private float return_speed = 5.0f;
+    [Tooltip("切り替わり待ち時間")]
+    [SerializeField] private float time_to_return = 60.0f;
+    
+    [Tooltip("FOV")]
+    [SerializeField] private float camera_fov = 15.0f;
+    
+    Camera cam;
     
     GameObject player_obj;
-    
     GameObject lookat_pos;
     
     private float distance_scalar;
     
     private void Start() 
     {
-        player_obj = GameObject.FindGameObjectWithTag("Player");
+        cam = GetComponent<Camera>();
+        cam.fieldOfView = camera_fov;
         
+        player_obj = GameObject.FindGameObjectWithTag("Player");
         lookat_pos = new GameObject("CameraLookAtObj");
         
         distance_scalar = 1.0f;
