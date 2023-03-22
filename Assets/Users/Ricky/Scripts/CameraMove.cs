@@ -63,7 +63,7 @@ public class CameraMove : MonoBehaviour
         
         if (is_player_smashing)
         {
-            distance_scalar = 0.3f;
+            distance_scalar = 0.5f;
             targetLookAt = player_obj.transform.position;
         }
         else
@@ -92,15 +92,15 @@ public class CameraMove : MonoBehaviour
         if (is_player_smashing)
         {
             lookat_pos.transform.position = targetLookAt;
-            transform.position = target_pos;
+            transform.position = target_pos + player_obj.transform.up * 5.0f;
             return_count = time_to_return;
         }
         else
         {
             if (return_count <= 0)
             {
-                lookat_pos.transform.position = Vector3.MoveTowards(lookat_pos.transform.position, targetLookAt, Time.deltaTime * return_speed * 5.0f);
-                transform.position = Vector3.MoveTowards(transform.position, target_pos, 100.0f * Time.deltaTime);
+                lookat_pos.transform.position = Vector3.MoveTowards(lookat_pos.transform.position, targetLookAt, Time.deltaTime * return_speed * 30.0f);
+                transform.position = Vector3.MoveTowards(transform.position, target_pos, 300.0f * Time.deltaTime);
             }
             else
             {
