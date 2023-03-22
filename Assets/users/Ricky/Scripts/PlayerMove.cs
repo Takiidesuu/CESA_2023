@@ -40,7 +40,7 @@ public class PlayerMove : MonoBehaviour
     [Header("Smash Param")]
     [Tooltip("ジャンプ力")]
     [SerializeField] private float jump_power = 4.0f;
-    [Tooltip("溜め小")]
+    [Tooltip("溜める段階変わる時間")]
     [SerializeField] private float smash_threshold = 50.0f;
     
     //コンポネント
@@ -93,7 +93,6 @@ public class PlayerMove : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();                 //リギッドボディー取得
         col = GetComponent<CapsuleCollider>();          //コライダー取得
-        deform_stage = GameObject.FindWithTag("Stage").GetComponent<DeformStage>();
 
         camera_obj = GameObject.FindGameObjectWithTag("MainCamera");    //カメラオブジェクト取得
         hammer_obj = GameObject.FindGameObjectWithTag("Hammer");        //ハンマーオブジェクトを取得
@@ -134,69 +133,75 @@ public class PlayerMove : MonoBehaviour
     
     void FixedUpdate() 
     {   
-        //叩く状態によって、更新を変える
-        switch (smash_state)
+        if (ground_obj != null)
         {
-            case SMASHSTATE.NORMAL:     //通常状態
-            
-            //インプット方向があったら、移動させる
-            if (input_direction != Vector2.zero)
+            if (!ground_obj.transform.root.gameObject.GetComponent<StageRotation>().GetRotatingStatus())
             {
-                Move();
+                //叩く状態によって、更新を変える
+                switch (smash_state)
+                {
+                    case SMASHSTATE.NORMAL:     //通常状態
+                    
+                    //インプット方向があったら、移動させる
+                    if (input_direction != Vector2.zero)
+                    {
+                        Move();
+                    }
+                    else
+                    {
+                        input_check_pos = true;
+                        move_dir = Vector2.zero;
+                    }
+                    
+                    smash_power_num = 0.0f;
+                    
+                    var emis = partSystem.emission;
+                    emis.enabled = false;
+                    
+                    break;
+                    case SMASHSTATE.HOLDING:    //力を溜めてる状態
+                    
+                    var emisss = partSystem.emission;
+                    emisss.enabled = true;
+                    
+                    var mainColor = partSystem.main;
+                    
+                    //溜めた力を加算する
+                    if (smash_power_num >= 100.0f)
+                    {
+                        smash_power_num = 100.0f;
+                    }
+                    else
+                    {
+                        smash_power_num += Time.deltaTime * 33.0f;
+                    }
+                    
+                    //溜めた力によって、力の段階を変える
+                    if (smash_power_num >= 100.0f)
+                    {
+                        smash_power_level = SMASHLEVEL.BIG;
+                        mainColor.startColor = new Color(1.0f, 0.0f, 0.0f);
+                        emisss.rateOverTime = 100.0f;
+                    }
+                    else if (smash_power_num >= smash_threshold)
+                    {
+                        smash_power_level = SMASHLEVEL.SMALL;
+                        mainColor.startColor = new Color(0.0f, 1.0f, 0.0f);
+                        emisss.rateOverTime = 50.0f;
+                    }
+                    else
+                    {
+                        smash_power_level = SMASHLEVEL.NONE;
+                        mainColor.startColor = new Color(0.0f, 0.0f, 1.0f);
+                        emisss.rateOverTime = 10.0f;
+                    }
+                    
+                    break;
+                    case SMASHSTATE.SMASHING:   //力を放ってる状態
+                    
+                    break;
+                }
             }
-            else
-            {
-                input_check_pos = true;
-                move_dir = Vector2.zero;
-            }
-            
-            smash_power_num = 0.0f;
-            
-            var emis = partSystem.emission;
-            emis.enabled = false;
-            
-            break;
-            case SMASHSTATE.HOLDING:    //力を溜めてる状態
-            
-            var emisss = partSystem.emission;
-            emisss.enabled = true;
-            
-            var mainColor = partSystem.main;
-            
-            //溜めた力を加算する
-            if (smash_power_num >= 100.0f)
-            {
-                smash_power_num = 100.0f;
-            }
-            else
-            {
-                smash_power_num += Time.deltaTime * 33.0f;
-            }
-            
-            //溜めた力によって、力の段階を変える
-            if (smash_power_num >= 100.0f)
-            {
-                smash_power_level = SMASHLEVEL.BIG;
-                mainColor.startColor = new Color(1.0f, 0.0f, 0.0f);
-                emisss.rateOverTime = 100.0f;
-            }
-            else if (smash_power_num >= smash_threshold)
-            {
-                smash_power_level = SMASHLEVEL.SMALL;
-                mainColor.startColor = new Color(0.0f, 1.0f, 0.0f);
-                emisss.rateOverTime = 50.0f;
-            }
-            else
-            {
-                smash_power_level = SMASHLEVEL.NONE;
-                mainColor.startColor = new Color(0.0f, 0.0f, 1.0f);
-                emisss.rateOverTime = 10.0f;
-            }
-            
-            break;
-            case SMASHSTATE.SMASHING:   //力を放ってる状態
-            
-            break;
         }
     }
     
@@ -303,6 +308,7 @@ public class PlayerMove : MonoBehaviour
         {
             is_grounded = true;
             ground_obj = hit.transform.gameObject;
+            deform_stage = ground_obj.transform.root.GetComponent<DeformStage>();
         }
         else
         {
@@ -315,7 +321,10 @@ public class PlayerMove : MonoBehaviour
         //地面についていたら、力を溜める可能にする
         if (is_grounded && hammer_obj.GetComponent<HammerScript>().GetThrowState())
         {
-            smash_state = SMASHSTATE.HOLDING;
+            if (!ground_obj.transform.root.gameObject.GetComponent<StageRotation>().GetRotatingStatus())
+            {
+                smash_state = SMASHSTATE.HOLDING;
+            }
         }
     }
     
@@ -365,7 +374,7 @@ public class PlayerMove : MonoBehaviour
                 }
             }
             
-            transform.Rotate(new Vector3(180.0f, 0.0f, 0.0f), Space.World);
+            transform.Rotate(new Vector3(180.0f, 0.0f, 0.0f), Space.Self);
             this.transform.position = new_pos;
             if (is_flip) is_flip = false; else is_flip = true;
         }

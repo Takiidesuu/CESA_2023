@@ -6,25 +6,33 @@ public class CameraMove : MonoBehaviour
 {
     [Tooltip("プレイヤーからの距離")]
     [SerializeField] private float distance = 5.0f;
-    [Tooltip("プレイヤーの回転についていくか")]
-    [SerializeField] private bool follow_player_rot = false;
     
     [Tooltip("元の位置に戻る速度")]
     [SerializeField] private float return_speed = 5.0f;
+    [Tooltip("切り替わり待ち時間")]
+    [SerializeField] private int time_to_return = 60;
+    
+    [Tooltip("FOV")]
+    [SerializeField] private float camera_fov = 15.0f;
+    
+    Camera cam;
     
     GameObject player_obj;
-    
     GameObject lookat_pos;
     
     private float distance_scalar;
+    private int return_count;
     
     private void Start() 
     {
-        player_obj = GameObject.FindGameObjectWithTag("Player");
+        cam = GetComponent<Camera>();
+        cam.fieldOfView = camera_fov;
         
+        player_obj = GameObject.FindGameObjectWithTag("Player");
         lookat_pos = new GameObject("CameraLookAtObj");
         
         distance_scalar = 1.0f;
+        return_count = 0;
     }
     
     private void LateUpdate() 
@@ -55,12 +63,19 @@ public class CameraMove : MonoBehaviour
         
         if (is_player_smashing)
         {
-            distance_scalar = 0.3f;
+            distance_scalar = 0.5f;
             targetLookAt = player_obj.transform.position;
         }
         else
         {
-            targetLookAt = target_obj.transform.position;
+            if (return_count <= 0)
+            {
+                targetLookAt = target_obj.transform.position;
+            }
+            else
+            {
+                targetLookAt = player_obj.transform.position;
+            }
             
             if (distance_scalar < 1.0f)
             {
@@ -77,12 +92,20 @@ public class CameraMove : MonoBehaviour
         if (is_player_smashing)
         {
             lookat_pos.transform.position = targetLookAt;
-            transform.position = target_pos;
+            transform.position = target_pos + player_obj.transform.up * 5.0f;
+            return_count = time_to_return;
         }
         else
         {
-            lookat_pos.transform.position = Vector3.MoveTowards(lookat_pos.transform.position, targetLookAt, Time.deltaTime * return_speed * 5.0f);
-            transform.position = Vector3.MoveTowards(transform.position, target_pos, 100.0f * Time.deltaTime);
+            if (return_count <= 0)
+            {
+                lookat_pos.transform.position = Vector3.MoveTowards(lookat_pos.transform.position, targetLookAt, Time.deltaTime * return_speed * 30.0f);
+                transform.position = Vector3.MoveTowards(transform.position, target_pos, 300.0f * Time.deltaTime);
+            }
+            else
+            {
+                return_count--;
+            }
         }
         
         transform.LookAt(lookat_pos.transform, Vector3.up);

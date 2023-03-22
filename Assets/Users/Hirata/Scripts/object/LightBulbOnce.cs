@@ -5,21 +5,17 @@ using UnityEngine;
 public class LightBulbOnce : MonoBehaviour
 {
     public bool is_stage_hit = false;   //ステージに当たっているか
-    private int nothit_count;           //当たってらずに何フレーム立ったか (Exitが呼ばれないため)
     private MeshRenderer material;      //光らすため
-
-    private ElectricalPower electricalpower;    //電源そステージが当たっているかを取得
 
     private void Start()
     {
         material = GetComponent<MeshRenderer>();
-        electricalpower = GameObject.Find("ElectricalPower").GetComponent<ElectricalPower>();
     }
 
     private void Update()
     {
         //どちらもステージに当たっているか
-        if (electricalpower.is_stage_hit && is_stage_hit)
+        if (is_stage_hit)
         {
             material.material.color = Color.white;
         }
@@ -31,10 +27,9 @@ public class LightBulbOnce : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.gameObject.layer == 6)
+        if (other.gameObject.CompareTag("ElectricalBall"))
         {
             is_stage_hit = true;
-            nothit_count = 0;
         }
     }
 }

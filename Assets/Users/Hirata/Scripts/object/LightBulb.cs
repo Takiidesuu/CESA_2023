@@ -8,12 +8,11 @@ public class LightBulb : MonoBehaviour
     private int nothit_count;           //当たってらずに何フレーム立ったか (Exitが呼ばれないため)
     private MeshRenderer material;          //光らすため
 
-    private ElectricalPower electricalpower;    //電源そステージが当たっているかを取得
+    private DeformStage deform_stage;    //電源がステージが当たっているかを取得
 
     private void Start()
     {
         material = GetComponent<MeshRenderer>();
-        electricalpower = GameObject.Find("ElectricalPower").GetComponent<ElectricalPower>();
     }
 
     private void Update()
@@ -24,27 +23,38 @@ public class LightBulb : MonoBehaviour
             if (nothit_count > 5)
             {
                 is_stage_hit = false;
+                deform_stage = null;
+                material.material.color = Color.black;
             }
             else
                 nothit_count++;
         }
 
         //どちらもステージに当たっているか
-        if (electricalpower.is_stage_hit && is_stage_hit)
+        if (deform_stage != null)
         {
-            material.material.color = Color.white;
-        }
-        else
-        {
-            material.material.color = Color.black;
+            if (deform_stage.hit_electrical && is_stage_hit)
+            {
+                material.material.color = Color.white;
+            }
+            else
+            {
+                material.material.color = Color.black;
+                is_stage_hit = false;
+            }
         }
     }
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.gameObject.layer == 6)
+        if (other.gameObject.CompareTag("ElectricalBall"))
         {
             is_stage_hit = true;
+            nothit_count = 0;
+        }
+        if (other.gameObject.layer == 6 && is_stage_hit)
+        {
+            deform_stage = other.transform.root.GetComponent<DeformStage>();
             nothit_count = 0;
         }
     }

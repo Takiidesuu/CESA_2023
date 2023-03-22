@@ -20,7 +20,7 @@ public class DeformStage : MonoBehaviour
 
     private GameObject player_gameobject;                             //プレイヤー
     private GroundCheck ground_check;                                 //ステージの地面がどれかのチェック
-    private bool hit_electrical;                                      //電源に当たっているか
+    public bool hit_electrical;                                      //電源に当たっているか
     private Material electric_floor;                                  //電源に当たった際のマテリアル
     private Material floor;                                           //当たっていない際のマテリアル
 
