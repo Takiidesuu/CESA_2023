@@ -36,12 +36,13 @@ public class ElectricBallMove : MonoBehaviour
 
         transform.position += transform.rotation * move_vec;
         m_destroy_timer += Time.deltaTime;
-        
+
         //ŽžŠÔŒo‰ßŒãíœ
         if(m_destroy_timer > m_destroy_time)
         {
             Destroy(this.gameObject);
         }
+        transform.position.Set(transform.position.x, transform.position.y,0);
     }
     private void OnTriggerEnter(Collider collision)
     {
