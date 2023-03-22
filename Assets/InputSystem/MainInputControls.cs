@@ -275,6 +275,54 @@ public partial class @MainInputControls : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Prototype"",
+            ""id"": ""ad903551-749c-4a47-a6b1-008526f94884"",
+            ""actions"": [
+                {
+                    ""name"": ""ReloadScene"",
+                    ""type"": ""Button"",
+                    ""id"": ""dd9dd763-69ae-4c3b-bea9-8fac625d47e3"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""EndScene"",
+                    ""type"": ""Button"",
+                    ""id"": ""77daf756-8401-40f5-8f3e-2f113a9b8f49"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""dfb9868e-ea8e-4f4b-9c01-578578697039"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ReloadScene"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""14408921-3b0a-477d-924d-df27e7a97ed7"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""EndScene"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -313,6 +361,10 @@ public partial class @MainInputControls : IInputActionCollection2, IDisposable
         m_Player_Smash = m_Player.FindAction("Smash", throwIfNotFound: true);
         m_Player_Flip = m_Player.FindAction("Flip", throwIfNotFound: true);
         m_Player_Rotate = m_Player.FindAction("Rotate", throwIfNotFound: true);
+        // Prototype
+        m_Prototype = asset.FindActionMap("Prototype", throwIfNotFound: true);
+        m_Prototype_ReloadScene = m_Prototype.FindAction("ReloadScene", throwIfNotFound: true);
+        m_Prototype_EndScene = m_Prototype.FindAction("EndScene", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -425,6 +477,47 @@ public partial class @MainInputControls : IInputActionCollection2, IDisposable
         }
     }
     public PlayerActions @Player => new PlayerActions(this);
+
+    // Prototype
+    private readonly InputActionMap m_Prototype;
+    private IPrototypeActions m_PrototypeActionsCallbackInterface;
+    private readonly InputAction m_Prototype_ReloadScene;
+    private readonly InputAction m_Prototype_EndScene;
+    public struct PrototypeActions
+    {
+        private @MainInputControls m_Wrapper;
+        public PrototypeActions(@MainInputControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @ReloadScene => m_Wrapper.m_Prototype_ReloadScene;
+        public InputAction @EndScene => m_Wrapper.m_Prototype_EndScene;
+        public InputActionMap Get() { return m_Wrapper.m_Prototype; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(PrototypeActions set) { return set.Get(); }
+        public void SetCallbacks(IPrototypeActions instance)
+        {
+            if (m_Wrapper.m_PrototypeActionsCallbackInterface != null)
+            {
+                @ReloadScene.started -= m_Wrapper.m_PrototypeActionsCallbackInterface.OnReloadScene;
+                @ReloadScene.performed -= m_Wrapper.m_PrototypeActionsCallbackInterface.OnReloadScene;
+                @ReloadScene.canceled -= m_Wrapper.m_PrototypeActionsCallbackInterface.OnReloadScene;
+                @EndScene.started -= m_Wrapper.m_PrototypeActionsCallbackInterface.OnEndScene;
+                @EndScene.performed -= m_Wrapper.m_PrototypeActionsCallbackInterface.OnEndScene;
+                @EndScene.canceled -= m_Wrapper.m_PrototypeActionsCallbackInterface.OnEndScene;
+            }
+            m_Wrapper.m_PrototypeActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @ReloadScene.started += instance.OnReloadScene;
+                @ReloadScene.performed += instance.OnReloadScene;
+                @ReloadScene.canceled += instance.OnReloadScene;
+                @EndScene.started += instance.OnEndScene;
+                @EndScene.performed += instance.OnEndScene;
+                @EndScene.canceled += instance.OnEndScene;
+            }
+        }
+    }
+    public PrototypeActions @Prototype => new PrototypeActions(this);
     private int m_KeyboardMouseSchemeIndex = -1;
     public InputControlScheme KeyboardMouseScheme
     {
@@ -449,5 +542,10 @@ public partial class @MainInputControls : IInputActionCollection2, IDisposable
         void OnSmash(InputAction.CallbackContext context);
         void OnFlip(InputAction.CallbackContext context);
         void OnRotate(InputAction.CallbackContext context);
+    }
+    public interface IPrototypeActions
+    {
+        void OnReloadScene(InputAction.CallbackContext context);
+        void OnEndScene(InputAction.CallbackContext context);
     }
 }
