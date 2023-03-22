@@ -11,14 +11,28 @@ public class StageRotation : MonoBehaviour
     private float rotationAngle = 180f; // ��]�p�x
 
     private float currentAngle = 0f; // ���݂̉�]�p�x
+    private float targetAngle;
+    
+    GameObject player_obj;
+    
+    public bool GetRotatingStatus()
+    {
+        return is_rotation;
+    }
     
     public void StartRotate()
     {
-        is_rotation = true;
+        if (!is_rotation)
+        {
+            is_rotation = true;
+            targetAngle = currentAngle + rotationAngle;
+            player_obj.transform.parent = this.transform;
+        }
     }
     
     private void Start() 
     {
+        player_obj = GameObject.FindGameObjectWithTag("Player");
         is_rotation = false;
     }
 
@@ -26,11 +40,21 @@ public class StageRotation : MonoBehaviour
     {
         if (is_rotation)
         {
-            if (currentAngle < rotationAngle)
+            if (currentAngle < targetAngle)
             {
-                float rotateAmount = Mathf.Min(rotationSpeed * Time.deltaTime, rotationAngle - currentAngle);
+                float rotateAmount = Mathf.Min(rotationSpeed * Time.deltaTime, targetAngle - currentAngle);
                 transform.Rotate(Vector3.forward * rotateAmount);
                 currentAngle += rotateAmount;
+            }
+            else
+            {
+                is_rotation = false;
+                player_obj.transform.parent = null;
+                
+                if (targetAngle >= 360.0f)
+                {
+                    targetAngle = 0.0f;
+                }
             }
         }
     }
