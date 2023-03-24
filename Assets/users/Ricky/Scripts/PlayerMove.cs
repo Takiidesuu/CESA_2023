@@ -30,8 +30,10 @@ public class PlayerMove : MonoBehaviour
     }
     
     [Header("Player Param")]
-    [Tooltip("移動速度")]
-    [SerializeField] private float speed = 5.0f;
+    [Tooltip("加速度")]
+    [SerializeField] private float acceleration_speed = 2.0f;
+    [Tooltip("最高移動速度")]
+    [SerializeField] private float max_speed = 500.0f;
     [Tooltip("減速速度")]
     [SerializeField] private float deceleration_speed = 5.0f;
     [Tooltip("回転の滑らかさ")]
@@ -40,8 +42,8 @@ public class PlayerMove : MonoBehaviour
     [Header("Smash Param")]
     [Tooltip("ジャンプ力")]
     [SerializeField] private float jump_power = 4.0f;
-    [Tooltip("溜める段階変わる時間")]
-    [SerializeField] private float smash_threshold = 50.0f;
+    [Tooltip("溜め段階変わり時間")]
+    [SerializeField] private float smash_threshold = 1.5f;
     
     //コンポネント
     private Rigidbody rb;                   //リギッドボディー
@@ -52,6 +54,7 @@ public class PlayerMove : MonoBehaviour
     private float move_value;
     private float input_modifier;
     private Vector2 move_dir;
+    private float speed;
     
     private bool is_grounded;       //地面についているか
     private GameObject ground_obj;  //ついてる地面
@@ -113,6 +116,7 @@ public class PlayerMove : MonoBehaviour
         input_check_pos = true;
         move_value = 0.0f;
         move_dir = Vector2.zero;
+        speed = 0.0f;
     }
 
     // Update is called once per frame
@@ -121,11 +125,16 @@ public class PlayerMove : MonoBehaviour
         //インプット方向を取得
         input_direction = input_system.Player.WASD.ReadValue<Vector2>();
         
+        Debug.Log(input_direction);
+        
         CheckIsGrounded();
         
-        if (rb.velocity.magnitude > 0.0f && is_grounded && input_direction != Vector2.zero)
+        speed = Mathf.MoveTowards(speed, input_direction.magnitude * max_speed, acceleration_speed);
+        
+        if (rb.velocity.magnitude > 0.0f && is_grounded && input_direction == Vector2.zero)
         {
             rb.velocity = Vector3.MoveTowards(rb.velocity, Vector3.zero, deceleration_speed * Time.deltaTime * 4.0f);
+            speed = Mathf.MoveTowards(speed, 0.0f, deceleration_speed * 0.5f);
         }
 
         //Debug.Log(transform.localEulerAngles);
@@ -167,17 +176,17 @@ public class PlayerMove : MonoBehaviour
                     var mainColor = partSystem.main;
                     
                     //溜めた力を加算する
-                    if (smash_power_num >= 100.0f)
+                    if (smash_power_num >= smash_threshold * 2.0f)
                     {
-                        smash_power_num = 100.0f;
+                        smash_power_num = smash_threshold * 2.0f;
                     }
                     else
                     {
-                        smash_power_num += Time.deltaTime * 33.0f;
+                        smash_power_num += Time.deltaTime;
                     }
                     
                     //溜めた力によって、力の段階を変える
-                    if (smash_power_num >= 100.0f)
+                    if (smash_power_num >= smash_threshold * 2.0f)
                     {
                         smash_power_level = SMASHLEVEL.BIG;
                         mainColor.startColor = new Color(1.0f, 0.0f, 0.0f);
@@ -207,20 +216,18 @@ public class PlayerMove : MonoBehaviour
     
     void Move()
     {
-        Vector3 direction = new Vector3(input_direction.x, input_direction.y, 0.0f);
-        
-        if (direction.magnitude >= 0.015f)
+        if (input_direction.magnitude >= 0.01f)
         { 
-            if (Mathf.Abs(direction.x) >= Mathf.Abs(direction.y))
+            if (Mathf.Abs(input_direction.x) >= Mathf.Abs(input_direction.y))
             {
-                direction.y = 0.0f;
+                input_direction.y = 0.0f;
             }
             else
             {
-                direction.x = 0.0f;
+                input_direction.x = 0.0f;
             }
             
-            Vector2 norm_input = direction.normalized;
+            Vector2 norm_input = input_direction.normalized;
             
             if (norm_input != move_dir)
             {
@@ -235,11 +242,11 @@ public class PlayerMove : MonoBehaviour
                             //下の方にいる
                             if (Camera.main.WorldToScreenPoint(this.transform.position).y <= Screen.height / 2)
                             {
-                                move_value = -direction.x;
+                                move_value = -input_direction.x;
                             }
                             else    //上の方にいる
                             {
-                                move_value = direction.x;
+                                move_value = input_direction.x;
                             }
                         }
                         else    //左の方にいる
@@ -247,11 +254,11 @@ public class PlayerMove : MonoBehaviour
                             //下の方にいる
                             if (Camera.main.WorldToScreenPoint(this.transform.position).y <= Screen.height / 2)
                             {
-                                move_value = -direction.x;
+                                move_value = -input_direction.x;
                             }
                             else
                             {
-                                move_value = direction.x;
+                                move_value = input_direction.x;
                             }
                         }
                     }
@@ -263,11 +270,11 @@ public class PlayerMove : MonoBehaviour
                             //下の方にいる
                             if (Camera.main.WorldToScreenPoint(this.transform.position).y <= Screen.height / 2)
                             {
-                                move_value = -direction.y;
+                                move_value = -input_direction.y;
                             }
                             else
                             {
-                                move_value = -direction.y;
+                                move_value = -input_direction.y;
                             }
                         }
                         else
@@ -275,11 +282,11 @@ public class PlayerMove : MonoBehaviour
                             //下の方にいる
                             if (Camera.main.WorldToScreenPoint(this.transform.position).y <= Screen.height / 2)
                             {
-                                move_value = direction.y;
+                                move_value = input_direction.y;
                             }
                             else
                             {
-                                move_value = direction.y;
+                                move_value = input_direction.y;
                             }
                         }
                     }
@@ -290,11 +297,8 @@ public class PlayerMove : MonoBehaviour
                 move_dir = norm_input;
             }
             
-            Vector3 targetDirection = new Vector3(direction.x * input_modifier, 0.0f, 0.0f);
-            targetDirection = Camera.main.transform.TransformDirection(targetDirection);
-            
             var locVel = transform.InverseTransformDirection(rb.velocity);
-            locVel.x = move_value * speed;
+            locVel.x = move_value * (speed / 20.0f);
             rb.velocity = transform.TransformDirection(locVel);
         }
     }

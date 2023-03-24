@@ -44,7 +44,7 @@ public class CameraMove : MonoBehaviour
         
         if (target_obj && !is_player_smashing)
         {
-            Vector3 target_obj_size = target_obj.GetComponent<Collider>().bounds.size;
+            Vector3 target_obj_size = player_obj.transform.position - target_obj.transform.position;
             distance_from_obj = target_obj_size.x;
             if (distance_from_obj < target_obj_size.y)
             {
