@@ -20,8 +20,21 @@ public class CameraMove : MonoBehaviour
     GameObject player_obj;
     GameObject lookat_pos;
     
+    Vector3 origin_pos;
+    
     private float distance_scalar;
     private int return_count;
+    
+    private bool shake_camera;
+    private float shake_power;
+    
+    public void ShakeCamera(float fpower, float fduration)
+    {
+        shake_power = fpower / 5.0f;
+        shake_camera = true;
+        
+        StartCoroutine("StopShake", fduration);
+    }
     
     private void Start() 
     {
@@ -33,6 +46,13 @@ public class CameraMove : MonoBehaviour
         
         distance_scalar = 1.0f;
         return_count = 0;
+        
+        shake_camera = false;
+    }
+    
+    private void Update() 
+    {
+        origin_pos = this.transform.position;
     }
     
     private void LateUpdate() 
@@ -44,12 +64,18 @@ public class CameraMove : MonoBehaviour
         
         if (target_obj && !is_player_smashing)
         {
-            Vector3 target_obj_size = target_obj.GetComponent<Collider>().bounds.size;
-            distance_from_obj = target_obj_size.x;
-            if (distance_from_obj < target_obj_size.y)
-            {
-                distance_from_obj = target_obj_size.y;
-            }
+            float[] num_to_compare = new float[4];
+            
+            Vector3 target_obj_size = target_obj.GetComponent<Collider>().bounds.size * 1.2f;
+            num_to_compare[0] = target_obj_size.x;
+            num_to_compare[1] = target_obj_size.y;
+            
+            Vector3 target_obj_distance = player_obj.transform.position - target_obj.transform.position;
+            
+            num_to_compare[2] = Mathf.Abs(target_obj_distance.x);
+            num_to_compare[3] = Mathf.Abs(target_obj_distance.y);
+            
+            distance_from_obj = Mathf.Max(num_to_compare);
             
             distance_from_obj *= distance * distance_scalar;
         }
@@ -87,7 +113,7 @@ public class CameraMove : MonoBehaviour
             }
         }
         
-        Vector3 target_pos = new Vector3(target_obj.transform.position.x, target_obj.transform.position.y, target_obj.transform.position.z - distance_from_obj);
+        Vector3 target_pos = new Vector3(target_obj.transform.position.x, target_obj.transform.position.y, target_obj.transform.position.z - Mathf.Abs(distance_from_obj));
         
         if (is_player_smashing)
         {
@@ -109,5 +135,17 @@ public class CameraMove : MonoBehaviour
         }
         
         transform.LookAt(lookat_pos.transform, Vector3.up);
+        
+        if (shake_camera)
+        {
+            transform.position = origin_pos + Random.insideUnitSphere * shake_power;
+        }
+    }
+    
+    IEnumerator StopShake(float time_to_stop)
+    {
+        yield return new WaitForSeconds(time_to_stop);
+        
+        shake_camera = false;
     }
 }
