@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Deform;
 
-//[ExecuteInEditMode]
+[ExecuteInEditMode]
 
 public class DeformStage : MonoBehaviour
 {
