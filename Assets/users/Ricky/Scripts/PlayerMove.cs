@@ -58,6 +58,7 @@ public class PlayerMove : MonoBehaviour
     
     private bool is_grounded;       //地面についているか
     private GameObject ground_obj;  //ついてる地面
+    private GameObject ground_obj_parent;   //ついてる地面の親（コンポネント取る用）
     private bool is_holding_smash;  //叩く力を貯めているか
     
     private GameObject camera_obj;  //カメラオブジェクト
@@ -125,8 +126,6 @@ public class PlayerMove : MonoBehaviour
         //インプット方向を取得
         input_direction = input_system.Player.WASD.ReadValue<Vector2>();
         
-        Debug.Log(input_direction);
-        
         CheckIsGrounded();
         
         speed = Mathf.MoveTowards(speed, input_direction.magnitude * max_speed, acceleration_speed);
@@ -136,15 +135,13 @@ public class PlayerMove : MonoBehaviour
             rb.velocity = Vector3.MoveTowards(rb.velocity, Vector3.zero, deceleration_speed * Time.deltaTime * 4.0f);
             speed = Mathf.MoveTowards(speed, 0.0f, deceleration_speed * 0.5f);
         }
-
-        //Debug.Log(transform.localEulerAngles);
     }
     
     void FixedUpdate() 
     {   
         if (ground_obj != null)
         {
-            if (!ground_obj.transform.root.gameObject.GetComponent<StageRotation>().GetRotatingStatus())
+            if (!ground_obj_parent.gameObject.GetComponent<StageRotation>().GetRotatingStatus())
             {
                 //叩く状態によって、更新を変える
                 switch (smash_state)
@@ -294,6 +291,7 @@ public class PlayerMove : MonoBehaviour
                     input_check_pos = false;
                 }
                 
+                speed /= 2.0f;
                 move_dir = norm_input;
             }
             
@@ -312,7 +310,8 @@ public class PlayerMove : MonoBehaviour
         {
             is_grounded = true;
             ground_obj = hit.transform.gameObject;
-            deform_stage = ground_obj.transform.root.GetComponent<DeformStage>();
+            ground_obj_parent = ground_obj.transform.parent.parent.parent.gameObject;
+            deform_stage = ground_obj_parent.GetComponent<DeformStage>();
         }
         else
         {
@@ -325,7 +324,7 @@ public class PlayerMove : MonoBehaviour
         //地面についていたら、力を溜める可能にする
         if (is_grounded && hammer_obj.GetComponent<HammerScript>().GetThrowState())
         {
-            if (!ground_obj.transform.root.gameObject.GetComponent<StageRotation>().GetRotatingStatus())
+            if (!ground_obj_parent.GetComponent<StageRotation>().GetRotatingStatus())
             {
                 smash_state = SMASHSTATE.HOLDING;
             }
@@ -336,20 +335,36 @@ public class PlayerMove : MonoBehaviour
     {
         if (smash_state == SMASHSTATE.HOLDING)
         {
+            float shake_num = 1.0f;
+            
             switch (smash_power_level)
             {
                 case SMASHLEVEL.NONE:
                     if (deform_stage)
                         deform_stage.AddDeformpointDown(transform, transform.eulerAngles.z,is_flip);
+                        
+                    shake_num = 1.5f;
                 break;
                 case SMASHLEVEL.SMALL:
                     hammer_obj.GetComponent<HammerScript>().ThrowHammer();
+                    //へこむ処理
                     rb.AddForce(this.transform.up * jump_power, ForceMode.Impulse);
+                    
+                    shake_num = 2.5f;
                 break;
                 case SMASHLEVEL.BIG:
-                
+                    RaycastHit hit;
+                    if (Physics.Raycast(this.transform.position, this.transform.up, out hit, 80.0f, LayerMask.GetMask("Ground")))
+                    {
+                        rb.AddForce(this.transform.up * 80.0f, ForceMode.Impulse);
+                        shake_num = 5.0f;
+                        //へこむ処理（位置はhitを使う）
+                    }
+                    
                 break;
             }
+            
+            camera_obj.GetComponent<CameraMove>().ShakeCamera(shake_num, 0.2f);
             
             smash_state = SMASHSTATE.NORMAL;
         }
@@ -388,7 +403,7 @@ public class PlayerMove : MonoBehaviour
     {
         if (is_grounded)
         {
-            ground_obj.transform.root.gameObject.GetComponent<StageRotation>().StartRotate();
+            ground_obj_parent.GetComponent<StageRotation>().StartRotate();
         }
     }
     
