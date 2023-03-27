@@ -12,12 +12,16 @@ public class GravityControl : MonoBehaviour
     private Rigidbody rb;
 
     private Vector3 gravity_dir;
+    
+    private LayerMask ground_layer_mask;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         rb.useGravity = false;
+        
+        ground_layer_mask = LayerMask.GetMask("Ground");
     }
 
     // Update is called once per frame
@@ -42,8 +46,6 @@ public class GravityControl : MonoBehaviour
 
     private Vector3 CheckFloorAngle()
     {
-        LayerMask ground_layer_mask = LayerMask.GetMask("Ground");
-
         RaycastHit hit_front;
         RaycastHit hit_centre;
         RaycastHit hit_back;
@@ -99,19 +101,45 @@ public class GravityControl : MonoBehaviour
         }
         else
         {
-            float sphere_size = 40.0f;
-            Collider[] col_info = Physics.OverlapSphere(this.transform.position, sphere_size, ground_layer_mask);
-            float distance_check = sphere_size;
-            foreach (var current in col_info)
+            RaycastHit[] check_ground = new RaycastHit[3];
+            
+            Vector3 hit_direction = this.transform.up;
+            
+            Vector3 front_dir = this.transform.up + this.transform.forward * 0.25f;
+            front_dir.Normalize();
+            Vector3 back_dir = this.transform.up + this.transform.forward * -0.25f;
+            back_dir.Normalize();
+            
+            found_ground = Physics.Raycast(this.transform.position, transform.up, out check_ground[0], 20.0f, LayerMask.GetMask("Ground"));
+            found_ground = Physics.Raycast(this.transform.position, front_dir, out check_ground[1], 20.0f, LayerMask.GetMask("Ground"));
+            found_ground = Physics.Raycast(this.transform.position, back_dir, out check_ground[2], 20.0f, LayerMask.GetMask("Ground"));
+            
+            if (found_ground)
             {
-                RaycastHit ground_hit;
-                if (Physics.Raycast(this.transform.position, current.transform.position, out ground_hit, 40.0f, ground_layer_mask))
+                foreach (var ray in check_ground)
                 {
-                    float distance_to_ground = Vector3.Distance(this.transform.position, ground_hit.point);
-                    if (distance_to_ground < distance_check)
+                    if (ray.transform != null)
                     {
-                        hit_dir = ground_hit.point - this.transform.position;
-                        distance_check = distance_to_ground;
+                        hit_dir += ray.normal;
+                    }
+                }
+            }
+            else
+            {
+                float sphere_size = 40.0f;
+                Collider[] col_info = Physics.OverlapSphere(this.transform.position, sphere_size, ground_layer_mask);
+                float distance_check = sphere_size;
+                foreach (var current in col_info)
+                {
+                    RaycastHit ground_hit;
+                    if (Physics.Raycast(this.transform.position, current.transform.position, out ground_hit, 40.0f, ground_layer_mask))
+                    {
+                        float distance_to_ground = Vector3.Distance(this.transform.position, ground_hit.point);
+                        if (distance_to_ground < distance_check)
+                        {
+                            hit_dir = ground_hit.point - this.transform.position;
+                            distance_check = distance_to_ground;
+                        }
                     }
                 }
             }
