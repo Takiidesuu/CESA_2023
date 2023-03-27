@@ -62,7 +62,7 @@ public class CameraMove : MonoBehaviour
         
         bool is_player_smashing = player_obj.GetComponent<PlayerMove>().GetSmashingState();
         
-        if (target_obj && !is_player_smashing)
+        if (target_obj && !is_player_smashing && return_count <= 0)
         {
             float[] num_to_compare = new float[4];
             
@@ -97,19 +97,18 @@ public class CameraMove : MonoBehaviour
             if (return_count <= 0)
             {
                 targetLookAt = target_obj.transform.position;
+                if (distance_scalar < 1.0f)
+                {
+                    distance_scalar += Time.deltaTime * 8.0f;
+                }
+                else
+                {
+                    distance_scalar = 1.0f;
+                }
             }
             else
             {
                 targetLookAt = player_obj.transform.position;
-            }
-            
-            if (distance_scalar < 1.0f)
-            {
-                distance_scalar += Time.deltaTime * 8.0f;
-            }
-            else
-            {
-                distance_scalar = 1.0f;
             }
         }
         
