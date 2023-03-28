@@ -75,7 +75,7 @@ public class DeformStage : MonoBehaviour
 
         //ƒ}ƒeƒŠƒAƒ‹Žæ“¾
         electric_floor = (Material)Resources.Load("ElectricFloor");
-        floor= (Material)Resources.Load("Floor");
+        floor = (Material)Resources.Load("Floor");
     }
 
     private void Update()
