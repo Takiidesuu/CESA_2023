@@ -5,14 +5,17 @@ using UnityEngine;
 public class StageAddForce : MonoBehaviour
 {
 
-    [SerializeField] private float VibrationPower = 1f; // 振動の力を表す調整可能なパラメータ
-    [SerializeField] private float VibrationTick = 0.1f; // 元の位置に戻るまでの秒数を表す調整可能なパラメータ
-    [SerializeField] private bool isVibration = false; // 振動を開始するかを判定するbool型の変数
+    [SerializeField] private float VibrationPower = 1f;
+    [SerializeField] private float VibrationTick = 0.1f;
+    [SerializeField] private bool isVibration = false;
 
     private Rigidbody rb;
     private Vector3 defaultPos;
     private Vector3 vibrationDir;
     private float vibrationTime;
+
+    private Vector3 velocity = Vector3.zero;
+    private float smoothTime = 0.3f;
     // Start is called before the first frame update
     void Start()
     {
@@ -23,13 +26,6 @@ public class StageAddForce : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        if (isVibration)
-        {
-            Vibrate();
-        }
-    }
     void Vibrate()
     {
         if (vibrationTime < VibrationTick)
@@ -39,7 +35,9 @@ public class StageAddForce : MonoBehaviour
         }
         else
         {
-            rb.MovePosition(defaultPos);
+            Vector3 targetPos = defaultPos;
+            Vector3 currentPos = transform.position;
+            transform.position = Vector3.SmoothDamp(currentPos, targetPos, ref velocity, smoothTime);
             isVibration = false;
             vibrationTime = 0f;
         }
