@@ -4,12 +4,10 @@ using UnityEngine;
 
 public class StageAddForce : MonoBehaviour
 {
-
     [SerializeField] private float VibrationPower = 1f;
     [SerializeField] private float VibrationTick = 0.1f;
     [SerializeField] private bool isVibration = false;
 
-    private Rigidbody rb;
     private Vector3 defaultPos;
     private Vector3 vibrationDir;
     private float vibrationTime;
@@ -19,10 +17,17 @@ public class StageAddForce : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
         defaultPos = transform.position;
         vibrationDir = Random.insideUnitSphere.normalized;
         vibrationTime = 0f;
+    }
+
+    void Update()
+    {
+        if (isVibration)
+        {
+            Vibrate();
+        }
     }
 
     // Update is called once per frame
@@ -30,7 +35,7 @@ public class StageAddForce : MonoBehaviour
     {
         if (vibrationTime < VibrationTick)
         {
-            rb.AddForce(vibrationDir * VibrationPower, ForceMode.Acceleration);
+            transform.position += vibrationDir * VibrationPower * Time.deltaTime;
             vibrationTime += Time.deltaTime;
         }
         else
