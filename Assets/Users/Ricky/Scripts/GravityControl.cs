@@ -32,8 +32,7 @@ public class GravityControl : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Vector3 set_ground_dir = CheckFloorAngle();
-        gravity_dir = set_ground_dir;
+        gravity_dir = CheckFloorAngle();
 
         // Finds desired rotation relative to surface normal
         var targetRotation = Quaternion.FromToRotation(transform.up, gravity_dir) * transform.rotation;
@@ -78,10 +77,6 @@ public class GravityControl : MonoBehaviour
             Physics.Raycast(feet_pos - this.transform.right * 0.2f, dir_offset_back, out hit_back, 10.0f, ground_layer_mask);
         }
 
-        Debug.DrawRay(feet_pos + this.transform.right * 0.2f, dir_offset_front, Color.red);
-        Debug.DrawRay(feet_pos, this.transform.up * -1.0f, Color.red);
-        Debug.DrawRay(feet_pos - this.transform.right * 0.2f, dir_offset_back, Color.red);
-
         Vector3 hit_dir = transform.up;
 
         if (found_ground)
@@ -101,38 +96,57 @@ public class GravityControl : MonoBehaviour
         }
         else
         {
-            RaycastHit[] check_ground = new RaycastHit[3];
+            RaycastHit[] check_ground = new RaycastHit[8];
             
-            Vector3 hit_direction = this.transform.up;
+            Vector3 hit_direction = Vector3.zero;
             
             Vector3 front_dir = this.transform.up + this.transform.forward * 0.25f;
             front_dir.Normalize();
             Vector3 back_dir = this.transform.up + this.transform.forward * -0.25f;
             back_dir.Normalize();
+            Vector3 front_dir_down = this.transform.up * -1.0f + this.transform.forward * 0.25f;
+            front_dir_down.Normalize();
+            Vector3 back_dir_down = this.transform.up * -1.0f + this.transform.forward * -0.25f;
+            back_dir_down.Normalize();
             
-            found_ground = Physics.Raycast(this.transform.position, transform.up, out check_ground[0], 20.0f, LayerMask.GetMask("Ground"));
-            found_ground = Physics.Raycast(this.transform.position, front_dir, out check_ground[1], 20.0f, LayerMask.GetMask("Ground"));
-            found_ground = Physics.Raycast(this.transform.position, back_dir, out check_ground[2], 20.0f, LayerMask.GetMask("Ground"));
+            Physics.Raycast(this.transform.position, transform.up, out check_ground[0], 20.0f, LayerMask.GetMask("Ground"));
+            Physics.Raycast(this.transform.position, front_dir, out check_ground[1], 20.0f, LayerMask.GetMask("Ground"));
+            Physics.Raycast(this.transform.position, back_dir, out check_ground[2], 20.0f, LayerMask.GetMask("Ground"));
+            Physics.Raycast(this.transform.position, transform.forward, out check_ground[3], 20.0f, LayerMask.GetMask("Ground"));
+            Physics.Raycast(this.transform.position, transform.forward * -1.0f, out check_ground[4], 20.0f, LayerMask.GetMask("Ground"));
+            Physics.Raycast(this.transform.position, front_dir_down, out check_ground[5], 20.0f, LayerMask.GetMask("Ground"));
+            Physics.Raycast(this.transform.position, back_dir_down, out check_ground[6], 20.0f, LayerMask.GetMask("Ground"));
+            Physics.Raycast(this.transform.position, transform.up * -1.0f, out check_ground[7], 20.0f, LayerMask.GetMask("Ground"));
             
-            if (found_ground)
+            float check_distance = 40.0f;
+            
+            foreach (var ray in check_ground)
             {
-                foreach (var ray in check_ground)
+                if (ray.transform != null)
                 {
-                    if (ray.transform != null)
+                    found_ground = true;
+                    
+                    if (Vector3.Distance(ray.point, this.transform.position) < check_distance)
                     {
-                        hit_dir += ray.normal;
+                        check_distance = Vector3.Distance(ray.point, this.transform.position);
+                        
+                        hit_dir = ray.point - this.transform.position;
+                        hit_dir.Normalize();
+                        hit_dir *= -1.0f;
                     }
                 }
             }
-            else
+            
+                
+            if (!found_ground)
             {
-                float sphere_size = 40.0f;
+                float sphere_size = 50.0f;
                 Collider[] col_info = Physics.OverlapSphere(this.transform.position, sphere_size, ground_layer_mask);
                 float distance_check = sphere_size;
                 foreach (var current in col_info)
                 {
                     RaycastHit ground_hit;
-                    if (Physics.Raycast(this.transform.position, current.transform.position, out ground_hit, 40.0f, ground_layer_mask))
+                    if (Physics.Raycast(this.transform.position, current.transform.position, out ground_hit, 50.0f, ground_layer_mask))
                     {
                         float distance_to_ground = Vector3.Distance(this.transform.position, ground_hit.point);
                         if (distance_to_ground < distance_check)
@@ -145,7 +159,7 @@ public class GravityControl : MonoBehaviour
             }
         }
 
-        Debug.DrawLine(transform.position, transform.position + (hit_dir.normalized * 5f), Color.blue);
+        Debug.DrawLine(transform.position, transform.position + (hit_dir.normalized * 30.0f), Color.blue);
 
         return hit_dir.normalized;
     }
