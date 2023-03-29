@@ -62,7 +62,6 @@ public class PlayerMove : MonoBehaviour
     private bool is_holding_smash;  //叩く力を貯めているか
     
     private GameObject camera_obj;  //カメラオブジェクト
-    private GameObject hammer_obj;  //ハンマーオブジェクト
     
     private Vector2 input_direction;        //インプット方向
     private SMASHSTATE smash_state;         //プレイヤーの叩く状態
@@ -99,7 +98,6 @@ public class PlayerMove : MonoBehaviour
         col = GetComponent<CapsuleCollider>();          //コライダー取得
 
         camera_obj = GameObject.FindGameObjectWithTag("MainCamera");    //カメラオブジェクト取得
-        hammer_obj = GameObject.FindGameObjectWithTag("Hammer");        //ハンマーオブジェクトを取得
         
         input_system.Player.Smash.performed += HoldSmash;
         input_system.Player.Smash.canceled += ReleaseSmash;
@@ -322,7 +320,7 @@ public class PlayerMove : MonoBehaviour
     private void HoldSmash(InputAction.CallbackContext obj)
     {   
         //地面についていたら、力を溜める可能にする
-        if (is_grounded && hammer_obj.GetComponent<HammerScript>().GetThrowState())
+        if (is_grounded)
         {
             if (!ground_obj_parent.GetComponent<StageRotation>().GetRotatingStatus())
             {
@@ -346,7 +344,6 @@ public class PlayerMove : MonoBehaviour
                     shake_num = 1.5f;
                 break;
                 case SMASHLEVEL.SMALL:
-                    hammer_obj.GetComponent<HammerScript>().ThrowHammer();
                     //へこむ処理
                     rb.AddForce(this.transform.up * jump_power, ForceMode.Impulse);
                     
