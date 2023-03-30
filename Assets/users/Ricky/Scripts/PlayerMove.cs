@@ -96,6 +96,8 @@ public class PlayerMove : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();                 //リギッドボディー取得
         col = GetComponent<CapsuleCollider>();          //コライダー取得
+        
+        rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
 
         camera_obj = GameObject.FindGameObjectWithTag("MainCamera");    //カメラオブジェクト取得
         
