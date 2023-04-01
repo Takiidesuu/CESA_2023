@@ -419,26 +419,44 @@ public class PlayerMove : MonoBehaviour
             {
                 case SMASHLEVEL.NONE:
                     if (deform_stage)
-                        deform_stage.AddDeformpointDown(transform, transform.eulerAngles.z,is_flip);
+                        deform_stage.AddDeformpointDown(transform.position, transform.eulerAngles.z,is_flip);
                         
                     shake_num = 1.5f;
                 break;
                 case SMASHLEVEL.SMALL:
                     //へこむ処理
+                    if (deform_stage)
+                    {
+                        for (int i = 0; i < 2; i++)
+                            deform_stage.AddDeformpointDown(transform.position, transform.eulerAngles.z, is_flip);
+                    }
                     rb.AddForce(this.transform.up * jump_power, ForceMode.Impulse);
-                    
+
                     shake_num = 2.5f;
-                break;
+                    break;
                 case SMASHLEVEL.BIG:
+
                     RaycastHit hit;
                     if (Physics.Raycast(this.transform.position, this.transform.up, out hit, 80.0f, LayerMask.GetMask("Ground")))
                     {
                         rb.AddForce(this.transform.up * 80.0f, ForceMode.Impulse);
                         shake_num = 5.0f;
                         //へこむ処理（位置はhitを使う）
+                        //へこむ処理（位置はhitを使う）  でフォームを適用させるステージがなってない
+                        //飛んだフラグbool追加 ステージに着地した際にAddDeformPointDownを3回分するので何とかなるかと
+                        if (deform_stage)
+                        {
+                            for (int i = 0; i < 3; i++)
+                                deform_stage.AddDeformpointDown(hit.point, transform.eulerAngles.z + 180f, is_flip);
+                        }
                     }
-                    
-                break;
+
+                    if (deform_stage)
+                    {
+                        for (int i = 0; i < 3; i++)
+                            deform_stage.AddDeformpointDown(transform.position, transform.eulerAngles.z, is_flip);
+                    }
+                    break;
             }
             
             camera_obj.GetComponent<CameraMove>().ShakeCamera(shake_num, 0.2f);

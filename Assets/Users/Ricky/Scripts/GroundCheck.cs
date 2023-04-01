@@ -31,6 +31,11 @@ public class GroundCheck : MonoBehaviour
         {
             for (int i = 0; i < hit_ground.Count; i++)
             {
+                if (hit_ground[i].obj.transform.root != playerMove.GetGroundObj().transform.root)
+                {
+                    hit_ground.RemoveAt(i);
+                    break;
+                }
                 if (hit_ground[i].is_lastframe > RemoveFrame)
                 {
                     hit_ground.RemoveAt(i);

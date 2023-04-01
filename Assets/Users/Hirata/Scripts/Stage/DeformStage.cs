@@ -20,7 +20,7 @@ public class DeformStage : MonoBehaviour
 
     private GameObject player_gameobject;                             //プレイヤー
     private GroundCheck ground_check;                                 //ステージの地面がどれかのチェック
-    public bool hit_electrical;                                      //電源に当たっているか
+    public bool hit_electrical;                                       //電源に当たっているか
     private Material electric_floor;                                  //電源に当たった際のマテリアル
     private Material floor;                                           //当たっていない際のマテリアル
 
@@ -144,7 +144,7 @@ public class DeformStage : MonoBehaviour
     }
 
     //へこむオブジェクトを追加
-    public void AddDeformpointDown(Transform transform, float angle, bool isflip)
+    public void AddDeformpointDown(Vector3 position, float angle, bool isflip)
     {
         List<GameObject> pointdown = new List<GameObject>();
 
@@ -152,12 +152,12 @@ public class DeformStage : MonoBehaviour
         if (isflip)
         {
             for (int i = 0; i < 3; i++) 
-                pointdown.Add(Instantiate(point_down, transform.position, Quaternion.Euler(-90 - angle, -90, 90), this.transform));
+                pointdown.Add(Instantiate(point_down, position, Quaternion.Euler(-90 - angle, -90, 90), this.transform));
         }
         else
         {
             for (int i = 0; i < 3; i++)
-                pointdown.Add(Instantiate(point_down, transform.position, Quaternion.Euler(-90 + angle, -90, 90), this.transform));
+                pointdown.Add(Instantiate(point_down, position, Quaternion.Euler(-90 + angle, -90, 90), this.transform));
         }
 
         //HitGroundに当たっているステージに対して変形を適用させる

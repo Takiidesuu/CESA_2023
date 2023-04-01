@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7076129661271777896}
   - component: {fileID: 7076129661271777899}
   - component: {fileID: 7076129661271777895}
+  - component: {fileID: -3840791131263993793}
   m_Layer: 0
   m_Name: LightBulb
   m_TagString: Untagged
@@ -95,7 +96,7 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7076129661271777898}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
@@ -117,6 +118,19 @@ MonoBehaviour:
   OnPowerGlassMaterial: {fileID: 2100000, guid: e6b12a93c5e628447b4e15f83ebf7735, type: 2}
   OffPowerGlassMaterial: {fileID: 2100000, guid: 1bc10de4aa08d9845a93a92783516d29, type: 2}
   OnPower: 0
+--- !u!114 &-3840791131263993793
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7076129661271777898}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85698333711d3714d882a97526b581dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  is_stage_hit: 0
 --- !u!1001 &4813152994673472798
 PrefabInstance:
   m_ObjectHideFlags: 0
