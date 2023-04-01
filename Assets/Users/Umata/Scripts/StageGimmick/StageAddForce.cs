@@ -4,47 +4,37 @@ using UnityEngine;
 
 public class StageAddForce : MonoBehaviour
 {
-    [SerializeField] private float VibrationPower = 1f;
-    [SerializeField] private float VibrationTick = 0.1f;
-    [SerializeField] private bool isVibration = false;
+    public float VibrationPower = 1.0f;
+    public float VibrationTick = 0.5f;
+    public bool isVibration = false;
 
-    private Vector3 defaultPos;
-    private Vector3 vibrationDir;
-    private float vibrationTime;
+    private Vector3 originalPosition;
+    private float timer = 0.0f;
 
-    private Vector3 velocity = Vector3.zero;
-    private float smoothTime = 0.3f;
+
     // Start is called before the first frame update
     void Start()
     {
-        defaultPos = transform.position;
-        vibrationDir = Random.insideUnitSphere.normalized;
-        vibrationTime = 0f;
+        originalPosition = transform.position;
     }
 
     void Update()
     {
         if (isVibration)
         {
-            Vibrate();
-        }
-    }
+            timer += Time.deltaTime;
 
-    // Update is called once per frame
-    void Vibrate()
-    {
-        if (vibrationTime < VibrationTick)
-        {
-            transform.position += vibrationDir * VibrationPower * Time.deltaTime;
-            vibrationTime += Time.deltaTime;
-        }
-        else
-        {
-            Vector3 targetPos = defaultPos;
-            Vector3 currentPos = transform.position;
-            transform.position = Vector3.SmoothDamp(currentPos, targetPos, ref velocity, smoothTime);
-            isVibration = false;
-            vibrationTime = 0f;
+            float x = Mathf.Sin(timer * Mathf.PI / VibrationTick) * VibrationPower;
+            float y = Mathf.Cos(timer * Mathf.PI / VibrationTick) * VibrationPower;
+
+            transform.position = originalPosition + new Vector3(x, y, 0);
+
+            if (timer >= VibrationTick)
+            {
+                isVibration = false;
+                timer = 0.0f;
+                transform.position = originalPosition;
+            }
         }
     }
 }
