@@ -419,7 +419,7 @@ public class PlayerMove : MonoBehaviour
             {
                 case SMASHLEVEL.NONE:
                     if (deform_stage)
-                        deform_stage.AddDeformpointDown(transform.position, transform.eulerAngles.z,is_flip);
+                        deform_stage.AddDeformpointDown(transform.position, transform.eulerAngles.z, is_flip);
                         
                     shake_num = 1.5f;
                 break;
