@@ -9,8 +9,7 @@ public class SceneController : MonoBehaviour
     //インスペクタからPrefab化したCanvasを入れる
     public GameObject fade_canvas;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
         //Fade用のCanvasが召喚されているか
         if (!FadeController.fade_instance)
@@ -21,6 +20,12 @@ public class SceneController : MonoBehaviour
 
         //下記の関数を持ってくる
         FindFadeObject();
+    }
+
+    // Start is called before the first frame update
+    void Start()
+    {
+
     }
 
     void FindFadeObject()//Fadeタグの付いたCanvasを見つけ、フェードインを実行する
