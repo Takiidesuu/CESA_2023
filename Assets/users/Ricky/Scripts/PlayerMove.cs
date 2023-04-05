@@ -78,6 +78,11 @@ public class PlayerMove : MonoBehaviour
     private DeformStage deform_stage;
     private bool is_flip;
     
+    public void GameOver()
+    {
+        SceneManager.LoadScene("ResultScene");
+    }
+    
     public bool GetSmashingState()
     {
         return smash_state != SMASHSTATE.NORMAL ? true : false;
