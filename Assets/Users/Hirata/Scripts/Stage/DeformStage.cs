@@ -144,6 +144,7 @@ public class DeformStage : MonoBehaviour
     }
 
     //へこむオブジェクトを追加
+    //斜めの際へこみ方がおかしくなる場合がある
     public void AddDeformpointDown(Vector3 position, float angle, bool isflip)
     {
         List<GameObject> pointdown = new List<GameObject>();
