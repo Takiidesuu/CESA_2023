@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81180773991d8724ab7f2d216912b564, type: 3}
   m_Name: ChromaticAberration
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   m_AdvancedMode: 0
   intensity:
     m_OverrideState: 1
-    m_Value: 0.082
+    m_Value: 0.464
     min: 0
     max: 1
 --- !u!114 &-7893295128165547882
@@ -35,24 +35,24 @@ MonoBehaviour:
   m_AdvancedMode: 0
   threshold:
     m_OverrideState: 1
-    m_Value: 0.29
+    m_Value: 0.78
     min: 0
   intensity:
     m_OverrideState: 1
-    m_Value: 0.55
+    m_Value: 12.1
     min: 0
   scatter:
     m_OverrideState: 1
-    m_Value: 0.382
+    m_Value: 1
     min: 0
     max: 1
   clamp:
     m_OverrideState: 1
-    m_Value: 100
+    m_Value: 102.87
     min: 0
   tint:
     m_OverrideState: 1
-    m_Value: {r: 1, g: 0.91333663, b: 0.7877358, a: 1}
+    m_Value: {r: 0.7169812, g: 0.65761405, b: 0.51744395, a: 1}
     hdr: 0
     showAlpha: 0
     showEyeDropper: 1
@@ -61,7 +61,7 @@ MonoBehaviour:
     m_Value: 0
   skipIterations:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 1
     min: 0
     max: 16
   dirtTexture:
@@ -87,7 +87,7 @@ MonoBehaviour:
   m_AdvancedMode: 0
   color:
     m_OverrideState: 1
-    m_Value: {r: 0, g: 0, b: 0, a: 1}
+    m_Value: {r: 1, g: 0.3102616, b: 0, a: 1}
     hdr: 0
     showAlpha: 0
     showEyeDropper: 1
@@ -96,12 +96,12 @@ MonoBehaviour:
     m_Value: {x: 0.5, y: 0.5}
   intensity:
     m_OverrideState: 1
-    m_Value: 0.321
+    m_Value: 0.244
     min: 0
     max: 1
   smoothness:
     m_OverrideState: 1
-    m_Value: 0.355
+    m_Value: 0.331
     min: 0.01
     max: 1
   rounded:
@@ -140,7 +140,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccf1aba9553839d41ae37dd52e9ebcce, type: 3}
   m_Name: MotionBlur
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   m_AdvancedMode: 0
   mode:
     m_OverrideState: 0
@@ -174,13 +174,13 @@ MonoBehaviour:
   m_AdvancedMode: 0
   shadows:
     m_OverrideState: 1
-    m_Value: {x: 1, y: 1, z: 1, w: -0.30612242}
+    m_Value: {x: 0.982166, y: 0.99845624, z: 1, w: 0.02632115}
   midtones:
     m_OverrideState: 1
-    m_Value: {x: 1, y: 1, z: 1, w: -0.12390671}
+    m_Value: {x: 0.9781504, y: 1, z: 0.9872297, w: 0.0000000044587853}
   highlights:
     m_OverrideState: 1
-    m_Value: {x: 1, y: 1, z: 1, w: 0.043731775}
+    m_Value: {x: 0.9805278, y: 1, z: 0.96738005, w: -0.015071598}
   shadowsStart:
     m_OverrideState: 0
     m_Value: 0
@@ -190,11 +190,11 @@ MonoBehaviour:
     m_Value: 0.3
     min: 0
   highlightsStart:
-    m_OverrideState: 0
-    m_Value: 0.55
+    m_OverrideState: 1
+    m_Value: 0.67
     min: 0
   highlightsEnd:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 1
     min: 0
 --- !u!114 &849379129802519247
@@ -213,7 +213,7 @@ MonoBehaviour:
   m_AdvancedMode: 0
   mode:
     m_OverrideState: 1
-    m_Value: 2
+    m_Value: 1
 --- !u!114 &2723592593027713537
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -226,7 +226,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c01700fd266d6914ababb731e09af2eb, type: 3}
   m_Name: DepthOfField
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   m_AdvancedMode: 0
   mode:
     m_OverrideState: 1
@@ -292,10 +292,10 @@ MonoBehaviour:
   m_AdvancedMode: 0
   lift:
     m_OverrideState: 1
-    m_Value: {x: 0.91046315, y: 0.97248966, z: 1, w: 0}
+    m_Value: {x: 0.9669158, y: 1, z: 0.95195085, w: -0.00000011670911}
   gamma:
     m_OverrideState: 1
-    m_Value: {x: 0.9597503, y: 0.9836023, z: 1, w: 0}
+    m_Value: {x: 1, y: 0.9676039, z: 0.9865692, w: 0.025089003}
   gain:
     m_OverrideState: 1
-    m_Value: {x: 0.882972, y: 0.9524547, z: 1, w: 0}
+    m_Value: {x: 0.90170264, y: 1, z: 0.92103595, w: -0.021865888}

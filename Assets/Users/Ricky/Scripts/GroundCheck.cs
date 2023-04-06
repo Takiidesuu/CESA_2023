@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class GroundCheck : MonoBehaviour
 {
+    PlayerMove playerMove;      //どのステージに乗っているか取得するため
     private int RemoveFrame = 5;
 
     public class hit_object
@@ -15,6 +16,7 @@ public class GroundCheck : MonoBehaviour
 
     void Start()
     {
+        playerMove = this.transform.root.GetComponent<PlayerMove>();
         hit_ground = new List<hit_object>();
     }
 
@@ -29,6 +31,11 @@ public class GroundCheck : MonoBehaviour
         {
             for (int i = 0; i < hit_ground.Count; i++)
             {
+                if (hit_ground[i].obj.transform.root != playerMove.GetGroundObj().transform.root)
+                {
+                    hit_ground.RemoveAt(i);
+                    break;
+                }
                 if (hit_ground[i].is_lastframe > RemoveFrame)
                 {
                     hit_ground.RemoveAt(i);
@@ -54,10 +61,17 @@ public class GroundCheck : MonoBehaviour
         {
             if (other.gameObject.layer == 6)
             {
-                hit_object temp = new hit_object();
-                temp.obj = other.gameObject;
-                temp.is_lastframe = 0;
-                hit_ground.Add(temp);
+                //自分が乗っているステージのみへこませる
+                if (playerMove.GetGroundObj() != null)
+                {
+                    if (other.transform.root == playerMove.GetGroundObj().transform.root)
+                    {
+                        hit_object temp = new hit_object();
+                        temp.obj = other.gameObject;
+                        temp.is_lastframe = 0;
+                        hit_ground.Add(temp);
+                    }
+                }
             }
         }
     }
