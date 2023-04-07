@@ -43,7 +43,9 @@ public class PlayerMove : MonoBehaviour
     [Tooltip("ジャンプ力")]
     [SerializeField] private float jump_power = 4.0f;
     [Tooltip("溜め段階変わり時間")]
-    [SerializeField] private float smash_threshold = 1.5f;
+    [SerializeField] private float smash_threshold = 1.0f;
+    
+    [SerializeField] private GameObject blackPanel;
     
     //コンポネント
     private Rigidbody rb;                   //リギッドボディー
@@ -55,6 +57,7 @@ public class PlayerMove : MonoBehaviour
     private float input_modifier;
     private Vector2 move_dir;
     private float speed;
+    public bool is_dead;
     
     private bool is_grounded;       //地面についているか
     private GameObject ground_obj;  //ついてる地面
@@ -80,7 +83,7 @@ public class PlayerMove : MonoBehaviour
     
     public void GameOver()
     {
-        SceneManager.LoadScene("ResultScene");
+        is_dead = true;
     }
     
     public bool GetSmashingState()
@@ -125,6 +128,9 @@ public class PlayerMove : MonoBehaviour
         move_value = 0.0f;
         move_dir = Vector2.zero;
         speed = 0.0f;
+        is_dead = false;
+        
+        blackPanel = blackPanel.transform.GetChild(0).gameObject;
         
         target_rot = 0.0f;
     }
@@ -132,97 +138,112 @@ public class PlayerMove : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //インプット方向を取得
-        input_direction = input_system.Player.WASD.ReadValue<Vector2>();
-        
-        CheckIsGrounded();
-        
-        speed = Mathf.MoveTowards(speed, input_direction.magnitude * max_speed, acceleration_speed);
-        
-        if (rb.velocity.magnitude > 0.0f && is_grounded && input_direction == Vector2.zero)
+        if (!is_dead)
         {
-            rb.velocity = Vector3.MoveTowards(rb.velocity, Vector3.zero, deceleration_speed * Time.deltaTime * 4.0f);
-            speed = Mathf.MoveTowards(speed, 0.0f, deceleration_speed * 0.5f);
+            //blackPanel.GetComponent<RectTransform>().anchoredPosition = new Vector2(-1920.0f, 0.0f);
+            
+            //インプット方向を取得
+            input_direction = input_system.Player.WASD.ReadValue<Vector2>();
+            
+            CheckIsGrounded();
+            
+            speed = Mathf.MoveTowards(speed, input_direction.magnitude * max_speed, acceleration_speed);
+            
+            if (rb.velocity.magnitude > 0.0f && is_grounded && input_direction == Vector2.zero)
+            {
+                rb.velocity = Vector3.MoveTowards(rb.velocity, Vector3.zero, deceleration_speed * Time.deltaTime * 4.0f);
+                speed = Mathf.MoveTowards(speed, 0.0f, deceleration_speed * 0.5f);
+            }
+        }
+        else
+        {
+            RectTransform rTrans = blackPanel.GetComponent<RectTransform>();
+            if (rTrans.localPosition != Vector3.zero)
+            {
+                rTrans.localPosition = new Vector3(rTrans.localPosition.x + 10.0f, rTrans.localPosition.y, 0.0f);
+            }
+            else
+            {
+                SceneManager.LoadScene("GameOverScene");
+            }
         }
     }
     
     void FixedUpdate() 
     {   
-        if (ground_obj != null)
+        if (!is_dead)
         {
-            if (!ground_obj_parent.gameObject.GetComponent<StageRotation>().GetRotatingStatus())
+            if (ground_obj != null)
             {
-                //叩く状態によって、更新を変える
-                switch (smash_state)
+                if (!ground_obj_parent.gameObject.GetComponent<StageRotation>().GetRotatingStatus())
                 {
-                    case SMASHSTATE.NORMAL:     //通常状態
-                    
-                    //インプット方向があったら、移動させる
-                    if (input_direction != Vector2.zero)
+                    //叩く状態によって、更新を変える
+                    switch (smash_state)
                     {
-                        Move();
+                        case SMASHSTATE.NORMAL:     //通常状態
+                        
+                        //インプット方向があったら、移動させる
+                        if (input_direction != Vector2.zero)
+                        {
+                            Move();
+                        }
+                        else
+                        {
+                            input_check_pos = true;
+                            move_dir = Vector2.zero;
+                        }
+                        
+                        smash_power_num = 0.0f;
+                        
+                        var emis = partSystem.emission;
+                        emis.enabled = false;
+                        
+                        break;
+                        case SMASHSTATE.HOLDING:    //力を溜めてる状態
+                        
+                        var emisss = partSystem.emission;
+                        emisss.enabled = true;
+                        
+                        var mainColor = partSystem.main;
+                        
+                        //溜めた力を加算する
+                        if (smash_power_num >= smash_threshold * 2.0f)
+                        {
+                            smash_power_num = smash_threshold * 2.0f;
+                        }
+                        else
+                        {
+                            smash_power_num += Time.deltaTime;
+                        }
+                        
+                        //溜めた力によって、力の段階を変える
+                        if (smash_power_num >= smash_threshold * 2.0f)
+                        {
+                            smash_power_level = SMASHLEVEL.BIG;
+                            mainColor.startColor = new Color(1.0f, 0.0f, 0.0f);
+                            emisss.rateOverTime = 100.0f;
+                        }
+                        else if (smash_power_num >= smash_threshold)
+                        {
+                            smash_power_level = SMASHLEVEL.SMALL;
+                            mainColor.startColor = new Color(0.0f, 1.0f, 0.0f);
+                            emisss.rateOverTime = 50.0f;
+                        }
+                        else
+                        {
+                            smash_power_level = SMASHLEVEL.NONE;
+                            mainColor.startColor = new Color(0.0f, 0.0f, 1.0f);
+                            emisss.rateOverTime = 10.0f;
+                        }
+                        
+                        break;
+                        case SMASHSTATE.SMASHING:   //力を放ってる状態
+                        
+                        break;
                     }
-                    else
-                    {
-                        input_check_pos = true;
-                        move_dir = Vector2.zero;
-                    }
-                    
-                    smash_power_num = 0.0f;
-                    
-                    var emis = partSystem.emission;
-                    emis.enabled = false;
-                    
-                    break;
-                    case SMASHSTATE.HOLDING:    //力を溜めてる状態
-                    
-                    var emisss = partSystem.emission;
-                    emisss.enabled = true;
-                    
-                    var mainColor = partSystem.main;
-                    
-                    //溜めた力を加算する
-                    if (smash_power_num >= smash_threshold * 2.0f)
-                    {
-                        smash_power_num = smash_threshold * 2.0f;
-                    }
-                    else
-                    {
-                        smash_power_num += Time.deltaTime;
-                    }
-                    
-                    //溜めた力によって、力の段階を変える
-                    if (smash_power_num >= smash_threshold * 2.0f)
-                    {
-                        smash_power_level = SMASHLEVEL.BIG;
-                        mainColor.startColor = new Color(1.0f, 0.0f, 0.0f);
-                        emisss.rateOverTime = 100.0f;
-                    }
-                    else if (smash_power_num >= smash_threshold)
-                    {
-                        smash_power_level = SMASHLEVEL.SMALL;
-                        mainColor.startColor = new Color(0.0f, 1.0f, 0.0f);
-                        emisss.rateOverTime = 50.0f;
-                    }
-                    else
-                    {
-                        smash_power_level = SMASHLEVEL.NONE;
-                        mainColor.startColor = new Color(0.0f, 0.0f, 1.0f);
-                        emisss.rateOverTime = 10.0f;
-                    }
-                    
-                    break;
-                    case SMASHSTATE.SMASHING:   //力を放ってる状態
-                    
-                    break;
                 }
             }
         }
-    }
-    
-    private void LateUpdate() 
-    {
-        //transform.localRotation = Quaternion.Euler(transform.localEulerAngles.x, target_rot, transform.localEulerAngles.z);
     }
     
     void Move()
@@ -405,7 +426,7 @@ public class PlayerMove : MonoBehaviour
     private void HoldSmash(InputAction.CallbackContext obj)
     {   
         //地面についていたら、力を溜める可能にする
-        if (is_grounded)
+        if (is_grounded && !is_dead)
         {
             if (!ground_obj_parent.GetComponent<StageRotation>().GetRotatingStatus())
             {
