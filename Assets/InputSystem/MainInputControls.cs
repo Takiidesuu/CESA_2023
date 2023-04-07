@@ -297,6 +297,15 @@ public partial class @MainInputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""NextScene"",
+                    ""type"": ""Button"",
+                    ""id"": ""ae72333d-8d42-40eb-88e1-57fb55538cf7"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -306,7 +315,7 @@ public partial class @MainInputControls : IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/r"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""KeyboardMouse"",
                     ""action"": ""ReloadScene"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -317,8 +326,19 @@ public partial class @MainInputControls : IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/escape"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""KeyboardMouse"",
                     ""action"": ""EndScene"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""99e7d847-15ab-4ed9-8a47-d449a1719d0a"",
+                    ""path"": ""<Keyboard>/n"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KeyboardMouse"",
+                    ""action"": ""NextScene"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -365,6 +385,7 @@ public partial class @MainInputControls : IInputActionCollection2, IDisposable
         m_Prototype = asset.FindActionMap("Prototype", throwIfNotFound: true);
         m_Prototype_ReloadScene = m_Prototype.FindAction("ReloadScene", throwIfNotFound: true);
         m_Prototype_EndScene = m_Prototype.FindAction("EndScene", throwIfNotFound: true);
+        m_Prototype_NextScene = m_Prototype.FindAction("NextScene", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -483,12 +504,14 @@ public partial class @MainInputControls : IInputActionCollection2, IDisposable
     private IPrototypeActions m_PrototypeActionsCallbackInterface;
     private readonly InputAction m_Prototype_ReloadScene;
     private readonly InputAction m_Prototype_EndScene;
+    private readonly InputAction m_Prototype_NextScene;
     public struct PrototypeActions
     {
         private @MainInputControls m_Wrapper;
         public PrototypeActions(@MainInputControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @ReloadScene => m_Wrapper.m_Prototype_ReloadScene;
         public InputAction @EndScene => m_Wrapper.m_Prototype_EndScene;
+        public InputAction @NextScene => m_Wrapper.m_Prototype_NextScene;
         public InputActionMap Get() { return m_Wrapper.m_Prototype; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -504,6 +527,9 @@ public partial class @MainInputControls : IInputActionCollection2, IDisposable
                 @EndScene.started -= m_Wrapper.m_PrototypeActionsCallbackInterface.OnEndScene;
                 @EndScene.performed -= m_Wrapper.m_PrototypeActionsCallbackInterface.OnEndScene;
                 @EndScene.canceled -= m_Wrapper.m_PrototypeActionsCallbackInterface.OnEndScene;
+                @NextScene.started -= m_Wrapper.m_PrototypeActionsCallbackInterface.OnNextScene;
+                @NextScene.performed -= m_Wrapper.m_PrototypeActionsCallbackInterface.OnNextScene;
+                @NextScene.canceled -= m_Wrapper.m_PrototypeActionsCallbackInterface.OnNextScene;
             }
             m_Wrapper.m_PrototypeActionsCallbackInterface = instance;
             if (instance != null)
@@ -514,6 +540,9 @@ public partial class @MainInputControls : IInputActionCollection2, IDisposable
                 @EndScene.started += instance.OnEndScene;
                 @EndScene.performed += instance.OnEndScene;
                 @EndScene.canceled += instance.OnEndScene;
+                @NextScene.started += instance.OnNextScene;
+                @NextScene.performed += instance.OnNextScene;
+                @NextScene.canceled += instance.OnNextScene;
             }
         }
     }
@@ -547,5 +576,6 @@ public partial class @MainInputControls : IInputActionCollection2, IDisposable
     {
         void OnReloadScene(InputAction.CallbackContext context);
         void OnEndScene(InputAction.CallbackContext context);
+        void OnNextScene(InputAction.CallbackContext context);
     }
 }

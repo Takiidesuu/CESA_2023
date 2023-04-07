@@ -119,6 +119,7 @@ public class PlayerMove : MonoBehaviour
         //プロト用インプット
         input_system.Prototype.ReloadScene.performed += ProtoReloadScene;
         input_system.Prototype.EndScene.performed += ProtoEndScene;
+        input_system.Prototype.NextScene.performed += ProtoNextScene;
         
         //変数を初期化する
         is_grounded = false;
@@ -140,8 +141,6 @@ public class PlayerMove : MonoBehaviour
     {
         if (!is_dead)
         {
-            //blackPanel.GetComponent<RectTransform>().anchoredPosition = new Vector2(-1920.0f, 0.0f);
-            
             //インプット方向を取得
             input_direction = input_system.Player.WASD.ReadValue<Vector2>();
             
@@ -536,6 +535,20 @@ public class PlayerMove : MonoBehaviour
     private void ProtoEndScene(InputAction.CallbackContext obj)
     {
         Application.Quit();
+    }
+    
+    private void ProtoNextScene(InputAction.CallbackContext obj)
+    {
+        int currentSceneName = SceneManager.GetActiveScene().buildIndex;
+        
+        if (currentSceneName == 6)
+        {
+            SceneManager.LoadScene("Select");
+        }
+        else
+        {
+            SceneManager.LoadScene(currentSceneName + 1);
+        }
     }
     
     private void OnCollisionEnter(Collision other) 
