@@ -284,6 +284,7 @@ GameObject:
   - component: {fileID: 420286553}
   - component: {fileID: 420286552}
   - component: {fileID: 420286551}
+  - component: {fileID: 420286554}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -339,6 +340,25 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &420286554
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 420286550}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf46c6e5514f04047800e2239a64807e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bgmDataList:
+  - sceneName: Stage1-1
+    bgm: {fileID: 8300000, guid: 39e43caed0eeb4537af7b4645675de99, type: 3}
+    volume: 100
+  - sceneName: Stage1-4
+    bgm: {fileID: 8300000, guid: 590fb543fa3302d438ba4708a984f4a2, type: 3}
+    volume: 100
 --- !u!1 &721924921
 GameObject:
   m_ObjectHideFlags: 0
