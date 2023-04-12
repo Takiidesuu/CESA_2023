@@ -141,25 +141,71 @@ public class DeformStage : MonoBehaviour
             for (int i = 0; i < ChildMeshObject.Length; i++)
                 ChildMeshObject[i].GetComponent<MeshRenderer>().material = floor;
         }
+
+        //Debug.Log("中心とプレイヤーの角度"+ GetAngle(transform.position, player_gameobject.transform.position));
+        //Debug.Log("プレイヤー角度" + player_gameobject.transform.eulerAngles.z);
     }
 
     //へこむオブジェクトを追加
-    //斜めの際へこみ方がおかしくなる場合がある
-    public void AddDeformpointDown(Vector3 position, float angle, bool isflip)
+    public void AddDeformpointDown(Vector3 position, float angleY, float angleZ,  bool isflip)
     {
         List<GameObject> pointdown = new List<GameObject>();
 
         //内側からか外側からを判断
         if (isflip)
         {
-            for (int i = 0; i < 3; i++) 
-                pointdown.Add(Instantiate(point_down, position, Quaternion.Euler(-90 - angle, -90, 90), this.transform));
+            if (10 > angleY && angleY > -10)    //プレイヤーの向きによってプラスかマイナスか判断
+            {
+                for (int i = 0; i < 3; i++)
+                    pointdown.Add(Instantiate(point_down, position, Quaternion.Euler(-90 + angleZ, -90, 90), this.transform));
+            }
+            else
+            {
+                for (int i = 0; i < 3; i++)
+                    pointdown.Add(Instantiate(point_down, position, Quaternion.Euler(-90 - angleZ, -90, 90), this.transform));
+            }
         }
         else
         {
-            for (int i = 0; i < 3; i++)
-                pointdown.Add(Instantiate(point_down, position, Quaternion.Euler(-90 + angle, -90, 90), this.transform));
+            if (170 < angleY && angleY < 190)
+            {
+                for (int i = 0; i < 3; i++)
+                    pointdown.Add(Instantiate(point_down, position, Quaternion.Euler(-90 - angleZ, -90, 90), this.transform));
+            }
+            else
+            {
+                for (int i = 0; i < 3; i++)
+                    pointdown.Add(Instantiate(point_down, position, Quaternion.Euler(-90 + angleZ, -90, 90), this.transform));
+            }
         }
+
+        ///垂直にへこます場合
+        //if (isflip)
+        //{
+        //    if (10 > angleY && angleY > -10)    //プレイヤーの向きによってプラスかマイナスか判断
+        //    {
+        //        for (int i = 0; i < 3; i++)
+        //            pointdown.Add(Instantiate(point_down, position, Quaternion.Euler(-90 + GetAngle(transform.position, player_gameobject.transform.position) + 180, -90, 90), this.transform));
+        //    }
+        //    else
+        //    {
+        //        for (int i = 0; i < 3; i++)
+        //            pointdown.Add(Instantiate(point_down, position, Quaternion.Euler(-90 - GetAngle(transform.position, player_gameobject.transform.position) + 180, -90, 90), this.transform));
+        //    }
+        //}
+        //else
+        //{
+        //    if (170 < angleY && angleY < 190)
+        //    {
+        //        for (int i = 0; i < 3; i++)
+        //            pointdown.Add(Instantiate(point_down, position, Quaternion.Euler(-90 - GetAngle(transform.position, player_gameobject.transform.position), -90, 90), this.transform));
+        //    }
+        //    else
+        //    {
+        //        for (int i = 0; i < 3; i++)
+        //            pointdown.Add(Instantiate(point_down, position, Quaternion.Euler(-90 - GetAngle(transform.position, player_gameobject.transform.position), -90, 90), this.transform));
+        //    }
+        //}
 
         //HitGroundに当たっているステージに対して変形を適用させる
         GameObject[] gameObjects = ground_check.GetHitGround();
@@ -180,5 +226,20 @@ public class DeformStage : MonoBehaviour
     public void IsElectricalPower(bool hit)
     {
         hit_electrical = hit;
+    }
+
+    //2こオブジェクトの角度を求める
+    float GetAngle(Vector2 start, Vector2 target)
+    {
+        Vector2 dt = target - start;
+        float rad = Mathf.Atan2(dt.x, dt.y);
+        float degree = rad * Mathf.Rad2Deg;
+
+        if (degree < 0)
+        {
+            degree += 360;
+        }
+
+        return degree;
     }
 }

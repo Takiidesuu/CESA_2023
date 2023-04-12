@@ -444,7 +444,7 @@ public class PlayerMove : MonoBehaviour
             {
                 case SMASHLEVEL.NONE:
                     if (deform_stage)
-                        deform_stage.AddDeformpointDown(transform.position, transform.eulerAngles.z, is_flip);
+                        deform_stage.AddDeformpointDown(transform.position, transform.eulerAngles.y, transform.eulerAngles.z, is_flip);
                         
                     shake_num = 1.5f;
                 break;
@@ -453,7 +453,7 @@ public class PlayerMove : MonoBehaviour
                     if (deform_stage)
                     {
                         for (int i = 0; i < 2; i++)
-                            deform_stage.AddDeformpointDown(transform.position, transform.eulerAngles.z, is_flip);
+                            deform_stage.AddDeformpointDown(transform.position, transform.eulerAngles.y, transform.eulerAngles.z, is_flip);
                     }
                     rb.AddForce(this.transform.up * jump_power, ForceMode.Impulse);
 
@@ -472,14 +472,14 @@ public class PlayerMove : MonoBehaviour
                         if (deform_stage)
                         {
                             for (int i = 0; i < 3; i++)
-                                deform_stage.AddDeformpointDown(hit.point, transform.eulerAngles.z + 180f, is_flip);
+                                deform_stage.AddDeformpointDown(hit.point, transform.eulerAngles.y, transform.eulerAngles.z + 180f, is_flip);
                         }
                     }
 
                     if (deform_stage)
                     {
                         for (int i = 0; i < 3; i++)
-                            deform_stage.AddDeformpointDown(transform.position, transform.eulerAngles.z, is_flip);
+                            deform_stage.AddDeformpointDown(transform.position, transform.eulerAngles.y, transform.eulerAngles.z, is_flip);
                     }
                     break;
             }
