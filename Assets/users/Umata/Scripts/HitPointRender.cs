@@ -45,6 +45,7 @@ public class HitPointRender : MonoBehaviour
 
         // RowImageParentオブジェクトの生成
         GameObject RowImageParent = new GameObject("RowImageParent");
+        RowImageParent.AddComponent<RectTransform>();
         RowImageParent.transform.SetParent(transform);
         RowImageParent.transform.localPosition = ParentPos;
 
@@ -65,7 +66,7 @@ public class HitPointRender : MonoBehaviour
 
         // RowImageParentの位置を調整
         RowImageParent.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 0.5f);
-        RowImageParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, 0f);
+        RowImageParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(ParentPos.x,ParentPos.y);
 
     }
 }
