@@ -413,7 +413,7 @@ public class PlayerMove : MonoBehaviour
         {
             is_grounded = true;
             ground_obj = hit.transform.gameObject;
-            ground_obj_parent = ground_obj.transform.parent.parent.parent.gameObject;
+            ground_obj_parent = ground_obj.transform.root.gameObject;
             deform_stage = ground_obj_parent.GetComponent<DeformStage>();
         }
         else
