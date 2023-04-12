@@ -51,6 +51,10 @@ public class DamageScript : MonoBehaviour
         }
     }
     
+    public int GetHitPoint()
+    {
+        return hp;
+    }
     IEnumerator InvincibleStatus()
     {
         yield return new WaitForSeconds(invincible_duration);
