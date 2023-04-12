@@ -152,45 +152,17 @@ public class DeformStage : MonoBehaviour
         List<GameObject> pointdown = new List<GameObject>();
 
         //内側からか外側からを判断
-        if (isflip)
-        {
-            if (10 > angleY && angleY > -10)    //プレイヤーの向きによってプラスかマイナスか判断
-            {
-                for (int i = 0; i < 3; i++)
-                    pointdown.Add(Instantiate(point_down, position, Quaternion.Euler(-90 + angleZ, -90, 90), this.transform));
-            }
-            else
-            {
-                for (int i = 0; i < 3; i++)
-                    pointdown.Add(Instantiate(point_down, position, Quaternion.Euler(-90 - angleZ, -90, 90), this.transform));
-            }
-        }
-        else
-        {
-            if (170 < angleY && angleY < 190)
-            {
-                for (int i = 0; i < 3; i++)
-                    pointdown.Add(Instantiate(point_down, position, Quaternion.Euler(-90 - angleZ, -90, 90), this.transform));
-            }
-            else
-            {
-                for (int i = 0; i < 3; i++)
-                    pointdown.Add(Instantiate(point_down, position, Quaternion.Euler(-90 + angleZ, -90, 90), this.transform));
-            }
-        }
-
-        ///垂直にへこます場合
         //if (isflip)
         //{
         //    if (10 > angleY && angleY > -10)    //プレイヤーの向きによってプラスかマイナスか判断
         //    {
         //        for (int i = 0; i < 3; i++)
-        //            pointdown.Add(Instantiate(point_down, position, Quaternion.Euler(-90 + GetAngle(transform.position, player_gameobject.transform.position) + 180, -90, 90), this.transform));
+        //            pointdown.Add(Instantiate(point_down, position, Quaternion.Euler(-90 + angleZ, -90, 90), this.transform));
         //    }
         //    else
         //    {
         //        for (int i = 0; i < 3; i++)
-        //            pointdown.Add(Instantiate(point_down, position, Quaternion.Euler(-90 - GetAngle(transform.position, player_gameobject.transform.position) + 180, -90, 90), this.transform));
+        //            pointdown.Add(Instantiate(point_down, position, Quaternion.Euler(-90 - angleZ, -90, 90), this.transform));
         //    }
         //}
         //else
@@ -198,14 +170,42 @@ public class DeformStage : MonoBehaviour
         //    if (170 < angleY && angleY < 190)
         //    {
         //        for (int i = 0; i < 3; i++)
-        //            pointdown.Add(Instantiate(point_down, position, Quaternion.Euler(-90 - GetAngle(transform.position, player_gameobject.transform.position), -90, 90), this.transform));
+        //            pointdown.Add(Instantiate(point_down, position, Quaternion.Euler(-90 - angleZ, -90, 90), this.transform));
         //    }
         //    else
         //    {
         //        for (int i = 0; i < 3; i++)
-        //            pointdown.Add(Instantiate(point_down, position, Quaternion.Euler(-90 - GetAngle(transform.position, player_gameobject.transform.position), -90, 90), this.transform));
+        //            pointdown.Add(Instantiate(point_down, position, Quaternion.Euler(-90 + angleZ, -90, 90), this.transform));
         //    }
         //}
+
+        ///垂直にへこます場合
+        if (isflip)
+        {
+            if (10 > angleY && angleY > -10)    //プレイヤーの向きによってプラスかマイナスか判断
+            {
+                for (int i = 0; i < 3; i++)
+                    pointdown.Add(Instantiate(point_down, position, Quaternion.Euler(-90 + GetAngle(transform.position, player_gameobject.transform.position) + 180, -90, 90), this.transform));
+            }
+            else
+            {
+                for (int i = 0; i < 3; i++)
+                    pointdown.Add(Instantiate(point_down, position, Quaternion.Euler(-90 - GetAngle(transform.position, player_gameobject.transform.position) + 180, -90, 90), this.transform));
+            }
+        }
+        else
+        {
+            if (170 < angleY && angleY < 190)
+            {
+                for (int i = 0; i < 3; i++)
+                    pointdown.Add(Instantiate(point_down, position, Quaternion.Euler(-90 - GetAngle(transform.position, player_gameobject.transform.position), -90, 90), this.transform));
+            }
+            else
+            {
+                for (int i = 0; i < 3; i++)
+                    pointdown.Add(Instantiate(point_down, position, Quaternion.Euler(-90 - GetAngle(transform.position, player_gameobject.transform.position), -90, 90), this.transform));
+            }
+        }
 
         //HitGroundに当たっているステージに対して変形を適用させる
         GameObject[] gameObjects = ground_check.GetHitGround();
