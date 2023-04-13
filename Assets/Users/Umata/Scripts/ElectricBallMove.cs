@@ -18,12 +18,13 @@ public class ElectricBallMove : MonoBehaviour
 
     private Rigidbody rb;                   //リギッドボディー
     private float m_destroy_timer;
+    private GameObject player;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();                 //リギッドボディー取得
-
+        player = GameObject.Find("Player");
     }
 
     // Update is called once per frame
@@ -43,6 +44,13 @@ public class ElectricBallMove : MonoBehaviour
             Destroy(this.gameObject);
         }
         transform.position.Set(transform.position.x, transform.position.y,0);
+
+        Vector3 playerpos;
+        playerpos.x = transform.position.x;
+        playerpos.y = transform.position.y;
+        playerpos.z = player.transform.position.z;
+        //Z軸を強制的にPlayer座標に設定
+        transform.position = playerpos;
     }
     private void OnTriggerEnter(Collider collision)
     {
