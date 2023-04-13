@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class GroundCheck : MonoBehaviour
 {
+    GameObject playerObj;
     PlayerMove playerMove;      //どのステージに乗っているか取得するため
     private int RemoveFrame = 5;
 
@@ -16,12 +17,15 @@ public class GroundCheck : MonoBehaviour
 
     void Start()
     {
-        playerMove = this.transform.root.GetComponent<PlayerMove>();
+        playerObj = GameObject.FindGameObjectWithTag("Player");
+        playerMove = playerObj.GetComponent<PlayerMove>();
         hit_ground = new List<hit_object>();
     }
 
     private void Update()
     {
+        this.transform.position = playerObj.transform.position;
+        
         foreach (hit_object hit in hit_ground)
         {
             hit.is_lastframe++;

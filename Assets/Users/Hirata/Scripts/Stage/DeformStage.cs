@@ -30,7 +30,7 @@ public class DeformStage : MonoBehaviour
     {
         point_down = (GameObject)Resources.Load("PointDown");         //へこむオブジェクト取得
         player_gameobject = GameObject.FindWithTag("Player");
-        ground_check = GameObject.FindWithTag("Player").transform.GetChild(1).GetComponent<GroundCheck>();
+        ground_check = GameObject.Find("GroundCheck").GetComponent<GroundCheck>();
 
         //開始時にメッシュがあるオブジェクトを検索格納
         int meshcount = 0;
