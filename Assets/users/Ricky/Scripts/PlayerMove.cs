@@ -134,6 +134,9 @@ public class PlayerMove : MonoBehaviour
         blackPanel = blackPanel.transform.GetChild(0).gameObject;
         
         target_rot = 0.0f;
+        
+        //エレキボールとプレイヤーのレイヤーの当たり判定を無視
+        Physics.IgnoreLayerCollision(9, 10);
     }
 
     // Update is called once per frame

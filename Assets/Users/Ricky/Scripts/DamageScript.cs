@@ -28,7 +28,7 @@ public class DamageScript : MonoBehaviour
         
     }
     
-    private void OnCollisionEnter(Collision other) 
+    private void OnTriggerEnter(Collider other) 
     {
         if (other.gameObject.tag == "ElectricalBall")
         {
@@ -62,13 +62,13 @@ public class DamageScript : MonoBehaviour
         CancelInvoke();
         
         renderer_component.enabled = true;
-        this.transform.GetChild(3).gameObject.SetActive(true);
+        this.transform.GetChild(1).gameObject.SetActive(true);
         is_invincible = false;
     }
     
     private void InvincibleFlicker()
     {
         renderer_component.enabled = !renderer_component.enabled;
-        this.transform.GetChild(3).gameObject.SetActive(renderer_component.enabled);
+        this.transform.GetChild(1).gameObject.SetActive(renderer_component.enabled);
     }
 }
