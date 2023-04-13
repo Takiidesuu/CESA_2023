@@ -16,9 +16,9 @@ GameObject:
   - component: {fileID: 8770918900206177596}
   - component: {fileID: 8770918900206177598}
   - component: {fileID: 8770918900206177599}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: ElectricBall
-  m_TagString: Untagged
+  m_TagString: ElectricalBall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -95,7 +95,7 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8770918900206177575}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.21
@@ -249,7 +249,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 499dc1886888b594087b2c876f6673c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_speed: 0.1
+  m_speed: 0.5
   deceleration_speed: 0
   m_destroy_time: 5
   turn_smooth_time: 1
@@ -270,7 +270,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1683411105828452785, guid: bb224433be185cc4bb498c621689d562, type: 3}
       propertyPath: m_Layer
-      value: 10
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 1683411105828452786, guid: bb224433be185cc4bb498c621689d562, type: 3}
       propertyPath: m_RootOrder

@@ -9,7 +9,7 @@ public class ElectricalPower : MonoBehaviour
     private int nothit_count;           //当たらずに何フレーム立ったか (Exitが呼ばれないため)
     public float electricball_instan_time = 5;//電球を繰り返し生成する時間
     public float start_time;    //開始ラグ
-    private GameObject ElectricBall;    //電球
+    public GameObject ElectricBall;    //電球
     private float hit_elapsed_time;    //継続ヒット時間
     private float time;                 //前回からの秒数
     private float old_time;             //前回生成した秒数
@@ -17,7 +17,7 @@ public class ElectricalPower : MonoBehaviour
 
     private void Start()
     {
-        ElectricBall = (GameObject)Resources.Load("ElectricBall");
+        
     }
 
     private void Update()
