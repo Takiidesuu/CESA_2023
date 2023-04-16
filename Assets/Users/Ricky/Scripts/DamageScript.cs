@@ -19,7 +19,10 @@ public class DamageScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        renderer_component = GetComponent<Renderer>();
+        if (GetComponent<Renderer>() != null)
+        {
+            renderer_component = GetComponent<Renderer>();
+        }
     }
 
     // Update is called once per frame
@@ -61,14 +64,29 @@ public class DamageScript : MonoBehaviour
         
         CancelInvoke();
         
-        renderer_component.enabled = true;
-        this.transform.GetChild(1).gameObject.SetActive(true);
         is_invincible = false;
+        
+        if (renderer_component != null)
+        {
+            renderer_component.enabled = true;
+        }
+        
+        if (this.gameObject.tag == "Player" && this.gameObject.tag == "PlayerNPC")
+        {
+            this.transform.GetChild(0).gameObject.SetActive(true);
+        }
     }
     
     private void InvincibleFlicker()
     {
-        renderer_component.enabled = !renderer_component.enabled;
-        this.transform.GetChild(1).gameObject.SetActive(renderer_component.enabled);
+        if (renderer_component != null)
+        {
+            renderer_component.enabled = !renderer_component.enabled;
+        }
+        
+        if (this.gameObject.tag == "Player" && this.gameObject.tag == "PlayerNPC")
+        {
+            this.transform.GetChild(0).gameObject.SetActive(renderer_component.enabled);
+        }
     }
 }

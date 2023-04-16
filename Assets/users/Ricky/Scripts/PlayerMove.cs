@@ -36,8 +36,6 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private float max_speed = 500.0f;
     [Tooltip("減速速度")]
     [SerializeField] private float deceleration_speed = 5.0f;
-    [Tooltip("回転の滑らかさ")]
-    [SerializeField] private float turn_smooth_time = 1.0f;
     
     [Header("Smash Param")]
     [Tooltip("ジャンプ力")]
@@ -50,6 +48,7 @@ public class PlayerMove : MonoBehaviour
     //コンポネント
     private Rigidbody rb;                   //リギッドボディー
     private CapsuleCollider col;            //コライダー
+    private Animator anim;                  //アニメーター
     
     private MainInputControls input_system;
     private bool input_check_pos;
@@ -106,6 +105,7 @@ public class PlayerMove : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();                 //リギッドボディー取得
         col = GetComponent<CapsuleCollider>();          //コライダー取得
+        anim = transform.GetChild(0).GetComponent<Animator>();                //アニメーター取得
         
         rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
 
@@ -166,6 +166,8 @@ public class PlayerMove : MonoBehaviour
                 SceneManager.LoadScene("GameOverScene");
             }
         }
+        
+        anim.SetBool("isWalking", input_direction != Vector2.zero);
     }
     
     void FixedUpdate() 
@@ -238,6 +240,9 @@ public class PlayerMove : MonoBehaviour
                         break;
                         case SMASHSTATE.SMASHING:   //力を放ってる状態
                         
+                        var emiss = partSystem.emission;
+                        emiss.enabled = false;
+                        
                         break;
                     }
                 }
@@ -277,22 +282,50 @@ public class PlayerMove : MonoBehaviour
                             {
                                 if (norm_input.x > 0.0f)
                                 {
-                                    temp_rot = 180.0f;
+                                    if (this.transform.up.y >= 0.0f)
+                                    {
+                                        temp_rot = 0.0f;
+                                    }
+                                    else
+                                    {
+                                        temp_rot = 180.0f;
+                                    }
                                 }
                                 else
                                 {
-                                    temp_rot = 0.0f;
+                                    if (this.transform.up.y >= 0.0f)
+                                    {
+                                        temp_rot = 180.0f;
+                                    }
+                                    else
+                                    {
+                                        temp_rot = 0.0f;
+                                    }
                                 }
                             }
                             else    //上の方にいる
                             {
                                 if (norm_input.x > 0.0f)
                                 {
-                                    temp_rot = 0.0f;
+                                    if (this.transform.up.y >= 0.0f)
+                                    {
+                                        temp_rot = 0.0f;
+                                    }
+                                    else
+                                    {
+                                        temp_rot = 180.0f;
+                                    }
                                 }
                                 else
                                 {
-                                    temp_rot = 180.0f;
+                                    if (this.transform.up.y >= 0.0f)
+                                    {
+                                        temp_rot = 180.0f;
+                                    }
+                                    else
+                                    {
+                                        temp_rot = 0.0f;
+                                    }
                                 }
                             }
                         }
@@ -303,22 +336,50 @@ public class PlayerMove : MonoBehaviour
                             {
                                 if (norm_input.x > 0.0f)
                                 {
-                                    temp_rot = 180.0f;
+                                    if (this.transform.up.y >= 0.0f)
+                                    {
+                                        temp_rot = 180.0f;
+                                    }
+                                    else
+                                    {
+                                        temp_rot = 0.0f;
+                                    }
                                 }
                                 else
                                 {
-                                    temp_rot = 0.0f;
+                                    if (this.transform.up.y >= 0.0f)
+                                    {
+                                        temp_rot = 0.0f;
+                                    }
+                                    else
+                                    {
+                                        temp_rot = 180.0f;
+                                    }
                                 }
                             }
                             else
                             {
                                 if (norm_input.x > 0.0f)
                                 {
-                                    temp_rot = 0.0f;
+                                    if (this.transform.up.y >= 0.0f)
+                                    {
+                                        temp_rot = 0.0f;
+                                    }
+                                    else
+                                    {
+                                        temp_rot = 180.0f;
+                                    }
                                 }
                                 else
                                 {
-                                    temp_rot = 180.0f;
+                                    if (this.transform.up.y >= 0.0f)
+                                    {
+                                        temp_rot = 180.0f;
+                                    }
+                                    else
+                                    {
+                                        temp_rot = 0.0f;
+                                    }
                                 }
                             }
                         }
@@ -335,22 +396,50 @@ public class PlayerMove : MonoBehaviour
                             {
                                 if (norm_input.y > 0.0f)
                                 {
-                                    temp_rot = 180.0f;
+                                    if (this.transform.up.y >= 0.0f)
+                                    {
+                                        temp_rot = 0.0f;
+                                    }
+                                    else
+                                    {
+                                        temp_rot = 180.0f;
+                                    }
                                 }
                                 else
                                 {
-                                    temp_rot = 0.0f;
+                                    if (this.transform.up.y >= 0.0f)
+                                    {
+                                        temp_rot = 180.0f;
+                                    }
+                                    else
+                                    {
+                                        temp_rot = 0.0f;
+                                    }
                                 }
                             }
                             else
                             {
                                 if (norm_input.y > 0.0f)
                                 {
-                                    temp_rot = 180.0f;
+                                    if (this.transform.up.y >= 0.0f)
+                                    {
+                                        temp_rot = 180.0f;
+                                    }
+                                    else
+                                    {
+                                        temp_rot = 0.0f;
+                                    }
                                 }
                                 else
                                 {
-                                    temp_rot = 0.0f;
+                                    if (this.transform.up.y >= 0.0f)
+                                    {
+                                        temp_rot = 0.0f;
+                                    }
+                                    else
+                                    {
+                                        temp_rot = 180.0f;
+                                    }
                                 }
                             }
                         }
@@ -361,23 +450,50 @@ public class PlayerMove : MonoBehaviour
                             {
                                 if (norm_input.y > 0.0f)
                                 {
-                                    temp_rot = 0.0f;
-                                    
+                                    if (this.transform.up.y >= 0.0f)
+                                    {
+                                        temp_rot = 180.0f;
+                                    }
+                                    else
+                                    {
+                                        temp_rot = 0.0f;
+                                    }
                                 }
                                 else
                                 {
-                                    temp_rot = 180.0f;
+                                    if (this.transform.up.y >= 0.0f)
+                                    {
+                                        temp_rot = 0.0f;
+                                    }
+                                    else
+                                    {
+                                        temp_rot = 180.0f;
+                                    }
                                 }
                             }
                             else
                             {
                                 if (norm_input.y > 0.0f)
                                 {
-                                    temp_rot = 0.0f;
+                                    if (this.transform.up.y >= 0.0f)
+                                    {
+                                        temp_rot = 0.0f;
+                                    }
+                                    else
+                                    {
+                                        temp_rot = 180.0f;
+                                    }
                                 }
                                 else
                                 {
-                                    temp_rot = 180.0f;
+                                    if (this.transform.up.y >= 0.0f)
+                                    {
+                                        temp_rot = 180.0f;
+                                    }
+                                    else
+                                    {
+                                        temp_rot = 0.0f;
+                                    }
                                 }
                             }
                         }
@@ -438,56 +554,52 @@ public class PlayerMove : MonoBehaviour
     {
         if (smash_state == SMASHSTATE.HOLDING)
         {
-            float shake_num = 1.0f;
-            
-            switch (smash_power_level)
-            {
-                case SMASHLEVEL.NONE:
-                    if (deform_stage)
-                        deform_stage.AddDeformpointDown(transform.position, transform.eulerAngles.y, transform.eulerAngles.z, is_flip);
-                        
-                    shake_num = 1.5f;
-                break;
-                case SMASHLEVEL.SMALL:
-                    //へこむ処理
-                    if (deform_stage)
-                    {
-                        for (int i = 0; i < 2; i++)
-                            deform_stage.AddDeformpointDown(transform.position, transform.eulerAngles.y, transform.eulerAngles.z, is_flip);
-                    }
-                    rb.AddForce(this.transform.up * jump_power, ForceMode.Impulse);
-
-                    shake_num = 2.5f;
-                    break;
-                case SMASHLEVEL.BIG:
-
-                    RaycastHit hit;
-                    if (Physics.Raycast(this.transform.position, this.transform.up, out hit, 80.0f, LayerMask.GetMask("Ground")))
-                    {
-                        rb.AddForce(this.transform.up * 80.0f, ForceMode.Impulse);
-                        shake_num = 5.0f;
-                        //へこむ処理（位置はhitを使う）
-                        //へこむ処理（位置はhitを使う）  でフォームを適用させるステージがなってない
-                        //飛んだフラグbool追加 ステージに着地した際にAddDeformPointDownを3回分するので何とかなるかと
-                        if (deform_stage)
-                        {
-                            for (int i = 0; i < 3; i++)
-                                deform_stage.AddDeformpointDown(hit.point, transform.eulerAngles.y, transform.eulerAngles.z + 180f, is_flip);
-                        }
-                    }
-
-                    if (deform_stage)
-                    {
-                        for (int i = 0; i < 3; i++)
-                            deform_stage.AddDeformpointDown(transform.position, transform.eulerAngles.y, transform.eulerAngles.z, is_flip);
-                    }
-                    break;
-            }
-            
-            camera_obj.GetComponent<CameraMove>().ShakeCamera(shake_num, 0.2f);
-            
-            smash_state = SMASHSTATE.NORMAL;
+            smash_state = SMASHSTATE.SMASHING;
+            anim.SetTrigger("isSmash");
         }
+    }
+    
+    public void SmashFunc()
+    {
+        switch (smash_power_level)
+        {
+            case SMASHLEVEL.NONE:
+                StartCoroutine(SmashGround(0.0f, 1, 1.5f, 0.0f));
+            break;
+            case SMASHLEVEL.SMALL:
+                //へこむ処理
+                StartCoroutine(SmashGround(0.0f, 2, 2.5f, 0.0f));
+                rb.AddForce(this.transform.up * jump_power, ForceMode.Impulse);
+                break;
+            case SMASHLEVEL.BIG:
+
+                RaycastHit hit;
+                if (Physics.Raycast(this.transform.position, this.transform.up, out hit, 80.0f, LayerMask.GetMask("Ground")))
+                {
+                    //へこむ処理（位置はhitを使う）
+                    //へこむ処理（位置はhitを使う）  でフォームを適用させるステージがなってない
+                    //飛んだフラグbool追加 ステージに着地した際にAddDeformPointDownを3回分するので何とかなるかと
+                    StartCoroutine(SmashGround(0.0f, 3, 5.0f, 180.0f));
+                    rb.AddForce(this.transform.up * 80.0f, ForceMode.Impulse);
+                }
+                
+                StartCoroutine(SmashGround(0.4f, 3, 5.0f, 0.0f));
+                break;
+        }
+    }
+    
+    IEnumerator SmashGround(float fdelay, int ipower, float fcam_power, float fangle)
+    {
+        yield return new WaitForSeconds(fdelay);
+        
+        if (deform_stage)
+        {
+            for (int i = 0; i < ipower; i++)
+                deform_stage.AddDeformpointDown(transform.position, transform.eulerAngles.y + fangle, transform.eulerAngles.z, is_flip);
+        }
+        
+        camera_obj.GetComponent<CameraMove>().ShakeCamera(fcam_power, 0.2f);
+        smash_state = SMASHSTATE.NORMAL;
     }
     
     private void FlipCharacter(InputAction.CallbackContext obj)
@@ -513,7 +625,7 @@ public class PlayerMove : MonoBehaviour
                 }
             }
             
-            transform.Rotate(new Vector3(180.0f, 0.0f, 0.0f), Space.Self);
+            transform.Rotate(new Vector3(180.0f, 180.0f, 0.0f), Space.Self);
             this.transform.position = new_pos;
             if (is_flip) is_flip = false; else is_flip = true;
         }
