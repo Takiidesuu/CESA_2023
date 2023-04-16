@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class WallSwitch : MonoBehaviour
 {
-    public bool player_hit;
+    private bool player_hit;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -20,5 +20,10 @@ public class WallSwitch : MonoBehaviour
         {
             player_hit = false;
         }
+    }
+
+    public bool GetIsHit()
+    {
+        return player_hit;
     }
 }
