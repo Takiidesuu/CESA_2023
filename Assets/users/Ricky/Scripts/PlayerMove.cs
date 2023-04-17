@@ -604,6 +604,11 @@ public class PlayerMove : MonoBehaviour
     
     private void FlipCharacter(InputAction.CallbackContext obj)
     {
+        FlipUpsideDown(false);
+    }
+    
+    private void FlipUpsideDown(bool rotate_other_side)
+    {
         RaycastHit hit_info;
         if (Physics.Raycast(this.transform.position + this.transform.up * 0.25f, this.transform.up * -1.0f, out hit_info, 5.0f, LayerMask.GetMask("Ground")))
         {
@@ -625,7 +630,17 @@ public class PlayerMove : MonoBehaviour
                 }
             }
             
-            transform.Rotate(new Vector3(180.0f, 180.0f, 0.0f), Space.Self);
+            transform.Rotate(new Vector3(180.0f, 0.0f, 0.0f), Space.Self);
+            
+            if (target_rot == 180.0f)
+            {
+                target_rot = 0.0f;
+            }
+            else
+            {
+                target_rot = 180.0f;
+            }
+            
             this.transform.position = new_pos;
             if (is_flip) is_flip = false; else is_flip = true;
         }
@@ -689,6 +704,14 @@ public class PlayerMove : MonoBehaviour
         if (other.gameObject.layer == 6)
         {
             is_grounded = false;
+        }
+    }
+    
+    private void OnTriggerEnter(Collider other) 
+    {
+        if (other.gameObject.tag == "FlipGate")
+        {
+            FlipUpsideDown(true);
         }
     }
     
