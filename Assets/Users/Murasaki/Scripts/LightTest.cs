@@ -28,17 +28,17 @@ public class LightTest : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.gameObject.tag == ("Player"))
+        if (other.gameObject.tag == ("PlayerNPC"))
         {
             is_Hit = true;
         }
     }
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.gameObject.tag == ("Player"))
-        {
-            is_Hit = false;
-        }
-    }
+    //private void OnTriggerExit(Collider other)
+    //{
+    //    if (other.gameObject.tag == ("PlayerNPC"))
+    //    {
+    //        is_Hit = false;
+    //    }
+    //}
 }
