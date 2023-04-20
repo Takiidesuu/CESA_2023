@@ -125,7 +125,7 @@ public class CameraMove : MonoBehaviour
             if (return_count <= 0)
             {
                 lookat_pos.transform.position = Vector3.MoveTowards(lookat_pos.transform.position, targetLookAt, Time.deltaTime * return_speed * 30.0f);
-                transform.position = Vector3.MoveTowards(transform.position, target_pos, 300.0f * Time.deltaTime);
+                transform.position = Vector3.MoveTowards(transform.position, target_pos, 300.0f * return_speed * Time.deltaTime);
             }
             else
             {
