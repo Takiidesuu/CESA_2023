@@ -77,6 +77,7 @@ public class PlayerMove : MonoBehaviour
     /// 平田
     /// </summary>
     private DeformStage deform_stage;
+    private MinMaxDeform min_max_deform;
     private bool is_flip;
     
     public void GameOver()
@@ -169,6 +170,8 @@ public class PlayerMove : MonoBehaviour
         }
         
         anim.SetBool("isWalking", input_direction != Vector2.zero);
+
+        transform.position = new Vector3(transform.position.x, transform.position.y, 0);
     }
     
     void FixedUpdate() 
@@ -532,6 +535,7 @@ public class PlayerMove : MonoBehaviour
             ground_obj = hit.transform.gameObject;
             ground_obj_parent = ground_obj.transform.root.gameObject;
             deform_stage = ground_obj_parent.GetComponent<DeformStage>();
+            min_max_deform = ground_obj_parent.GetComponent<MinMaxDeform>();
         }
         else
         {
@@ -591,12 +595,27 @@ public class PlayerMove : MonoBehaviour
     
     IEnumerator SmashGround(float fdelay, int ipower, float fcam_power, float fangle)
     {
-        yield return new WaitForSeconds(fdelay);
-        
-        if (deform_stage)
+        bool isSmash = true;
+        if (is_flip)
         {
-            for (int i = 0; i < ipower; i++)
-                deform_stage.AddDeformpointDown(transform.position, transform.eulerAngles.y + fangle, transform.eulerAngles.z, is_flip);
+            if (!min_max_deform.GetMaxHit())
+                isSmash = false;
+        }
+        else
+        {
+            if (min_max_deform.GetMinHit())
+                isSmash = false;
+        }
+
+        if (isSmash)
+        {
+            yield return new WaitForSeconds(fdelay);
+
+            if (deform_stage)
+            {
+                for (int i = 0; i < ipower; i++)
+                    deform_stage.AddDeformpointDown(transform.position, transform.eulerAngles.y + fangle, smash_power_num + 1, is_flip);
+            }
         }
         
         camera_obj.GetComponent<CameraMove>().ShakeCamera(fcam_power, 0.2f);
