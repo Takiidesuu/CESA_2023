@@ -147,7 +147,7 @@ public class DeformStage : MonoBehaviour
     }
 
     //へこむオブジェクトを追加
-    public void AddDeformpointDown(Vector3 position, float angleY, float angleZ,  bool isflip)
+    public void AddDeformpointDown(Vector3 position, float angleY, float smash_power,  bool isflip)
     {
         List<GameObject> pointdown = new List<GameObject>();
 
@@ -206,6 +206,9 @@ public class DeformStage : MonoBehaviour
                     pointdown.Add(Instantiate(point_down, position, Quaternion.Euler(-90 - GetAngle(transform.position, player_gameobject.transform.position), -90, 90), this.transform));
             }
         }
+
+        //力によってへこむ量を変化させる
+        pointdown[0].GetComponent<RadialCurveDeformer>().Factor = -smash_power*10;
 
         //HitGroundに当たっているステージに対して変形を適用させる
         GameObject[] gameObjects = ground_check.GetHitGround();
