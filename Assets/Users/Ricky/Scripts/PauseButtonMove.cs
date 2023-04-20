@@ -11,6 +11,7 @@ public class PauseButtonMove : MonoBehaviour
     private float target_x_pos;
     private float default_y_pos;
     private float target_y_pos;
+    private Vector3 current_pos;
     
     private RectTransform rect_transform;
     
@@ -20,7 +21,13 @@ public class PauseButtonMove : MonoBehaviour
     public void SetSelectedState(bool is_select, int selected_id)
     {
         is_selected = is_select;
-        selected_menu_id = selected_id;
+        
+        if (selected_id != selected_menu_id)
+        {
+            selected_menu_id = selected_id;
+            elapsed_time = 0.0f;
+            current_pos = rect_transform.localPosition;
+        }
     }
     
     // Start is called before the first frame update
@@ -29,19 +36,17 @@ public class PauseButtonMove : MonoBehaviour
         is_selected = false;
         elapsed_time = 0.0f;
         
+        current_menu_id = transform.GetSiblingIndex() - 1;
+        
         default_x_pos = Screen.width / 2.0f;
-        target_x_pos = default_x_pos - 460.0f;
-        
-        current_menu_id = transform.GetSiblingIndex() + 1;
-        
-        default_y_pos = Screen.height / 2.0f - ((Screen.height / 6.0f) * current_menu_id + 1);
-        
+        default_y_pos = Screen.height / 2.0f - ((Screen.height / 6.0f) * (current_menu_id + 1));
         if (current_menu_id == 4)
         {
             default_y_pos = Screen.height / 2.0f * -1.0f + ((Screen.height / 6.0f) - 60.0f);
         }
         
         rect_transform = GetComponent<RectTransform>();
+        current_pos = rect_transform.localPosition;
     }
 
     // Update is called once per frame
@@ -49,12 +54,12 @@ public class PauseButtonMove : MonoBehaviour
     {
         if (is_selected)
         {
-            elapsed_time = Mathf.MoveTowards(elapsed_time, 1.0f, Time.deltaTime);
             target_y_pos = default_y_pos;
+            target_x_pos = default_x_pos - 460.0f;
         }
         else
         {
-            elapsed_time = Mathf.MoveTowards(elapsed_time, 0.0f, Time.deltaTime);
+            target_x_pos = default_x_pos;
             if (current_menu_id > selected_menu_id)
             {
                 target_y_pos = default_y_pos - 10.0f;
@@ -65,6 +70,15 @@ public class PauseButtonMove : MonoBehaviour
             }
         }
         
-        rect_transform.localPosition = Vector3.Lerp(new Vector3(default_x_pos, default_y_pos, rect_transform.localPosition.z), new Vector3(target_x_pos, target_y_pos, rect_transform.localPosition.z), Mathf.Pow(elapsed_time / 1.0f, 2.0f));
+        if (elapsed_time < 1.0f)
+        {
+            elapsed_time += Time.deltaTime * 2.0f;
+        }
+        else
+        {
+            elapsed_time = 1.0f;
+        }
+        
+        rect_transform.localPosition = Vector3.Lerp(current_pos, new Vector3(target_x_pos, target_y_pos, rect_transform.localPosition.z), Mathf.Pow(elapsed_time / 1.0f, 2.0f));
     }
 }

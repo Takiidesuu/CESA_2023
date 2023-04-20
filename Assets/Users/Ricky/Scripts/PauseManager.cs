@@ -26,6 +26,8 @@ public class PauseManager : MonoBehaviour
     
     private RectTransform curtain_transform;
     
+    private bool switch_scene = false;
+    
     private void Awake() 
     {
         if (instance != null && instance != this) 
@@ -60,48 +62,61 @@ public class PauseManager : MonoBehaviour
     {
         if (pause_flg)
         {
-            foreach (Transform child in transform)
+            if (switch_scene)
             {
-                child.gameObject.SetActive(true);
-            }
-            
-            if (InputManager.instance.press_start || InputManager.instance.press_cancel)
-            {
-                pause_flg = false;
-            }
-            
-            selected_option += InputManager.instance.menu_move_input;
-            selected_option = (MENU_OPTION)Mathf.Clamp((int)selected_option, (int)MENU_OPTION.RESUME, (int)MENU_OPTION.TITLE);
-            
-            for (int i = 0; i < (int)MENU_OPTION.MAX; i++)
-            {
-                if (i == (int)selected_option)
+                if (curtain_transform.localPosition != Vector3.zero)
                 {
-                    pause_menu[(int)selected_option].SetSelectedState(true, (int)selected_option);
+                    curtain_transform.localPosition = Vector3.MoveTowards(curtain_transform.localPosition, Vector3.zero, Time.deltaTime * 20.0f);
                 }
                 else
                 {
-                    pause_menu[i].SetSelectedState(false, (int)selected_option);
+                    // Switch scene
                 }
             }
-            
-            if (InputManager.instance.press_select)
+            else
             {
-                switch (selected_option)
+                foreach (Transform child in transform)
                 {
-                    case MENU_OPTION.RESUME:
+                    child.gameObject.SetActive(true);
+                }
+                
+                if (InputManager.instance.press_start || InputManager.instance.press_cancel)
+                {
                     pause_flg = false;
-                    break;
-                    case MENU_OPTION.RETRY:
-                    
-                    break;
-                    case MENU_OPTION.OPTION:
-                    
-                    break;
-                    case MENU_OPTION.STAGESELECT:
-                    break;
-                    case MENU_OPTION.TITLE:
-                    break;
+                }
+                
+                selected_option = GetNextMenu(InputManager.instance.GetMenuMoveFloat());
+                
+                for (int i = 0; i < (int)MENU_OPTION.MAX; i++)
+                {
+                    if (i == (int)selected_option)
+                    {
+                        pause_menu[(int)selected_option].SetSelectedState(true, (int)selected_option);
+                    }
+                    else
+                    {
+                        pause_menu[i].SetSelectedState(false, (int)selected_option);
+                    }
+                }
+                
+                if (InputManager.instance.press_select)
+                {
+                    switch (selected_option)
+                    {
+                        case MENU_OPTION.RESUME:
+                        pause_flg = false;
+                        break;
+                        case MENU_OPTION.RETRY:
+                        
+                        break;
+                        case MENU_OPTION.OPTION:
+                        
+                        break;
+                        case MENU_OPTION.STAGESELECT:
+                        break;
+                        case MENU_OPTION.TITLE:
+                        break;
+                    }
                 }
             }
         }
@@ -117,5 +132,59 @@ public class PauseManager : MonoBehaviour
                 pause_flg = true;
             }
         }
+    }
+    
+    MENU_OPTION GetNextMenu(int iinput)
+    {
+        MENU_OPTION new_menu = selected_option;
+        
+        if (iinput > 0)
+        {
+            switch (selected_option)
+            {
+                case MENU_OPTION.RESUME:
+                new_menu = MENU_OPTION.RETRY;
+                break;
+                case MENU_OPTION.RETRY:
+                new_menu = MENU_OPTION.OPTION;
+                break;
+                case MENU_OPTION.OPTION:
+                new_menu = MENU_OPTION.STAGESELECT;
+                break;
+                case MENU_OPTION.STAGESELECT:
+                new_menu = MENU_OPTION.TITLE;
+                break;
+                case MENU_OPTION.TITLE:
+                new_menu = MENU_OPTION.RESUME;
+                break;
+            }
+        }
+        else if (iinput < 0)
+        {
+            switch (selected_option)
+            {
+                case MENU_OPTION.RESUME:
+                new_menu = MENU_OPTION.TITLE;
+                break;
+                case MENU_OPTION.RETRY:
+                new_menu = MENU_OPTION.RESUME;
+                break;
+                case MENU_OPTION.OPTION:
+                new_menu = MENU_OPTION.RETRY;
+                break;
+                case MENU_OPTION.STAGESELECT:
+                new_menu = MENU_OPTION.OPTION;
+                break;
+                case MENU_OPTION.TITLE:
+                new_menu = MENU_OPTION.STAGESELECT;
+                break;
+            }
+        }
+        else
+        {
+            new_menu = selected_option;
+        }
+        
+        return new_menu;
     }
 }
