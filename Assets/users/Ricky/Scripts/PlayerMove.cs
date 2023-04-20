@@ -49,8 +49,7 @@ public class PlayerMove : MonoBehaviour
     private Rigidbody rb;                   //リギッドボディー
     private CapsuleCollider col;            //コライダー
     private Animator anim;                  //アニメーター
-    
-    private MainInputControls input_system;
+
     private bool input_check_pos;
     private float move_value;
     private float input_modifier;
@@ -94,11 +93,6 @@ public class PlayerMove : MonoBehaviour
     {
         return ground_obj;
     }
-
-    private void Awake() 
-    {
-        input_system = new MainInputControls();
-    }
     
     // Start is called before the first frame update
     void Start()
@@ -110,16 +104,6 @@ public class PlayerMove : MonoBehaviour
         rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
 
         camera_obj = GameObject.FindGameObjectWithTag("MainCamera");    //カメラオブジェクト取得
-        
-        input_system.Player.Smash.performed += HoldSmash;
-        input_system.Player.Smash.canceled += ReleaseSmash;
-        input_system.Player.Flip.performed += FlipCharacter;
-        input_system.Player.Rotate.performed += RotateGround;
-        
-        //プロト用インプット
-        input_system.Prototype.ReloadScene.performed += ProtoReloadScene;
-        input_system.Prototype.EndScene.performed += ProtoEndScene;
-        input_system.Prototype.NextScene.performed += ProtoNextScene;
         
         //変数を初期化する
         is_grounded = false;
@@ -142,7 +126,7 @@ public class PlayerMove : MonoBehaviour
         if (!is_dead)
         {
             //インプット方向を取得
-            input_direction = input_system.Player.WASD.ReadValue<Vector2>();
+            input_direction = InputManager.instance.player_move_float;
             
             CheckIsGrounded();
             
@@ -165,6 +149,23 @@ public class PlayerMove : MonoBehaviour
             {
                 SceneManager.LoadScene("GameOverScene");
             }
+        }
+        
+        if (InputManager.instance.press_smash)
+        {
+            HoldSmash();
+        }
+        
+        ReleaseSmash();
+        
+        if (InputManager.instance.press_flip)
+        {
+            FlipCharacter();
+        }
+        
+        if (InputManager.instance.press_rotate)
+        {
+            RotateGround();
         }
         
         anim.SetBool("isWalking", input_direction != Vector2.zero);
@@ -538,7 +539,7 @@ public class PlayerMove : MonoBehaviour
         }
     }
     
-    private void HoldSmash(InputAction.CallbackContext obj)
+    private void HoldSmash()
     {   
         //地面についていたら、力を溜める可能にする
         if (is_grounded && !is_dead)
@@ -550,7 +551,7 @@ public class PlayerMove : MonoBehaviour
         }
     }
     
-    private void ReleaseSmash(InputAction.CallbackContext obj)
+    private void ReleaseSmash()
     {
         if (smash_state == SMASHSTATE.HOLDING)
         {
@@ -602,7 +603,7 @@ public class PlayerMove : MonoBehaviour
         smash_state = SMASHSTATE.NORMAL;
     }
     
-    private void FlipCharacter(InputAction.CallbackContext obj)
+    private void FlipCharacter()
     {
         FlipUpsideDown(false);
     }
@@ -646,35 +647,11 @@ public class PlayerMove : MonoBehaviour
         }
     }
     
-    private void RotateGround(InputAction.CallbackContext obj)
+    private void RotateGround()
     {
         if (is_grounded)
         {
             ground_obj_parent.GetComponent<StageRotation>().StartRotate();
-        }
-    }
-    
-    private void ProtoReloadScene(InputAction.CallbackContext obj)
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
-    
-    private void ProtoEndScene(InputAction.CallbackContext obj)
-    {
-        Application.Quit();
-    }
-    
-    private void ProtoNextScene(InputAction.CallbackContext obj)
-    {
-        int currentSceneName = SceneManager.GetActiveScene().buildIndex;
-        
-        if (currentSceneName == 6)
-        {
-            SceneManager.LoadScene("Select");
-        }
-        else
-        {
-            SceneManager.LoadScene(currentSceneName + 1);
         }
     }
     
@@ -713,15 +690,5 @@ public class PlayerMove : MonoBehaviour
         {
             FlipUpsideDown(true);
         }
-    }
-    
-    private void OnEnable() 
-    {
-        input_system.Enable();
-    }
-    
-    private void OnDisable() 
-    {
-        input_system.Disable();
     }
 }

@@ -12,7 +12,7 @@ public class InputManager : MonoBehaviour
     private string current_scene;
     
     public Vector2 player_move_float {get; private set;}
-    public float menu_move_float {get; private set;}
+    public int menu_move_input {get; private set;}
     
     public bool press_smash {get; private set;}
     public bool press_flip {get; private set;}
@@ -24,6 +24,15 @@ public class InputManager : MonoBehaviour
     
     private void Awake() 
     {
+        if (instance != null && instance != this) 
+        { 
+            Destroy(this); 
+        } 
+        else 
+        { 
+            instance = this; 
+        } 
+    
         input_system = new MainInputControls();
     }
     
@@ -51,11 +60,30 @@ public class InputManager : MonoBehaviour
     {
         if (current_scene.Contains("Stage"))
         {
-            player_move_float = input_system.Player.WASD.ReadValue<Vector2>();
+            if (PauseManager.instance.pause_flg)
+            {
+                if (!input_system.Menu.enabled)
+                {
+                    input_system.Player.Disable();
+                    input_system.Menu.Enable();
+                }
+                
+                menu_move_input = input_system.Menu.VerticalMove.ReadValue<int>();
+            }
+            else
+            {
+                if (!input_system.Player.enabled)
+                {
+                    input_system.Player.Enable();
+                    input_system.Menu.Disable();
+                }
+                
+                player_move_float = input_system.Player.WASD.ReadValue<Vector2>();
+            }
         }
         else
         {
-            menu_move_float = input_system.Menu.VerticalMove.ReadValue<float>();
+            menu_move_input = input_system.Menu.VerticalMove.ReadValue<int>();
         }
     }
     
@@ -111,6 +139,32 @@ public class InputManager : MonoBehaviour
         press_start = true;
     }
     
+    
+    private void ProtoReloadScene(InputAction.CallbackContext obj)
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+    
+    private void ProtoEndScene(InputAction.CallbackContext obj)
+    {
+        Application.Quit();
+    }
+    
+    private void ProtoNextScene(InputAction.CallbackContext obj)
+    {
+        int currentSceneName = SceneManager.GetActiveScene().buildIndex;
+        
+        if (currentSceneName == 6)
+        {
+            SceneManager.LoadScene("Select");
+        }
+        else
+        {
+            SceneManager.LoadScene(currentSceneName + 1);
+        }
+    }
+    
+    
     private void OnEnable() 
     {
         input_system.Player.Smash.performed += SmashInput;
@@ -133,6 +187,15 @@ public class InputManager : MonoBehaviour
         
         input_system.Menu.StartButton.performed += StartButtonInput;
         input_system.Menu.StartButton.Enable();
+        
+        input_system.Prototype.ReloadScene.performed += ProtoReloadScene;
+        input_system.Prototype.ReloadScene.Enable();
+        
+        input_system.Prototype.EndScene.performed += ProtoEndScene;
+        input_system.Prototype.EndScene.Enable();
+        
+        input_system.Prototype.NextScene.performed += ProtoNextScene;
+        input_system.Prototype.NextScene.Enable();
         
         input_system.Enable();
     }
