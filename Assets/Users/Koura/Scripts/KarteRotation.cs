@@ -17,7 +17,7 @@ public class KarteRotation : MonoBehaviour
     //現在回転した角度
     public float g_nowrotate = 0.0f;
     //回転する角度
-    public float g_karte_x = 0.2f;
+    public float g_rotate_speed = 0.2f;
     //現在選択してるカルテ(最初はワールド1)
     //public 
 
@@ -48,9 +48,9 @@ public class KarteRotation : MonoBehaviour
         if (g_direction == STAGE_DIRECTION.UP)//上ボタンをした後の処理
         {
             //回転が始まってからの角度を記録していく
-            g_nowrotate += g_karte_x;
+            g_nowrotate += g_rotate_speed;
 
-            transform.Rotate(new Vector3(g_karte_x, 0f, 0f));
+            transform.Rotate(new Vector3(g_rotate_speed, 0f, 0f));
 
             if (g_nowrotate >= 90.0f)
             {
@@ -61,9 +61,9 @@ public class KarteRotation : MonoBehaviour
         else if (g_direction == STAGE_DIRECTION.DOWN)//下ボタンをした後の処理
         {
             //回転が始まってからの角度を記録していく
-            g_nowrotate -= g_karte_x;
+            g_nowrotate -= g_rotate_speed;
 
-            transform.Rotate(new Vector3(-g_karte_x, 0f, 0f));
+            transform.Rotate(new Vector3(-g_rotate_speed, 0f, 0f));
 
             if (g_nowrotate <= -90.0f)
             {

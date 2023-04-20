@@ -17,6 +17,6 @@ public class KartePosition : MonoBehaviour
     void Update()
     {
         //決められたカルテのポジションへ移動を行う
-        transform.position = Vector3.MoveTowards(target.position, target.position, Time.deltaTime);
+        transform.position = Vector3.MoveTowards(target.position, transform.position, Time.deltaTime);
     }
 }
