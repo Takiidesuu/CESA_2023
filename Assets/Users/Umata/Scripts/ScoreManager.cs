@@ -1,12 +1,16 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class ScoreManager : MonoBehaviour
 {
     //３D空間テキスト
     public TextMeshPro ScoreText;
     public TextMeshPro TimeText;
+
+    public string NextSceneName;    //次シーンのテキスト
+
     //ランク画像
     public GameObject rank_s;
     public GameObject rank_a;
@@ -135,6 +139,11 @@ public class ScoreManager : MonoBehaviour
                     rank_c.gameObject.SetActive(true);
                     itemmover.MoveItem(rank_c, rank_push_time, rank_pos.transform.position);
 
+                }
+                //最終入力
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    SceneManager.LoadScene(NextSceneName);
                 }
             }
         }
