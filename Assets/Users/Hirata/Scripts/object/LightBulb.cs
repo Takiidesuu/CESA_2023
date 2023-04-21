@@ -9,10 +9,12 @@ public class LightBulb : MonoBehaviour
 
     private DeformStage deform_stage;    //電源がステージが当たっているかを取得
     private LightBulbChangeMaterial changeMaterial;    //マテリアルを変更
+    private SoundManager soundManager;
 
     private void Start()
     {
         changeMaterial = GetComponent<LightBulbChangeMaterial>();
+        soundManager = GetComponent<SoundManager>();    
     }
 
     private void Update()
@@ -56,6 +58,13 @@ public class LightBulb : MonoBehaviour
         {
             deform_stage = other.transform.root.GetComponent<DeformStage>();
             nothit_count = 0;
+        }
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("ElectricalBall"))
+        {
+            soundManager.PlaySoundEffect("Hit");
         }
     }
 }

@@ -31,4 +31,11 @@ public class LightBulbCollector : MonoBehaviour
             }
         }
     }
+    public Quaternion CalculateRotation(Vector3 startPos, Vector3 endPos)
+    {
+        Vector3 direction = endPos - startPos;
+        Quaternion rotation = Quaternion.LookRotation(direction);
+
+        return rotation;
+    }
 }
