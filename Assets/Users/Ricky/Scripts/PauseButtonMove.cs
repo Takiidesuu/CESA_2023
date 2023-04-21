@@ -72,7 +72,7 @@ public class PauseButtonMove : MonoBehaviour
         
         if (elapsed_time < 1.0f)
         {
-            elapsed_time += Time.deltaTime * 2.0f;
+            elapsed_time += Time.deltaTime * 10.0f;
         }
         else
         {
