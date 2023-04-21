@@ -35,7 +35,8 @@ public class ElectricalPower : MonoBehaviour
 
             if (time > electricball_instan_time && hit_elapsed_time > start_time)
             {
-                Instantiate(ElectricBall, electricball_position, Quaternion.identity);
+                GameObject ElectricBall_Instant = Instantiate(ElectricBall, electricball_position, Quaternion.identity);
+                ElectricBall_Instant.GetComponent<ElectricBallMove>().ParentGenerator = this.gameObject;
                 old_time = Time.time;
             }
         }

@@ -597,7 +597,7 @@ public class PlayerMove : MonoBehaviour
                 break;
         }
     }
-    
+
     IEnumerator SmashGround(float fdelay, int ipower, float fcam_power, float fangle)
     {
 
@@ -606,31 +606,33 @@ public class PlayerMove : MonoBehaviour
         //叩くSEの再生
         soundmanager.PlaySoundEffect("Strike");
         if (deform_stage)
-
-        bool isSmash = true;
-        if (is_flip)
         {
-            if (!min_max_deform.GetMaxHit())
-                isSmash = false;
-        }
-        else
-        {
-            if (min_max_deform.GetMinHit())
-                isSmash = false;
-        }
 
-        if (isSmash)
-        {
-            yield return new WaitForSeconds(fdelay);
-
-            if (deform_stage)
+            bool isSmash = true;
+            if (is_flip)
             {
-                for (int i = 0; i < ipower; i++)
-                    deform_stage.AddDeformpointDown(transform.position, transform.eulerAngles.y + fangle, smash_power_num + 1, is_flip);
+                if (!min_max_deform.GetMaxHit())
+                    isSmash = false;
             }
+            else
+            {
+                if (min_max_deform.GetMinHit())
+                    isSmash = false;
+            }
+
+            if (isSmash)
+            {
+                yield return new WaitForSeconds(fdelay);
+
+                if (deform_stage)
+                {
+                    for (int i = 0; i < ipower; i++)
+                        deform_stage.AddDeformpointDown(transform.position, transform.eulerAngles.y + fangle, smash_power_num + 1, is_flip);
+                }
+            }
+
+            camera_obj.GetComponent<CameraMove>().ShakeCamera(fcam_power, 0.2f);
         }
-        
-        camera_obj.GetComponent<CameraMove>().ShakeCamera(fcam_power, 0.2f);
         smash_state = SMASHSTATE.NORMAL;
     }
     
