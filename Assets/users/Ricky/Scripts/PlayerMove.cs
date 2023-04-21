@@ -49,8 +49,7 @@ public class PlayerMove : MonoBehaviour
     private Rigidbody rb;                   //リギッドボディー
     private CapsuleCollider col;            //コライダー
     private Animator anim;                  //アニメーター
-    
-    private MainInputControls input_system;
+
     private bool input_check_pos;
     private float move_value;
     private float input_modifier;
@@ -80,6 +79,7 @@ public class PlayerMove : MonoBehaviour
     /// 平田
     /// </summary>
     private DeformStage deform_stage;
+    private MinMaxDeform min_max_deform;
     private bool is_flip;
     
     public void GameOver()
@@ -96,11 +96,6 @@ public class PlayerMove : MonoBehaviour
     {
         return ground_obj;
     }
-
-    private void Awake() 
-    {
-        input_system = new MainInputControls();
-    }
     
     // Start is called before the first frame update
     void Start()
@@ -112,16 +107,6 @@ public class PlayerMove : MonoBehaviour
         rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
 
         camera_obj = GameObject.FindGameObjectWithTag("MainCamera");    //カメラオブジェクト取得
-        
-        input_system.Player.Smash.performed += HoldSmash;
-        input_system.Player.Smash.canceled += ReleaseSmash;
-        input_system.Player.Flip.performed += FlipCharacter;
-        input_system.Player.Rotate.performed += RotateGround;
-        
-        //プロト用インプット
-        input_system.Prototype.ReloadScene.performed += ProtoReloadScene;
-        input_system.Prototype.EndScene.performed += ProtoEndScene;
-        input_system.Prototype.NextScene.performed += ProtoNextScene;
         
         //変数を初期化する
         is_grounded = false;
@@ -147,7 +132,7 @@ public class PlayerMove : MonoBehaviour
         if (!is_dead)
         {
             //インプット方向を取得
-            input_direction = input_system.Player.WASD.ReadValue<Vector2>();
+            input_direction = InputManager.instance.player_move_float;
             
             CheckIsGrounded();
             
@@ -172,7 +157,26 @@ public class PlayerMove : MonoBehaviour
             }
         }
         
+        if (InputManager.instance.press_smash)
+        {
+            HoldSmash();
+        }
+        
+        ReleaseSmash();
+        
+        if (InputManager.instance.press_flip)
+        {
+            FlipCharacter();
+        }
+        
+        if (InputManager.instance.press_rotate)
+        {
+            RotateGround();
+        }
+        
         anim.SetBool("isWalking", input_direction != Vector2.zero);
+
+        transform.position = new Vector3(transform.position.x, transform.position.y, 0);
     }
     
     void FixedUpdate() 
@@ -536,6 +540,7 @@ public class PlayerMove : MonoBehaviour
             ground_obj = hit.transform.gameObject;
             ground_obj_parent = ground_obj.transform.root.gameObject;
             deform_stage = ground_obj_parent.GetComponent<DeformStage>();
+            min_max_deform = ground_obj_parent.GetComponent<MinMaxDeform>();
         }
         else
         {
@@ -543,7 +548,7 @@ public class PlayerMove : MonoBehaviour
         }
     }
     
-    private void HoldSmash(InputAction.CallbackContext obj)
+    private void HoldSmash()
     {   
         //地面についていたら、力を溜める可能にする
         if (is_grounded && !is_dead)
@@ -555,7 +560,7 @@ public class PlayerMove : MonoBehaviour
         }
     }
     
-    private void ReleaseSmash(InputAction.CallbackContext obj)
+    private void ReleaseSmash()
     {
         if (smash_state == SMASHSTATE.HOLDING)
         {
@@ -595,21 +600,46 @@ public class PlayerMove : MonoBehaviour
     
     IEnumerator SmashGround(float fdelay, int ipower, float fcam_power, float fangle)
     {
+
         yield return new WaitForSeconds(fdelay);
 
         //叩くSEの再生
         soundmanager.PlaySoundEffect("Strike");
         if (deform_stage)
+
+        bool isSmash = true;
+        if (is_flip)
         {
-            for (int i = 0; i < ipower; i++)
-                deform_stage.AddDeformpointDown(transform.position, transform.eulerAngles.y + fangle, transform.eulerAngles.z, is_flip);
+            if (!min_max_deform.GetMaxHit())
+                isSmash = false;
+        }
+        else
+        {
+            if (min_max_deform.GetMinHit())
+                isSmash = false;
+        }
+
+        if (isSmash)
+        {
+            yield return new WaitForSeconds(fdelay);
+
+            if (deform_stage)
+            {
+                for (int i = 0; i < ipower; i++)
+                    deform_stage.AddDeformpointDown(transform.position, transform.eulerAngles.y + fangle, smash_power_num + 1, is_flip);
+            }
         }
         
         camera_obj.GetComponent<CameraMove>().ShakeCamera(fcam_power, 0.2f);
         smash_state = SMASHSTATE.NORMAL;
     }
     
-    private void FlipCharacter(InputAction.CallbackContext obj)
+    private void FlipCharacter()
+    {
+        FlipUpsideDown(false);
+    }
+    
+    private void FlipUpsideDown(bool rotate_other_side)
     {
         RaycastHit hit_info;
         if (Physics.Raycast(this.transform.position + this.transform.up * 0.25f, this.transform.up * -1.0f, out hit_info, 5.0f, LayerMask.GetMask("Ground")))
@@ -632,41 +662,27 @@ public class PlayerMove : MonoBehaviour
                 }
             }
             
-            transform.Rotate(new Vector3(180.0f, 180.0f, 0.0f), Space.Self);
+            transform.Rotate(new Vector3(180.0f, 0.0f, 0.0f), Space.Self);
+            
+            if (target_rot == 180.0f)
+            {
+                target_rot = 0.0f;
+            }
+            else
+            {
+                target_rot = 180.0f;
+            }
+            
             this.transform.position = new_pos;
             if (is_flip) is_flip = false; else is_flip = true;
         }
     }
     
-    private void RotateGround(InputAction.CallbackContext obj)
+    private void RotateGround()
     {
         if (is_grounded)
         {
             ground_obj_parent.GetComponent<StageRotation>().StartRotate();
-        }
-    }
-    
-    private void ProtoReloadScene(InputAction.CallbackContext obj)
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
-    
-    private void ProtoEndScene(InputAction.CallbackContext obj)
-    {
-        Application.Quit();
-    }
-    
-    private void ProtoNextScene(InputAction.CallbackContext obj)
-    {
-        int currentSceneName = SceneManager.GetActiveScene().buildIndex;
-        
-        if (currentSceneName == 6)
-        {
-            SceneManager.LoadScene("Select");
-        }
-        else
-        {
-            SceneManager.LoadScene(currentSceneName + 1);
         }
     }
     
@@ -699,13 +715,11 @@ public class PlayerMove : MonoBehaviour
         }
     }
     
-    private void OnEnable() 
+    private void OnTriggerEnter(Collider other) 
     {
-        input_system.Enable();
-    }
-    
-    private void OnDisable() 
-    {
-        input_system.Disable();
+        if (other.gameObject.tag == "FlipGate")
+        {
+            FlipUpsideDown(true);
+        }
     }
 }
