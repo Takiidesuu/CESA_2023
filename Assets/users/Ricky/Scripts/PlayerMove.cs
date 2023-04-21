@@ -68,7 +68,9 @@ public class PlayerMove : MonoBehaviour
     private SMASHSTATE smash_state;         //プレイヤーの叩く状態
     private float smash_power_num;          //叩く力の数値
     private SMASHLEVEL smash_power_level;   //叩く力の段階
-    
+
+    private SoundManager soundmanager;
+
     public ParticleSystem partSystem;
     
     private float target_rot;
@@ -119,6 +121,9 @@ public class PlayerMove : MonoBehaviour
         blackPanel = blackPanel.transform.GetChild(0).gameObject;
         
         target_rot = 0.0f;
+
+        //soundmannagerを取得
+        soundmanager = gameObject.GetComponent<SoundManager>();
     }
 
     // Update is called once per frame
@@ -595,6 +600,13 @@ public class PlayerMove : MonoBehaviour
     
     IEnumerator SmashGround(float fdelay, int ipower, float fcam_power, float fangle)
     {
+
+        yield return new WaitForSeconds(fdelay);
+
+        //叩くSEの再生
+        soundmanager.PlaySoundEffect("Strike");
+        if (deform_stage)
+
         bool isSmash = true;
         if (is_flip)
         {
