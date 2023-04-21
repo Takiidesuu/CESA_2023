@@ -222,16 +222,16 @@ public class PlayerMove : MonoBehaviour
                         
                         var emisss = part_line_effect.emission;
                         emisss.enabled = true;
-                        emisss = part_circle_effect.emission;
-                        emisss.enabled = true;
+                        var emiss_circle = part_circle_effect.emission;
+                        emiss_circle.enabled = true;
                         
                         var line_color = part_line_effect.main;
                         var circle_color = part_circle_effect.main;
                         
                         //溜めた力を加算する
-                        if (smash_power_num >= smash_threshold)
+                        if (smash_power_num >= smash_max_time)
                         {
-                            smash_power_num = smash_threshold;
+                            smash_power_num = smash_max_time;
                         }
                         else
                         {
@@ -250,6 +250,9 @@ public class PlayerMove : MonoBehaviour
                             line_color.startColor = new Color(0.0f, 0.0f, 1.0f);
                             circle_color.startColor = new Color(0.0f, 0.0f, 1.0f);
                         }
+                        
+                        emisss.rateOverTime = 90.0f * (smash_power_num / smash_threshold);
+                        circle_color.startSize = 8.0f * (smash_power_num / smash_threshold);
                         
                         break;
                         case SMASHSTATE.SMASHING:   //力を放ってる状態
@@ -580,7 +583,7 @@ public class PlayerMove : MonoBehaviour
     {
         if (can_jump_status == SMASHJUMP.CAN_JUMP)
         {
-            rb.AddForce(this.transform.up * jump_power * smash_power_num / smash_threshold, ForceMode.Impulse);
+            rb.AddForce(this.transform.up * jump_power * smash_power_num / smash_threshold * 0.5f, ForceMode.Impulse);
         }
         
         //叩くSEの再生
