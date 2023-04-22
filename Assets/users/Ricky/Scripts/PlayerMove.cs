@@ -241,8 +241,17 @@ public class PlayerMove : MonoBehaviour
                         if (smash_power_num >= smash_threshold)
                         {
                             can_jump_status = SMASHJUMP.CAN_JUMP;
-                            line_color.startColor = new Color(1.0f, 0.0f, 0.0f);
-                            circle_color.startColor = new Color(1.0f, 0.0f, 0.0f);
+                            
+                            if (smash_power_num >= smash_max_time)
+                            {
+                                line_color.startColor = new Color(1.0f, 0.0f, 0.0f);
+                                circle_color.startColor = new Color(1.0f, 0.0f, 0.0f);
+                            }
+                            else
+                            {
+                                line_color.startColor = new Color(0.0f, 1.0f, 0.0f);
+                                circle_color.startColor = new Color(0.0f, 1.0f, 0.0f);
+                            }   
                         }
                         else
                         {
