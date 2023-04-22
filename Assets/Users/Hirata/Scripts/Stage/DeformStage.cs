@@ -12,7 +12,7 @@ public class DeformStage : MonoBehaviour
     private SAMeshColliderBuilder SAMeshColliderBuilder;
 
     private GameObject point_down;                                    //へこむポイントオブジェクト
-    private List<GameObject> all_point_down = new List<GameObject>(); //すべでのへこむポイントオブジェクト
+    //private List<GameObject> all_point_down = new List<GameObject>(); //すべでのへこむポイントオブジェクト
     private List<GameObject> wave_deformer = new List<GameObject>();  //波
     private List<float> wave_instantiate_rotate_z = new List<float>();//波が生成されたときのプレイヤー角度
     private float wave_down_power = 0.5f;                             //波の減少
@@ -96,6 +96,19 @@ public class DeformStage : MonoBehaviour
                             Destroy(wave_deformer[i + j].gameObject);
                             wave_deformer.RemoveAt(i + j);
                             wave_instantiate_rotate_z.RemoveAt(i + j);
+
+                            //デフォームを無ければ消す
+                            foreach (Deformable deformable in ChildDefotmbles)
+                            {
+                                for (int l = 0; l < deformable.DeformerElements.Count; l++)
+                                {
+                                    if (deformable.DeformerElements[l].Component == null)
+                                    {
+                                        deformable.DeformerElements.RemoveAt(l);
+                                        l = 0;
+                                    }
+                                }
+                            }
                         }
                         break;
                     }
@@ -118,18 +131,18 @@ public class DeformStage : MonoBehaviour
             }
         }
         //現在へこませているのを全て逆にする
-        if (is_reverse)
-        {
-            foreach(GameObject gameObject in all_point_down)
-            {
-                gameObject.transform.eulerAngles =
-                    new Vector3(gameObject.transform.eulerAngles.x + 180,
-                                gameObject.transform.eulerAngles.y,
-                                gameObject.transform.eulerAngles.z);
-            }
+        //if (is_reverse)
+        //{
+        //    foreach(GameObject gameObject in all_point_down)
+        //    {
+        //        gameObject.transform.eulerAngles =
+        //            new Vector3(gameObject.transform.eulerAngles.x + 180,
+        //                        gameObject.transform.eulerAngles.y,
+        //                        gameObject.transform.eulerAngles.z);
+        //    }
 
-            is_reverse = false;
-        }
+        //    is_reverse = false;
+        //}
         //当たっている場合色を変化
         if (hit_electrical)
         {
@@ -208,17 +221,35 @@ public class DeformStage : MonoBehaviour
         }
 
         //力によってへこむ量を変化させる
-        pointdown[0].GetComponent<RadialCurveDeformer>().Factor = -smash_power*10;
+        pointdown[0].GetComponent<RadialCurveDeformer>().Factor = -smash_power;
 
         //HitGroundに当たっているステージに対して変形を適用させる
         GameObject[] gameObjects = ground_check.GetHitGround();
-        foreach(GameObject gameObject in gameObjects)
+        bool synthesis = false; //合成したか
+        foreach (GameObject gameObject in gameObjects)
         {
-            gameObject.transform.parent.parent.GetComponent<Deformable>().AddDeformer(pointdown[0].GetComponent<RadialCurveDeformer>());
-            gameObject.transform.parent.parent.GetComponent<Deformable>().AddDeformer(pointdown[1].GetComponent<RadialCurveDeformer>());
-            gameObject.transform.parent.parent.GetComponent<Deformable>().AddDeformer(pointdown[2].GetComponent<RadialCurveDeformer>());
+            Deformable deformable = gameObject.transform.parent.parent.GetComponent<Deformable>();
+            //同じ角度の物があればそれに合わせる
+            foreach(DeformerElement deformerElement in deformable.DeformerElements)
+            {
+                if (deformerElement.Component == null)
+                    continue;
+
+                float error = Mathf.Abs(deformerElement.Component.transform.eulerAngles.x - pointdown[0].transform.eulerAngles.x);
+                if (error < 1)
+                {
+                    deformerElement.Component.GetComponent<RadialCurveDeformer>().Factor += pointdown[0].GetComponent<RadialCurveDeformer>().Factor;
+                    synthesis = true;
+                    break;
+                }
+            }
+
+            if(!synthesis)  //合成したならば追加しない
+                deformable.AddDeformer(pointdown[0].GetComponent<RadialCurveDeformer>());
+            deformable.AddDeformer(pointdown[1].GetComponent<RadialCurveDeformer>());
+            deformable.AddDeformer(pointdown[2].GetComponent<RadialCurveDeformer>());
         }
-        all_point_down.Add(pointdown[0]);
+        //all_point_down.Add(pointdown[0]);
         wave_deformer.Add(pointdown[1]);
         wave_deformer.Add(pointdown[2]);
         for (int i = 0; i < 2; i++)
