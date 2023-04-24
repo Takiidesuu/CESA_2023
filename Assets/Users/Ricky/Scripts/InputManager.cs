@@ -127,7 +127,6 @@ public class InputManager : MonoBehaviour
     private void ResetAllParams()
     {
         //変数を初期化する
-        press_smash = false;
         press_flip = false;
         press_rotate = false;
         press_pause = false;
@@ -139,6 +138,11 @@ public class InputManager : MonoBehaviour
     private void SmashInput(InputAction.CallbackContext obj)
     {
         press_smash = true;
+    }
+    
+    private void ReleaseSmashInput(InputAction.CallbackContext obj)
+    {
+        press_smash = false;
     }
     
     private void FlipInput(InputAction.CallbackContext obj)
@@ -200,6 +204,7 @@ public class InputManager : MonoBehaviour
     private void OnEnable() 
     {
         input_system.Player.Smash.performed += SmashInput;
+        input_system.Player.Smash.canceled += ReleaseSmashInput;
         input_system.Player.Enable();
         
         input_system.Player.Flip.performed += FlipInput;
