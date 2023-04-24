@@ -577,6 +577,7 @@ public class PlayerMove : MonoBehaviour
             if (!ground_obj_parent.GetComponent<StageRotation>().GetRotatingStatus())
             {
                 smash_state = SMASHSTATE.HOLDING;
+                anim.SetTrigger("holdSmash");
             }
         }
     }
@@ -586,7 +587,15 @@ public class PlayerMove : MonoBehaviour
         if (smash_state == SMASHSTATE.HOLDING)
         {
             smash_state = SMASHSTATE.SMASHING;
-            anim.SetTrigger("isSmash");
+            
+            if (smash_power_num >= smash_max_time)
+            {
+                anim.SetTrigger("isSmashStrong");
+            }
+            else
+            {
+                anim.SetTrigger("isSmash");
+            }
         }
     }
     
@@ -612,8 +621,6 @@ public class PlayerMove : MonoBehaviour
                 if (min_max_deform.GetMinHit())
                     isSmash = false;
             }
-            
-            Debug.Log(isSmash);
 
             if (isSmash)
             {
@@ -623,6 +630,8 @@ public class PlayerMove : MonoBehaviour
             camera_obj.GetComponent<CameraMove>().ShakeCamera(smash_power_num / 2.0f, 0.2f);
         }
         smash_state = SMASHSTATE.NORMAL;
+        
+        anim.ResetTrigger("holdSmash");
     }
     
     private void FlipCharacter()
