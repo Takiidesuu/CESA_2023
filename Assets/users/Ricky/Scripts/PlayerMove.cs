@@ -43,6 +43,8 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private float smash_threshold = 2.0f;
     [Tooltip("溜める最大秒数")]
     [SerializeField] private float smash_max_time = 5.0f;
+    [Header("叩く力")]
+    [SerializeField] private float smash_power_scalar = 3.0f;
     
     [SerializeField] private GameObject blackPanel;
     
@@ -83,6 +85,16 @@ public class PlayerMove : MonoBehaviour
     private DeformStage deform_stage;
     private MinMaxDeform min_max_deform;
     private bool is_flip;
+    
+    public void TookDamage()
+    {
+        anim.SetTrigger("takeDamage");
+        
+        if (smash_state == SMASHSTATE.HOLDING)
+        {
+            smash_state = SMASHSTATE.NORMAL;
+        }
+    }
     
     public void GameOver()
     {
@@ -138,8 +150,11 @@ public class PlayerMove : MonoBehaviour
     {
         if (!is_dead)
         {
-            //インプット方向を取得
-            input_direction = InputManager.instance.player_move_float;
+            if (!TakingDamage())
+            {
+                //インプット方向を取得
+                input_direction = InputManager.instance.player_move_float;
+            }
             
             CheckIsGrounded();
             
@@ -572,7 +587,7 @@ public class PlayerMove : MonoBehaviour
     private void HoldSmash()
     {   
         //地面についていたら、力を溜める可能にする
-        if (is_grounded && !is_dead)
+        if (is_grounded && !is_dead && !TakingDamage())
         {
             if (!ground_obj_parent.GetComponent<StageRotation>().GetRotatingStatus())
             {
@@ -624,7 +639,7 @@ public class PlayerMove : MonoBehaviour
 
             if (isSmash)
             {
-                deform_stage.AddDeformpointDown(transform.position, transform.eulerAngles.y, smash_power_num + 1, is_flip);
+                deform_stage.AddDeformpointDown(transform.position, transform.eulerAngles.y, smash_power_num + 1 * smash_power_scalar, is_flip);
             }
             
             camera_obj.GetComponent<CameraMove>().ShakeCamera(smash_power_num / 2.0f, 0.2f);
@@ -676,6 +691,18 @@ public class PlayerMove : MonoBehaviour
             this.transform.position = new_pos;
             if (is_flip) is_flip = false; else is_flip = true;
         }
+    }
+    
+    private bool TakingDamage()
+    {
+        bool result = false;
+        
+        if (anim.GetCurrentAnimatorStateInfo(0).IsName("tookDamage") && anim.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f)
+        {
+            result = true;
+        }
+        
+        return result;
     }
     
     private void RotateGround()

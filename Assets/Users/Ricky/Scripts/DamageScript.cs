@@ -47,6 +47,13 @@ public class DamageScript : MonoBehaviour
                         this.GetComponent<PlayerMove>().GameOver();
                     }
                 }
+                else
+                {
+                    if (this.gameObject.tag == "Player")
+                    {
+                        this.GetComponent<PlayerMove>().TookDamage();
+                    }
+                }
                 
                 InvokeRepeating("InvincibleFlicker", 0.0f, invincible_flicker_time);
                 is_invincible = true;
@@ -71,9 +78,12 @@ public class DamageScript : MonoBehaviour
             renderer_component.enabled = true;
         }
         
-        if (this.gameObject.tag == "Player" && this.gameObject.tag == "PlayerNPC")
+        if (this.gameObject.tag == "Player" || this.gameObject.tag == "PlayerNPC")
         {
-            this.transform.GetChild(0).gameObject.SetActive(true);
+            foreach (Transform child in this.transform.GetChild(0))
+            {
+                child.gameObject.SetActive(true);
+            }
         }
     }
     
@@ -84,9 +94,12 @@ public class DamageScript : MonoBehaviour
             renderer_component.enabled = !renderer_component.enabled;
         }
         
-        if (this.gameObject.tag == "Player" && this.gameObject.tag == "PlayerNPC")
+        if (this.gameObject.tag == "Player" || this.gameObject.tag == "PlayerNPC")
         {
-            this.transform.GetChild(0).gameObject.SetActive(renderer_component.enabled);
+            foreach (Transform child in this.transform.GetChild(0))
+            {
+                child.gameObject.SetActive(!child.gameObject.activeSelf);
+            }
         }
     }
 }
