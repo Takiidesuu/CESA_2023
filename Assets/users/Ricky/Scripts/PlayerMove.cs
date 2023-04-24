@@ -600,7 +600,7 @@ public class PlayerMove : MonoBehaviour
         if (deform_stage)
         {
             bool isSmash = true;
-            /* if (is_flip)
+            if (is_flip)
             {
                 if (!min_max_deform.GetMaxHit())
                     isSmash = false;
@@ -609,7 +609,7 @@ public class PlayerMove : MonoBehaviour
             {
                 if (min_max_deform.GetMinHit())
                     isSmash = false;
-            } */
+            }
 
             if (isSmash)
             {
