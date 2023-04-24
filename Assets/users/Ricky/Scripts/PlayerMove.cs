@@ -87,6 +87,7 @@ public class PlayerMove : MonoBehaviour
     public void GameOver()
     {
         is_dead = true;
+        blackPanel.SetActive(true);
     }
     
     public bool GetSmashingState()
@@ -124,6 +125,7 @@ public class PlayerMove : MonoBehaviour
         is_dead = false;
         
         blackPanel = blackPanel.transform.GetChild(0).gameObject;
+        blackPanel.SetActive(false);
         
         target_rot = 0.0f;
 
@@ -559,7 +561,7 @@ public class PlayerMove : MonoBehaviour
             ground_obj = hit.transform.gameObject;
             ground_obj_parent = ground_obj.transform.root.gameObject;
             deform_stage = ground_obj_parent.GetComponent<DeformStage>();
-            //min_max_deform = ground_obj_parent.GetComponent<MinMaxDeform>();
+            min_max_deform = ground_obj_parent.GetComponent<MinMaxDeform>();
         }
         else
         {
@@ -610,6 +612,8 @@ public class PlayerMove : MonoBehaviour
                 if (min_max_deform.GetMinHit())
                     isSmash = false;
             }
+            
+            Debug.Log(isSmash);
 
             if (isSmash)
             {
