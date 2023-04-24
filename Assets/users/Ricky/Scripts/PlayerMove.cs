@@ -43,6 +43,8 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private float smash_threshold = 2.0f;
     [Tooltip("溜める最大秒数")]
     [SerializeField] private float smash_max_time = 5.0f;
+    [Header("叩く力")]
+    [SerializeField] private float smash_power_scalar = 3.0f;
     
     [SerializeField] private GameObject blackPanel;
     
@@ -637,7 +639,7 @@ public class PlayerMove : MonoBehaviour
 
             if (isSmash)
             {
-                deform_stage.AddDeformpointDown(transform.position, transform.eulerAngles.y, smash_power_num + 1 * 5.0f, is_flip);
+                deform_stage.AddDeformpointDown(transform.position, transform.eulerAngles.y, smash_power_num + 1 * smash_power_scalar, is_flip);
             }
             
             camera_obj.GetComponent<CameraMove>().ShakeCamera(smash_power_num / 2.0f, 0.2f);
