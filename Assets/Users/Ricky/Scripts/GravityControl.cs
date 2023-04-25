@@ -178,7 +178,6 @@ public class GravityControl : MonoBehaviour
                         if (Physics.Raycast(this.transform.position, dir_to_ground, out ground_hit, sphere_size, ground_layer_mask))
                         {
                             float distance_to_ground = Vector3.Distance(this.transform.position, ground_hit.point);
-                            Debug.Log(distance_to_ground);
                             if (distance_to_ground < distance_check)
                             {
                                 hit_dir = this.transform.position - ground_hit.point;

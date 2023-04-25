@@ -12,7 +12,7 @@ public class InputManager : MonoBehaviour
     private string current_scene;
     
     public Vector2 player_move_float {get; private set;}
-    public int menu_move_input {get; private set;}
+    private int menu_move_input;
     
     public bool press_smash {get; private set;}
     public bool press_flip {get; private set;}
@@ -21,6 +21,20 @@ public class InputManager : MonoBehaviour
     public bool press_select {get; private set;}
     public bool press_cancel {get; private set;}
     public bool press_start {get; private set;}
+    
+    private float input_delay;
+    
+    public int GetMenuMoveFloat()
+    {
+        int return_num = menu_move_input;
+        
+        if (input_delay > 0)
+        {
+            return_num = 0;
+        }
+        
+        return return_num;
+    }
     
     private void Awake() 
     {
@@ -53,6 +67,8 @@ public class InputManager : MonoBehaviour
         }
         
         ResetAllParams();
+        
+        input_delay = 0.0f;
     }
 
     // Update is called once per frame
@@ -68,7 +84,23 @@ public class InputManager : MonoBehaviour
                     input_system.Menu.Enable();
                 }
                 
-                menu_move_input = input_system.Menu.VerticalMove.ReadValue<int>();
+                if (menu_move_input != 0)
+                {
+                    if (input_delay < 0.6f)
+                    {
+                        input_delay += Time.deltaTime;
+                    }
+                    else
+                    {
+                        input_delay = 0.0f;
+                    }
+                }
+                else
+                {
+                    input_delay = 0.0f;
+                }
+                
+                menu_move_input = (int)input_system.Menu.VerticalMove.ReadValue<float>();
             }
             else
             {
@@ -95,7 +127,6 @@ public class InputManager : MonoBehaviour
     private void ResetAllParams()
     {
         //変数を初期化する
-        press_smash = false;
         press_flip = false;
         press_rotate = false;
         press_pause = false;
@@ -107,6 +138,11 @@ public class InputManager : MonoBehaviour
     private void SmashInput(InputAction.CallbackContext obj)
     {
         press_smash = true;
+    }
+    
+    private void ReleaseSmashInput(InputAction.CallbackContext obj)
+    {
+        press_smash = false;
     }
     
     private void FlipInput(InputAction.CallbackContext obj)
@@ -168,6 +204,7 @@ public class InputManager : MonoBehaviour
     private void OnEnable() 
     {
         input_system.Player.Smash.performed += SmashInput;
+        input_system.Player.Smash.canceled += ReleaseSmashInput;
         input_system.Player.Enable();
         
         input_system.Player.Flip.performed += FlipInput;
