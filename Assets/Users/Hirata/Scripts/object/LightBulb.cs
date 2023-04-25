@@ -9,10 +9,14 @@ public class LightBulb : MonoBehaviour
 
     private DeformStage deform_stage;    //電源がステージが当たっているかを取得
     private LightBulbChangeMaterial changeMaterial;    //マテリアルを変更
+    private SoundManager soundManager;
+    public GameObject Laser;
+
 
     private void Start()
     {
         changeMaterial = GetComponent<LightBulbChangeMaterial>();
+        soundManager = GetComponent<SoundManager>();    
     }
 
     private void Update()
@@ -57,5 +61,22 @@ public class LightBulb : MonoBehaviour
             deform_stage = other.transform.root.GetComponent<DeformStage>();
             nothit_count = 0;
         }
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("ElectricalBall"))
+        {
+            soundManager.PlaySoundEffect("Hit");
+
+            Quaternion LaserRotation = CalculateRotation(gameObject.transform.position, other.gameObject.GetComponent<ElectricBallMove>().ParentGenerator.gameObject.transform.position);
+            Instantiate(Laser, gameObject.transform.position,LaserRotation);
+        }
+    }
+    public Quaternion CalculateRotation(Vector3 startPos, Vector3 endPos)
+    {
+        Vector3 direction = endPos - startPos;
+        Quaternion rotation = Quaternion.LookRotation(direction);
+
+        return rotation;
     }
 }

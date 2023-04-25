@@ -19,7 +19,7 @@ public class ElectricBallMove : MonoBehaviour
     private Rigidbody rb;                   //リギッドボディー
     private float m_destroy_timer;
     private GameObject player;
-
+    public GameObject ParentGenerator;
     // Start is called before the first frame update
     void Start()
     {

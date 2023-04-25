@@ -14,17 +14,41 @@ public class ElectricalPower : MonoBehaviour
     private float time;                 //前回からの秒数
     private float old_time;             //前回生成した秒数
     private Vector3 electricball_position;//電球を生成する位置
+    private ParticleSystem ChargeEffect;
+    private GameObject ElectricBallEffect;
+
+    private float RateOverTime;
+    private float SimurationSpeed;
+    private Vector3 ElectricBallScale;
 
     private void Start()
     {
-        
+        //エフェクトの格納
+        ChargeEffect = gameObject.transform.parent.Find("ChargeEffect").GetComponent<ParticleSystem>();
+        RateOverTime = ChargeEffect.emissionRate;
+        SimurationSpeed = ChargeEffect.playbackSpeed;
+        ElectricBallEffect = gameObject.transform.parent.Find("ElectricBall").gameObject;
+        ElectricBallScale = ElectricBallEffect.transform.localScale;
     }
 
     private void Update()
     {
+        
+
+
         //ステージとの接触が無くなった場合タイマーをリセット
         if (is_stage_hit)
         {
+
+            //エフェクトを変更
+            ChargeEffect.playbackSpeed = (SimurationSpeed / electricball_instan_time) * time;
+            ChargeEffect.emissionRate = (RateOverTime / electricball_instan_time) * time;
+            Vector3 ballsize = ElectricBallScale;
+            ballsize.x = (ballsize.x / electricball_instan_time) * time;
+            ballsize.y = (ballsize.y / electricball_instan_time) * time;
+            ballsize.z = (ballsize.z / electricball_instan_time) * time;
+
+            ElectricBallEffect.transform.localScale = ballsize;
             if (nothit_count > 5)
             {
                 deformstage.IsElectricalPower(false);
@@ -33,10 +57,17 @@ public class ElectricalPower : MonoBehaviour
             else
                 nothit_count++;
 
+            if (time > electricball_instan_time - 1.5 && hit_elapsed_time > start_time)
+            {
+                ChargeEffect.Stop();
+            }
             if (time > electricball_instan_time && hit_elapsed_time > start_time)
             {
-                Instantiate(ElectricBall, electricball_position, Quaternion.identity);
+                GameObject ElectricBall_Instant = Instantiate(ElectricBall, electricball_position, Quaternion.identity);
+                ElectricBall_Instant.GetComponent<ElectricBallMove>().ParentGenerator = this.gameObject;
                 old_time = Time.time;
+                ChargeEffect.Clear();
+                ChargeEffect.Play();
             }
         }
         else
