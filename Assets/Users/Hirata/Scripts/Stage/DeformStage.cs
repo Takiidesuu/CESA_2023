@@ -75,7 +75,7 @@ public class DeformStage : MonoBehaviour
 
         //マテリアル取得
         electric_floor = (Material)Resources.Load("ElectricFloor");
-        floor = (Material)Resources.Load("Floor");
+        floor = (Material)Resources.Load("IronMat");
     }
 
     private void Update()
@@ -221,9 +221,9 @@ public class DeformStage : MonoBehaviour
         }
 
         //力によってへこむ量を変化させる
-        pointdown[0].GetComponent<RadialCurveDeformer>().Factor = -smash_power;
-        pointdown[1].GetComponent<RadialCurveDeformer>().Factor = -smash_power;
-        pointdown[2].GetComponent<RadialCurveDeformer>().Factor = -smash_power;
+        pointdown[0].GetComponent<RadialCurveDeformer>().Factor = -smash_power*100;
+        pointdown[1].GetComponent<RadialCurveDeformer>().Factor = -smash_power*100;
+        pointdown[2].GetComponent<RadialCurveDeformer>().Factor = -smash_power*100;
 
         //HitGroundに当たっているステージに対して変形を適用させる
         GameObject[] gameObjects = ground_check.GetHitGround();

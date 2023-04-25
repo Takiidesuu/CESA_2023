@@ -621,14 +621,6 @@ public class PlayerMove : MonoBehaviour
             rb.AddForce(this.transform.up * jump_power * smash_power_num / smash_threshold * 0.5f, ForceMode.Impulse);
         }
 
-    }
-
-    IEnumerator SmashGround(float fdelay, int ipower, float fcam_power, float fangle)
-    {
-
-        yield return new WaitForSeconds(fdelay);
-
-
         //叩くSEの再生
         soundmanager.PlaySoundEffect("Strike");
         if (deform_stage)
