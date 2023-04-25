@@ -10,12 +10,13 @@ public class LightBulbCollector : MonoBehaviour
 
     void Start()
     {
+
         // タグが "LightBulb" のオブジェクトを検索し、配列に格納する
         lightBulbs = GameObject.FindGameObjectsWithTag("LightBulb");
         LightBulb_num = lightBulbs.Length;
         lightBulb = new LightBulb[LightBulb_num];
 
-        for(int i = 0;i < LightBulb_num;i++)
+        for (int i = 0; i < LightBulb_num; i++)
         {
             lightBulb[i] = lightBulbs[i].GetComponent<LightBulb>();
         }
@@ -23,19 +24,13 @@ public class LightBulbCollector : MonoBehaviour
     private void Update()
     {
         LightBulb_active = 0;
-     for(int i = 0; i< LightBulb_num;i++)
+        for (int i = 0; i < LightBulb_num; i++)
         {
-            if(lightBulb[i].is_stage_hit)
+            if (lightBulb[i].is_stage_hit)
             {
                 LightBulb_active++;
             }
         }
     }
-    public Quaternion CalculateRotation(Vector3 startPos, Vector3 endPos)
-    {
-        Vector3 direction = endPos - startPos;
-        Quaternion rotation = Quaternion.LookRotation(direction);
-
-        return rotation;
-    }
+  
 }
