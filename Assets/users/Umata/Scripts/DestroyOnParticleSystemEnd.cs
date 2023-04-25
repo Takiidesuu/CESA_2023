@@ -1,18 +1,32 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class NewBehaviourScript : MonoBehaviour
+public class DestroyOnParticleSystemEnd : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private float lifetime = 5f; // パーティクルシステムが削除されるまでの時間
+
+    private ParticleSystem particleSystem;
+    private float timer = 0;
+
+    private void Start()
     {
-        
+        particleSystem = GetComponent<ParticleSystem>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        
+
+        timer += Time.deltaTime; // タイマーを加算する
+
+        // パーティクルシステムが再生されていない場合、指定時間が経過したらGameObjectを削除する
+        if (timer >= lifetime)
+            Destroy(gameObject);
+
+        // ParticleSystemが再生中かどうかを確認する
+        if (particleSystem.isPlaying)
+        {
+            return;
+        }
+        Destroy(gameObject);
+
     }
 }

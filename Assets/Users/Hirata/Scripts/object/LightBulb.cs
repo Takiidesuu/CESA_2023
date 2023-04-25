@@ -11,7 +11,7 @@ public class LightBulb : MonoBehaviour
     private LightBulbChangeMaterial changeMaterial;    //マテリアルを変更
     private SoundManager soundManager;
     public GameObject Laser;
-
+    public GameObject HitEffect;    //接触時に発光する
 
     private void Start()
     {
@@ -70,6 +70,8 @@ public class LightBulb : MonoBehaviour
 
             Quaternion LaserRotation = CalculateRotation(gameObject.transform.position, other.gameObject.GetComponent<ElectricBallMove>().ParentGenerator.gameObject.transform.position);
             Instantiate(Laser, gameObject.transform.position,LaserRotation);
+            Instantiate(HitEffect, gameObject.transform.position,transform.rotation);
+
         }
     }
     public Quaternion CalculateRotation(Vector3 startPos, Vector3 endPos)
