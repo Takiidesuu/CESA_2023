@@ -221,9 +221,9 @@ public class DeformStage : MonoBehaviour
         }
 
         //力によってへこむ量を変化させる
-        pointdown[0].GetComponent<RadialCurveDeformer>().Factor = -smash_power*100;
-        pointdown[1].GetComponent<RadialCurveDeformer>().Factor = -smash_power*100;
-        pointdown[2].GetComponent<RadialCurveDeformer>().Factor = -smash_power*100;
+        pointdown[0].GetComponent<RadialCurveDeformer>().Factor = -smash_power*5;
+        pointdown[1].GetComponent<RadialCurveDeformer>().Factor = -smash_power*5;
+        pointdown[2].GetComponent<RadialCurveDeformer>().Factor = -smash_power*5;
 
         //HitGroundに当たっているステージに対して変形を適用させる
         GameObject[] gameObjects = ground_check.GetHitGround();
