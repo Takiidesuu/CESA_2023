@@ -36,7 +36,7 @@ public class ElectricalPower : MonoBehaviour
     {
         time = Time.time - old_time;
         hit_elapsed_time += Time.deltaTime;
-        deformstage.IsElectricalPower(true);                                //電源が当たった事をステージに渡す
+        //deformstage.IsElectricalPower(true);                                //電源が当たった事をステージに渡す
         is_stage_hit = true;
         nothit_count = 0;
 
@@ -71,6 +71,7 @@ public class ElectricalPower : MonoBehaviour
             {
                 GameObject ElectricBall_Instant = Instantiate(ElectricBall,transform.position, Quaternion.identity);
                 ElectricBall_Instant.GetComponent<ElectricBallMove>().ParentGenerator = this.gameObject;
+                ElectricBall_Instant.transform.GetComponent<Rigidbody>().AddForce(new Vector3(0,100,0));
                 old_time = Time.time;
                 ChargeEffect.Clear();
                 ChargeEffect.Play();
