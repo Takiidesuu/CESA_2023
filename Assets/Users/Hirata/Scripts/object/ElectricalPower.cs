@@ -5,7 +5,8 @@ using UnityEngine;
 public class ElectricalPower : MonoBehaviour
 {
     private DeformStage deformstage;    //当たったステージ
-    public bool is_stage_hit = false;   //ステージに当たっているか
+    public bool is_stage_hit = true;   //ステージに当たっているか
+    private bool is_init = false;
     private int nothit_count;           //当たらずに何フレーム立ったか (Exitが呼ばれないため)
     public float electricball_instan_time = 5;//電球を繰り返し生成する時間
     public float start_time;    //開始ラグ
@@ -33,29 +34,34 @@ public class ElectricalPower : MonoBehaviour
 
     private void Update()
     {
-        
-
+        time = Time.time - old_time;
+        hit_elapsed_time += Time.deltaTime;
+        //deformstage.IsElectricalPower(true);                                //電源が当たった事をステージに渡す
+        is_stage_hit = true;
+        nothit_count = 0;
 
         //ステージとの接触が無くなった場合タイマーをリセット
         if (is_stage_hit)
         {
 
+            if(!is_init)
+            {
+                old_time = Time.time;
+                time = Time.time - old_time;
+                is_init = true;
+            }
+
             //エフェクトを変更
             ChargeEffect.playbackSpeed = (SimurationSpeed / electricball_instan_time) * time;
             ChargeEffect.emissionRate = (RateOverTime / electricball_instan_time) * time;
+
             Vector3 ballsize = ElectricBallScale;
             ballsize.x = (ballsize.x / electricball_instan_time) * time;
             ballsize.y = (ballsize.y / electricball_instan_time) * time;
             ballsize.z = (ballsize.z / electricball_instan_time) * time;
 
             ElectricBallEffect.transform.localScale = ballsize;
-            if (nothit_count > 5)
-            {
-                deformstage.IsElectricalPower(false);
-                is_stage_hit = false;
-            }
-            else
-                nothit_count++;
+
 
             if (time > electricball_instan_time - 1.5 && hit_elapsed_time > start_time)
             {
@@ -63,30 +69,21 @@ public class ElectricalPower : MonoBehaviour
             }
             if (time > electricball_instan_time && hit_elapsed_time > start_time)
             {
-                GameObject ElectricBall_Instant = Instantiate(ElectricBall, electricball_position, Quaternion.identity);
+                GameObject ElectricBall_Instant = Instantiate(ElectricBall,transform.position, Quaternion.identity);
                 ElectricBall_Instant.GetComponent<ElectricBallMove>().ParentGenerator = this.gameObject;
+                ElectricBall_Instant.transform.GetComponent<Rigidbody>().AddForce(new Vector3(0,100,0));
                 old_time = Time.time;
                 ChargeEffect.Clear();
                 ChargeEffect.Play();
+                is_init = false;
             }
         }
         else
         {
             hit_elapsed_time = 0;
+            is_init = false;
+            ChargeEffect.Stop();
         }
-        time = Time.time - old_time;
-    }
 
-    private void OnTriggerStay(Collider other)
-    {
-        if (other.gameObject.layer == 6)
-        {
-            hit_elapsed_time += Time.deltaTime;
-            deformstage = other.transform.root.GetComponent<DeformStage>();     //どののステージと当たっているか
-            deformstage.IsElectricalPower(true);                                //電源が当たった事をステージに渡す
-            electricball_position = other.ClosestPointOnBounds(this.transform.position);
-            is_stage_hit = true;
-            nothit_count = 0;
-        }
     }
 }
