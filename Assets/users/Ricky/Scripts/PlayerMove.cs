@@ -667,7 +667,7 @@ public class PlayerMove : MonoBehaviour
             while (true)
             {
                 Vector3 check_pos = this.transform.position + -this.transform.up * dis;
-                Collider[] hit_col = Physics.OverlapSphere(check_pos, 0.5f, LayerMask.GetMask("Ground"));
+                Collider[] hit_col = Physics.OverlapSphere(check_pos, 2.0f, LayerMask.GetMask("Ground"));
                 if (hit_col.Length == 0)
                 {
                     new_pos = check_pos;
