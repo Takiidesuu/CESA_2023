@@ -16,6 +16,7 @@ public class GravityControl : MonoBehaviour
     private LayerMask ground_layer_mask;
     
     private bool on_ground;
+    private bool in_gravfield;
     private float increase_gravity_scalar;
 
     // Start is called before the first frame update
@@ -26,6 +27,7 @@ public class GravityControl : MonoBehaviour
         
         ground_layer_mask = LayerMask.GetMask("Ground");
         on_ground = false;
+        in_gravfield = false;
         
         increase_gravity_scalar = 1.0f;
     }
@@ -38,7 +40,14 @@ public class GravityControl : MonoBehaviour
 
     private void FixedUpdate()
     {
-        gravity_dir = CheckFloorAngle();
+        if (in_gravfield)
+        {
+            gravity_dir = CheckFloorAngle();
+        }
+        else
+        {
+            gravity_dir = new Vector3(0.0f, -1.0f, 0.0f);
+        }
 
         // Finds desired rotation relative to surface normal
         var targetRotation = Quaternion.FromToRotation(transform.up, gravity_dir * -1.0f) * transform.rotation;
@@ -192,5 +201,29 @@ public class GravityControl : MonoBehaviour
         Debug.DrawLine(transform.position, transform.position + (hit_dir.normalized * 30.0f), Color.blue);
 
         return hit_dir.normalized * -1.0f;
+    }
+    
+    private void OnTriggerEnter(Collider other) 
+    {
+        if (other.gameObject.tag == "GravityField")
+        {
+            in_gravfield = true;
+        }
+    }
+    
+    private void OnTriggerStay(Collider other) 
+    {
+        if (other.gameObject.tag == "GravityField")
+        {
+            in_gravfield = true;
+        }
+    }
+    
+    private void OnTriggerExit(Collider other) 
+    {
+        if (other.gameObject.tag == "GravityField")
+        {
+            in_gravfield = false;
+        }
     }
 }
