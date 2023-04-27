@@ -42,9 +42,9 @@ CapsuleCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   m_Radius: 1.17
-  m_Height: 4.21
+  m_Height: 3.5785158
   m_Direction: 1
-  m_Center: {x: 0, y: 1.03, z: 0}
+  m_Center: {x: 0, y: 1.0864218, z: 0}
 --- !u!1 &4527643178826435818
 GameObject:
   m_ObjectHideFlags: 0
@@ -99,9 +99,9 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 1.17
-  m_Height: 4.21
+  m_Height: 3.5785158
   m_Direction: 1
-  m_Center: {x: 0, y: 1.03, z: 0}
+  m_Center: {x: 0, y: 1.0864218, z: 0}
 --- !u!54 &4527643178826435821
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -136,6 +136,7 @@ MonoBehaviour:
   jump_power: 40
   smash_threshold: 1
   smash_max_time: 5
+  smash_power_scalar: 3
   blackPanel: {fileID: 0}
   is_dead: 0
 --- !u!114 &4527643178826435809
