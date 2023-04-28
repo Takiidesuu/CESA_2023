@@ -46,7 +46,7 @@ public class PlayerMove : MonoBehaviour
     [Header("叩く力")]
     [SerializeField] private float smash_power_scalar = 3.0f;
     
-    [SerializeField] private GameObject blackPanel;
+    private GameObject blackPanel;
     
     //コンポネント
     private Rigidbody rb;                   //リギッドボディー
@@ -109,7 +109,7 @@ public class PlayerMove : MonoBehaviour
     
     public GameObject GetGroundObj()
     {
-        return ground_obj;
+        return ground_obj != null ? ground_obj : null;
     }
     
     // Start is called before the first frame update
@@ -136,7 +136,8 @@ public class PlayerMove : MonoBehaviour
         speed = 0.0f;
         is_dead = false;
         
-        blackPanel = blackPanel.transform.GetChild(0).gameObject;
+        blackPanel = GameObject.Find("Canvas");
+        blackPanel = blackPanel.transform.GetChild(4).gameObject;
         blackPanel.SetActive(false);
         
         target_rot = 0.0f;
