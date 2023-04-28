@@ -41,7 +41,7 @@ public class ElectricBallMove : MonoBehaviour
         move_vec.y = 0;
         move_vec.z = 0;
 
-        transform.position += transform.rotation * move_vec;
+        transform.position += transform.rotation * move_vec * Time.deltaTime;
         m_destroy_timer += Time.deltaTime;
 
         //éûä‘åoâﬂå„çÌèú
