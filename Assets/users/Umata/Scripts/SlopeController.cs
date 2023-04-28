@@ -17,23 +17,23 @@ public class SlopeController : MonoBehaviour
 
     void FixedUpdate()
     {
-        Vector3 rayOrigin =transform.position; // Ray‚ÌŽn“_
-        Vector3 rayDirection = transform.up * -1; // Ray‚Ì•ûŒü
+        Vector3 rayOrigin =transform.position; // Rayï¿½ÌŽnï¿½_
+        Vector3 rayDirection = transform.up * -1; // Rayï¿½Ì•ï¿½ï¿½ï¿½
         fowordVec = transform.right;
 
         Debug.Log(fowordVec);
 
-        float rayDistance = 10f; // Ray‚Ì’·‚³
+        float rayDistance = 10f; // Rayï¿½Ì’ï¿½ï¿½ï¿½
 
-        // Ray‚ð‰ÂŽ‹‰»‚·‚é
+        // Rayï¿½ï¿½ï¿½ÂŽï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         Debug.DrawRay(rayOrigin, rayDirection * slopeRayLength, Color.green);
 
         RaycastHit hit;
         if (Physics.Raycast(transform.position,transform.up * -1, out hit, slopeRayLength, LayerMask.GetMask("Ground")))
         {
-            slopeAngle = 180 - Vector3.Angle(hit.normal,transform.up * - 1);
-           
-
+            slopeAngle = Vector3.Angle(hit.normal, hit.point - hit.transform.root.gameObject.transform.position);
+            
+            Debug.Log(slopeAngle);
         }
         else
         {
