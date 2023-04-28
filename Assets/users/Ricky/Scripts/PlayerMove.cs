@@ -48,10 +48,10 @@ public class PlayerMove : MonoBehaviour
  
     [Header("加速用プレハブ")]
     [SerializeField] public GameObject SpeedBooster;
-    [SerializeField] private GameObject blackPanel;
     [SerializeField] private Vector3 foot_pos;
     
     private GameObject blackPanel;
+    
     //コンポネント
     private Rigidbody rb;                   //リギッドボディー
     private CapsuleCollider col;            //コライダー
