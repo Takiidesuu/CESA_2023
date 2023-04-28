@@ -4,38 +4,62 @@ using UnityEngine;
 
 public class GravityControl : MonoBehaviour
 {
+    private const float gravity_number = 9.81f;
+    
     [Tooltip("重力")]
     [SerializeField] private float gravity_power = 5.0f;
     [Tooltip("回転速度")]
     [SerializeField] private float rotation_speed = 20.0f;
+    [Tooltip("戻るまでの時間")]
+    [SerializeField] private float time_to_warp = 3.0f;
 
     private Rigidbody rb;
 
+    private float real_gravity_power;
     private Vector3 gravity_dir;
-    
     private LayerMask ground_layer_mask;
     
     private bool on_ground;
     private bool in_gravfield;
     private float increase_gravity_scalar;
+    
+    private float time_in_air;
+    
+    private GameObject last_ground_obj;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         rb.useGravity = false;
+        real_gravity_power = gravity_power;
         
         ground_layer_mask = LayerMask.GetMask("Ground");
         on_ground = false;
         in_gravfield = false;
         
         increase_gravity_scalar = 1.0f;
+        time_in_air = 0.0f;
+        
+        last_ground_obj = null;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (!in_gravfield)
+        {
+            time_in_air += Time.deltaTime;
+            
+            if (time_in_air > time_to_warp - Time.deltaTime && time_in_air < time_to_warp + Time.deltaTime)
+            {
+                StartCoroutine(WarpBackToGround());
+            }
+        }
+        else
+        {
+            time_in_air = 0.0f;
+        }
     }
 
     private void FixedUpdate()
@@ -46,7 +70,10 @@ public class GravityControl : MonoBehaviour
         }
         else
         {
-            gravity_dir = new Vector3(0.0f, -1.0f, 0.0f);
+            if (time_in_air < time_to_warp)
+            {
+                gravity_dir = new Vector3(0.0f, -1.0f, 0.0f);
+            }
         }
 
         // Finds desired rotation relative to surface normal
@@ -70,10 +97,12 @@ public class GravityControl : MonoBehaviour
         }
         else
         {
-            increase_gravity_scalar += Time.deltaTime;
+            float gravity_speed_scalar = 20.0f;
+            increase_gravity_scalar += Time.deltaTime / gravity_speed_scalar;
         }
 
-        rb.AddForce(gravity_dir * 9.81f * gravity_power);
+        Vector3 real_grav_dir = gravity_dir * gravity_number * real_gravity_power * increase_gravity_scalar;
+        rb.AddForce(real_grav_dir);
     }
 
     private Vector3 CheckFloorAngle()
@@ -116,17 +145,30 @@ public class GravityControl : MonoBehaviour
 
         if (found_ground)
         {
+            GameObject found_obj = null;
+            
             if (hit_front.transform != null)
             {
                 hit_dir += hit_front.normal;
+                found_obj = hit_front.transform.root.gameObject;
             }
             if (hit_centre.transform != null)
             {
                 hit_dir += hit_centre.normal;
+                found_obj = hit_centre.transform.root.gameObject;
             }
             if (hit_back.transform != null)
             {
                 hit_dir += hit_back.normal;
+                found_obj = hit_back.transform.root.gameObject;
+            }
+            
+            if (found_obj)
+            {
+                if (last_ground_obj != found_obj)
+                {
+                    last_ground_obj = found_obj;
+                }
             }
         }
         else
@@ -166,6 +208,12 @@ public class GravityControl : MonoBehaviour
                     if (Vector3.Distance(ray.point, this.transform.position) < check_distance)
                     {
                         hit_dir = this.transform.position - ray.point;
+                        
+                        if (last_ground_obj != ray.transform.root.gameObject)
+                        {
+                            last_ground_obj = ray.transform.root.gameObject;
+                        }
+                        
                         check_distance = Vector3.Distance(ray.point, this.transform.position);
                     }
                 }
@@ -190,6 +238,12 @@ public class GravityControl : MonoBehaviour
                             if (distance_to_ground < distance_check)
                             {
                                 hit_dir = this.transform.position - ground_hit.point;
+                                
+                                if (last_ground_obj != ground_hit.transform.root.gameObject)
+                                {
+                                    last_ground_obj = ground_hit.transform.root.gameObject;
+                                }
+                                
                                 distance_check = distance_to_ground;
                             }
                         }
@@ -201,6 +255,22 @@ public class GravityControl : MonoBehaviour
         Debug.DrawLine(transform.position, transform.position + (hit_dir.normalized * 30.0f), Color.blue);
 
         return hit_dir.normalized * -1.0f;
+    }
+    
+    IEnumerator WarpBackToGround()
+    {
+        gravity_dir = Vector3.zero;
+        real_gravity_power = 0.0f;
+        rb.velocity = Vector3.zero;
+        
+        yield return new WaitForSeconds(1.0f);
+        
+        increase_gravity_scalar = 1.0f;
+        
+        real_gravity_power = gravity_power;
+        gravity_dir = last_ground_obj.transform.position - this.transform.position;
+        gravity_dir.Normalize();
+        transform.Rotate(0.0f, 180.0f, 0.0f);
     }
     
     private void OnTriggerEnter(Collider other) 

@@ -45,11 +45,13 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private float smash_max_time = 5.0f;
     [Header("叩く力")]
     [SerializeField] private float smash_power_scalar = 3.0f;
+ 
     [Header("加速用プレハブ")]
     [SerializeField] public GameObject SpeedBooster;
     [SerializeField] private GameObject blackPanel;
     [SerializeField] private Vector3 foot_pos;
-
+    
+    private GameObject blackPanel;
     //コンポネント
     private Rigidbody rb;                   //リギッドボディー
     private CapsuleCollider col;            //コライダー
@@ -111,7 +113,7 @@ public class PlayerMove : MonoBehaviour
     
     public GameObject GetGroundObj()
     {
-        return ground_obj;
+        return ground_obj != null ? ground_obj : null;
     }
     
     // Start is called before the first frame update
@@ -138,7 +140,8 @@ public class PlayerMove : MonoBehaviour
         speed = 0.0f;
         is_dead = false;
         
-        blackPanel = blackPanel.transform.GetChild(0).gameObject;
+        blackPanel = GameObject.Find("Canvas");
+        blackPanel = blackPanel.transform.GetChild(4).gameObject;
         blackPanel.SetActive(false);
         
         target_rot = 0.0f;
