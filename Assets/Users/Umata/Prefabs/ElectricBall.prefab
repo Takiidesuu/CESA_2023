@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 8770918900206177598}
   - component: {fileID: 8770918900206177599}
   - component: {fileID: 579992914045816319}
+  - component: {fileID: 3319835099174372608}
   m_Layer: 9
   m_Name: ElectricBall
   m_TagString: ElectricalBall
@@ -112,7 +113,7 @@ Rigidbody:
   m_Mass: 1
   m_Drag: 0
   m_AngularDrag: 0.05
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 120
@@ -250,9 +251,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 499dc1886888b594087b2c876f6673c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_speed: 0.3
+  m_speed: 0.1
   deceleration_speed: 0
   m_destroy_time: 30
+  m_accelerator_time: 1
+  m_accelerator_speed: 0.1
   turn_smooth_time: 1
   ParentGenerator: {fileID: 0}
 --- !u!82 &579992914045816319
@@ -396,6 +399,21 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &3319835099174372608
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8770918900206177575}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a32d0f4d916f8064fb50fad26d4c8e1c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 10
+  slopeForce: 100
+  slopeRayLength: 10
 --- !u!1001 &7990578983296405097
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -425,7 +443,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1683411105828452786, guid: bb224433be185cc4bb498c621689d562, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.22
+      value: -0.13
       objectReference: {fileID: 0}
     - target: {fileID: 1683411105828452786, guid: bb224433be185cc4bb498c621689d562, type: 3}
       propertyPath: m_LocalPosition.z
