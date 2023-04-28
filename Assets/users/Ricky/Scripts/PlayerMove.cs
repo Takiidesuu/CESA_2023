@@ -45,9 +45,13 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private float smash_max_time = 5.0f;
     [Header("叩く力")]
     [SerializeField] private float smash_power_scalar = 3.0f;
+ 
+    [Header("加速用プレハブ")]
+    [SerializeField] public GameObject SpeedBooster;
+    [SerializeField] private GameObject blackPanel;
+    [SerializeField] private Vector3 foot_pos;
     
     private GameObject blackPanel;
-    
     //コンポネント
     private Rigidbody rb;                   //リギッドボディー
     private CapsuleCollider col;            //コライダー
@@ -578,6 +582,8 @@ public class PlayerMove : MonoBehaviour
             ground_obj_parent = ground_obj.transform.root.gameObject;
             deform_stage = ground_obj_parent.GetComponent<DeformStage>();
             min_max_deform = ground_obj_parent.GetComponent<MinMaxDeform>();
+            //足元の位置を保存
+            foot_pos = hit.point;
         }
         else
         {
@@ -624,6 +630,8 @@ public class PlayerMove : MonoBehaviour
 
         //叩くSEの再生
         soundmanager.PlaySoundEffect("Strike");
+        //Instantiate(SpeedBooster,foot_pos, Quaternion.identity);
+
         if (deform_stage)
         {
 

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Deform;
 
-[ExecuteInEditMode]
 
 public class DeformStage : MonoBehaviour
 {
@@ -12,7 +11,7 @@ public class DeformStage : MonoBehaviour
     private SAMeshColliderBuilder SAMeshColliderBuilder;
 
     private GameObject point_down;                                    //へこむポイントオブジェクト
-    //private List<GameObject> all_point_down = new List<GameObject>(); //すべでのへこむポイントオブジェクト
+    private  List<RadialCurveDeformer> all_point_down = new List<RadialCurveDeformer>(); //すべでのへこむポイントオブジェクト
     private List<GameObject> wave_deformer = new List<GameObject>();  //波
     private List<float> wave_instantiate_rotate_z = new List<float>();//波が生成されたときのプレイヤー角度
     private float wave_down_power = 0.5f;                             //波の減少
@@ -21,10 +20,12 @@ public class DeformStage : MonoBehaviour
     private GameObject player_gameobject;                             //プレイヤー
     private GroundCheck ground_check;                                 //ステージの地面がどれかのチェック
     public bool hit_electrical;                                       //電源に当たっているか
-    private Material electric_floor;                                  //電源に当たった際のマテリアル
-    private Material floor;                                           //当たっていない際のマテリアル
+    public Material electric_floor;                                  //電源に当たった際のマテリアル
+    public Material floor;                                           //当たっていない際のマテリアル
 
     [SerializeField] private bool is_reverse;                         //全てを反転 （仮）
+
+    public float point_down_factor;                                  //へこむ力
 
     void Start()
     {
@@ -72,10 +73,6 @@ public class DeformStage : MonoBehaviour
             ChildDefotmbles[i].ColliderRecalculation = ColliderRecalculation.Auto;
             ChildDefotmbles[i].MeshCollider = ChildMeshObject[i].transform.GetChild(0).GetChild(0).gameObject.GetComponent<MeshCollider>();
         }
-
-        //マテリアル取得
-        electric_floor = (Material)Resources.Load("ElectricFloor");
-        floor = (Material)Resources.Load("IronMat");
     }
 
     private void Update()
@@ -221,9 +218,9 @@ public class DeformStage : MonoBehaviour
         }
 
         //力によってへこむ量を変化させる
-        pointdown[0].GetComponent<RadialCurveDeformer>().Factor = -smash_power*5;
-        pointdown[1].GetComponent<RadialCurveDeformer>().Factor = -smash_power*5;
-        pointdown[2].GetComponent<RadialCurveDeformer>().Factor = -smash_power*5;
+        pointdown[0].GetComponent<RadialCurveDeformer>().Factor = -smash_power * point_down_factor;
+        pointdown[1].GetComponent<RadialCurveDeformer>().Factor = -smash_power * point_down_factor;
+        pointdown[2].GetComponent<RadialCurveDeformer>().Factor = -smash_power * point_down_factor;
 
         //HitGroundに当たっているステージに対して変形を適用させる
         GameObject[] gameObjects = ground_check.GetHitGround();
@@ -245,17 +242,22 @@ public class DeformStage : MonoBehaviour
                     break;
                 }
             }
-
-            if(!synthesis)  //合成したならば追加しない
+            //合成したならば追加しない
+            if (!synthesis)
                 deformable.AddDeformer(pointdown[0].GetComponent<RadialCurveDeformer>());
+            else
+                Destroy(pointdown[0]);
             deformable.AddDeformer(pointdown[1].GetComponent<RadialCurveDeformer>());
             deformable.AddDeformer(pointdown[2].GetComponent<RadialCurveDeformer>());
         }
-        //all_point_down.Add(pointdown[0]);
+        all_point_down.Add(pointdown[0].GetComponent<RadialCurveDeformer>());
         wave_deformer.Add(pointdown[1]);
         wave_deformer.Add(pointdown[2]);
         for (int i = 0; i < 2; i++)
             wave_instantiate_rotate_z.Add(player_gameobject.transform.eulerAngles.z + 270);
+
+        //へこみを全て保管する
+        ////all_point_down.Add(pointdown[0].GetComponent<RadialCurveDeformer>());
     }
 
     //電源に当たったか
