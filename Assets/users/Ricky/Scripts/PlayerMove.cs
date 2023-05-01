@@ -141,7 +141,7 @@ public class PlayerMove : MonoBehaviour
         is_dead = false;
         
         blackPanel = GameObject.Find("Canvas");
-        blackPanel = blackPanel.transform.GetChild(4).gameObject;
+        blackPanel = blackPanel.transform.GetChild(5).gameObject;
         blackPanel.SetActive(false);
         
         target_rot = 0.0f;
