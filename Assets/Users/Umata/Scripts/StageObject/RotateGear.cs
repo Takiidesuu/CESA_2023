@@ -1,4 +1,6 @@
 using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 
 public class RotateGear : MonoBehaviour
 {
@@ -19,35 +21,64 @@ public class RotateGear : MonoBehaviour
     private float toggleDurationTimer = 0.0f; // トグル用回転時間タイマー
     private bool isToggling = false; // トグル中フラグ
     private Quaternion toggleRotation; // トグル用回転クオータニオン
+    private List<GearParam> GearRotateVector = new List<GearParam>();
+
+    struct GearParam
+    {
+        public float Timer;
+        public float Speed;
+    }
+
+    void Start()
+    {
+        m_RotateSpeed = RotateSpeed * 0.2f;
+    }
 
     void Update()
     {
-        // Y軸に回転
-        transform.Rotate(Vector3.up * Time.deltaTime * RotateSpeed);
-
-        // トグルがONの場合
-        if (IsToggle)
+        if (GearRotateVector.Count > 0)
         {
-            toggleTimer += Time.deltaTime;
-
-            if (toggleTimer >= ToggleInterval)
+            //時間切れの場合削除
+            if (GearRotateVector[0].Timer <= 0)
             {
-                StartToggle();
-                toggleTimer = 0.0f;
+                GearRotateVector.RemoveAt(0);
+                return;
             }
+            //回転待機列がある場合優先実行
+            GearParam gearParam = GearRotateVector[0];
+            transform.Rotate(Vector3.up * Time.deltaTime * m_RotateSpeed * gearParam.Speed * 50);
+            gearParam.Timer -= Time.deltaTime;
+            GearRotateVector[0] = gearParam;
         }
-
-        // トグル中の場合
-        if (isToggling)
+        else
         {
-            toggleDurationTimer += Time.deltaTime;
-            if (toggleDurationTimer < ToggleDuration)
+            // Y軸に回転
+            transform.Rotate(Vector3.up * Time.deltaTime * m_RotateSpeed);
+
+            //トグルがONの場合
+            if (IsToggle)
             {
-                transform.rotation = Quaternion.Lerp(transform.rotation, toggleRotation, toggleDurationTimer / ToggleDuration);
+                toggleTimer += Time.deltaTime;
+
+                if (toggleTimer >= ToggleInterval)
+                {
+                    StartToggle();
+                    toggleTimer = 0.0f;
+                }
             }
-            if (toggleDurationTimer >= ToggleDuration)
+
+            // トグル中の場合
+            if (isToggling)
             {
-                isToggling = false;
+                toggleDurationTimer += Time.deltaTime;
+                if (toggleDurationTimer < ToggleDuration)
+                {
+                    transform.rotation = Quaternion.Lerp(transform.rotation, toggleRotation, toggleDurationTimer / ToggleDuration);
+                }
+                if (toggleDurationTimer >= ToggleDuration)
+                {
+                    isToggling = false;
+                }
             }
         }
     }
@@ -59,20 +90,19 @@ public class RotateGear : MonoBehaviour
         isToggling = true;
         toggleDurationTimer = 0.0f;
     }
-    public void ChangeGearMode(float ComplateRate)
+    public void ChangeGearMode(float ComplateRate,float difference,float time)
     {
-        if(ComplateRate > 0.8)
-        {
-            IsToggle = false;
-            m_RotateSpeed = RotateSpeed;
-        }
-        else
-        {
-            IsToggle = true;
-            m_RotateAngle = 10 + (RotateAngle * ComplateRate);
-            m_ToggleDuration = 1 +(ToggleDuration * ComplateRate);
-            m_ToggleInterval = 1 +(ToggleInterval * (1 -ComplateRate));
-        }
+
+            GearParam gear_param;
+            //スコアの増減に応じて変更
+            gear_param.Timer = time;
+            gear_param.Speed = difference;
+            GearRotateVector.Add(gear_param);
+            m_RotateSpeed = RotateSpeed * ComplateRate;
+            //IsToggle = true;
+            //m_RotateAngle = 10 + (RotateAngle * ComplateRate);
+            //m_ToggleDuration = 1 +(ToggleDuration * ComplateRate);
+            //m_ToggleInterval = 1 +(ToggleInterval * (1 -ComplateRate));
     }
         
 }
