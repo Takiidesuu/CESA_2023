@@ -8,6 +8,13 @@ public class RotateGear : MonoBehaviour
     public float ToggleInterval = 1.0f; // トグルの間隔
     public float ToggleDuration = 1.0f; // トグルの回転時間
 
+    //初期パラメータを参照した実際の変数
+
+    private float m_RotateSpeed = 10.0f; // 回転スピード
+    private float m_RotateAngle = 90.0f; // 回転角度
+    private float m_ToggleInterval = 1.0f; // トグルの間隔
+    private float m_ToggleDuration = 1.0f; // トグルの回転時間
+                  
     private float toggleTimer = 0.0f; // トグル用タイマー
     private float toggleDurationTimer = 0.0f; // トグル用回転時間タイマー
     private bool isToggling = false; // トグル中フラグ
@@ -34,8 +41,10 @@ public class RotateGear : MonoBehaviour
         if (isToggling)
         {
             toggleDurationTimer += Time.deltaTime;
-            transform.rotation = Quaternion.Lerp(transform.rotation, toggleRotation, toggleDurationTimer / ToggleDuration);
-
+            if (toggleDurationTimer < ToggleDuration)
+            {
+                transform.rotation = Quaternion.Lerp(transform.rotation, toggleRotation, toggleDurationTimer / ToggleDuration);
+            }
             if (toggleDurationTimer >= ToggleDuration)
             {
                 isToggling = false;
@@ -50,4 +59,20 @@ public class RotateGear : MonoBehaviour
         isToggling = true;
         toggleDurationTimer = 0.0f;
     }
+    public void ChangeGearMode(float ComplateRate)
+    {
+        if(ComplateRate > 0.8)
+        {
+            IsToggle = false;
+            m_RotateSpeed = RotateSpeed;
+        }
+        else
+        {
+            IsToggle = true;
+            m_RotateAngle = 10 + (RotateAngle * ComplateRate);
+            m_ToggleDuration = 1 +(ToggleDuration * ComplateRate);
+            m_ToggleInterval = 1 +(ToggleInterval * (1 -ComplateRate));
+        }
+    }
+        
 }
