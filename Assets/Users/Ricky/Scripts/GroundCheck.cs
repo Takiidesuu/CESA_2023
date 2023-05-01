@@ -5,7 +5,7 @@ using UnityEngine;
 public class GroundCheck : MonoBehaviour
 {
     GameObject playerObj;
-    PlayerMove playerMove;      //‚Ç‚ÌƒXƒe[ƒW‚Éæ‚Á‚Ä‚¢‚é‚©æ“¾‚·‚é‚½‚ß
+    PlayerMove playerMove;      //ã©ã®ã‚¹ãƒ†ãƒ¼ã‚¸ã«ä¹—ã£ã¦ã„ã‚‹ã‹å–å¾—ã™ã‚‹ãŸã‚
     private int RemoveFrame = 5;
 
     public class hit_object
@@ -35,6 +35,11 @@ public class GroundCheck : MonoBehaviour
         {
             for (int i = 0; i < hit_ground.Count; i++)
             {
+                if (playerMove.GetGroundObj() == null)
+                {
+                    break;
+                }
+                
                 if (hit_ground[i].obj.transform.root != playerMove.GetGroundObj().transform.root)
                 {
                     hit_ground.RemoveAt(i);
@@ -65,7 +70,7 @@ public class GroundCheck : MonoBehaviour
         {
             if (other.gameObject.layer == 6)
             {
-                //©•ª‚ªæ‚Á‚Ä‚¢‚éƒXƒe[ƒW‚Ì‚İ‚Ö‚±‚Ü‚¹‚é
+                //è‡ªåˆ†ãŒä¹—ã£ã¦ã„ã‚‹ã‚¹ãƒ†ãƒ¼ã‚¸ã®ã¿ã¸ã“ã¾ã›ã‚‹
                 if (playerMove.GetGroundObj() != null)
                 {
                     if (other.transform.root == playerMove.GetGroundObj().transform.root)

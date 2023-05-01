@@ -4,32 +4,32 @@ using UnityEngine;
 public class ElectricBallMove : MonoBehaviour
 {
 
-    [Tooltip("ˆÚ“®‘¬“x")]
+    [Tooltip("ç§»å‹•é€Ÿåº¦")]
     [SerializeField] private float m_speed = 5.0f;
 
-    [Tooltip("Œ¸‘¬‘¬“x")]
+    [Tooltip("æ¸›é€Ÿé€Ÿåº¦")]
     [SerializeField] private float deceleration_speed = 5.0f;
 
-    [Tooltip("Á–ÅŠÔ")]
+    [Tooltip("æ¶ˆæ»…æ™‚é–“")]
     [SerializeField] private float m_destroy_time = 5.0f;
 
-    [Tooltip("â‚Å‚Ì‰Á‘¬ŠÔ")]
+    [Tooltip("å‚ã§ã®åŠ é€Ÿæ™‚é–“")]
     [SerializeField] private float m_accelerator_time = 1.0f;
 
-    [Tooltip("â‚Å‚Ì‰Á‘¬—Ê")]
+    [Tooltip("å‚ã§ã®åŠ é€Ÿé‡")]
     [SerializeField] private float m_accelerator_speed = 2.0f;
 
-    [Tooltip("‰ñ“]‚ÌŠŠ‚ç‚©‚³")]
+    [Tooltip("å›è»¢ã®æ»‘ã‚‰ã‹ã•")]
     [SerializeField] private float turn_smooth_time = 1.0f;
 
-    private Rigidbody rb;                   //ƒŠƒMƒbƒhƒ{ƒfƒB[
+    private Rigidbody rb;                   //ãƒªã‚®ãƒƒãƒ‰ãƒœãƒ‡ã‚£ãƒ¼
     private float m_destroy_timer;
     private GameObject player;
     public GameObject ParentGenerator;
     // Start is called before the first frame update
     void Start()
     {
-        rb = GetComponent<Rigidbody>();                 //ƒŠƒMƒbƒhƒ{ƒfƒB[æ“¾
+        rb = GetComponent<Rigidbody>();                 //ãƒªã‚®ãƒƒãƒ‰ãƒœãƒ‡ã‚£ãƒ¼å–å¾—
         player = GameObject.Find("Player");
     }
 
@@ -44,7 +44,7 @@ public class ElectricBallMove : MonoBehaviour
         transform.position += transform.rotation * move_vec * Time.deltaTime;
         m_destroy_timer += Time.deltaTime;
 
-        //ŠÔŒo‰ßŒãíœ
+        //æ™‚é–“çµŒéå¾Œå‰Šé™¤
         if(m_destroy_timer > m_destroy_time)
         {
             Destroy(this.gameObject);
@@ -55,7 +55,7 @@ public class ElectricBallMove : MonoBehaviour
         playerpos.x = transform.position.x;
         playerpos.y = transform.position.y;
         playerpos.z = 0;
-        //Z²‚ğ‹­§“I‚ÉPlayerÀ•W‚Éİ’è
+        //Zè»¸ã‚’å¼·åˆ¶çš„ã«Playeråº§æ¨™ã«è¨­å®š
         transform.position = playerpos;
     }
     private void OnTriggerEnter(Collider collision)
@@ -67,6 +67,36 @@ public class ElectricBallMove : MonoBehaviour
                 Destroy(this.gameObject);
             }
         }
+        
+        if (collision.gameObject.tag == "FlipGate")
+        {
+            RaycastHit hit_info;
+            if (Physics.Raycast(this.transform.position + this.transform.up * 0.25f, this.transform.up * -1.0f, out hit_info, 5.0f, LayerMask.GetMask("Ground")))
+            {
+                float dis = Vector3.Distance(this.transform.position, hit_info.point);
+                Vector3 new_pos;
+                
+                while (true)
+                {
+                    Vector3 check_pos = this.transform.position + -this.transform.up * dis;
+                    Collider[] hit_col = Physics.OverlapSphere(check_pos, 2.0f, LayerMask.GetMask("Ground"));
+                    if (hit_col.Length == 0)
+                    {
+                        new_pos = check_pos;
+                        break;
+                    }
+                    else
+                    {
+                        dis += 1.0f;
+                    }
+                }
+                
+                transform.Rotate(new Vector3(180.0f, 0.0f, 0.0f), Space.Self);
+                
+                this.transform.position = new_pos;
+            }
+        }
+        
         if (collision.gameObject.tag == "SpeedBooster")
         {
             BoostSpeed(m_accelerator_time,m_accelerator_speed);
@@ -80,24 +110,24 @@ public class ElectricBallMove : MonoBehaviour
 
     private IEnumerator BoostSpeedCoroutine(float boostTime, float boostSpeed)
     {
-        float originalSpeed = m_speed; // Œ³‚Ì‘¬“x‚ğ•Û‘¶‚·‚é
+        float originalSpeed = m_speed; // å…ƒã®é€Ÿåº¦ã‚’ä¿å­˜ã™ã‚‹
 
-        m_speed += boostSpeed; // ‘¬“x‚ğ‘‰Á‚³‚¹‚é
+        m_speed += boostSpeed; // é€Ÿåº¦ã‚’å¢—åŠ ã•ã›ã‚‹
 
-        yield return new WaitForSeconds(boostTime); // w’èŠÔ‘Ò‚Â
+        yield return new WaitForSeconds(boostTime); // æŒ‡å®šæ™‚é–“å¾…ã¤
 
-        // Œ³‚Ì‘¬“x‚É–ß‚é‚Ü‚Å‚ÌŠÔ
+        // å…ƒã®é€Ÿåº¦ã«æˆ»ã‚‹ã¾ã§ã®æ™‚é–“
         float decelerationTime = 0.5f;
         float elapsedTime = 0f;
 
         while (elapsedTime < decelerationTime)
         {
             float t = elapsedTime / decelerationTime;
-            m_speed = Mathf.Lerp(m_speed, originalSpeed, t); // Œ»İ‚Ì‘¬“x‚©‚çŒ³‚Ì‘¬“x‚É™X‚É–ß‚·
+            m_speed = Mathf.Lerp(m_speed, originalSpeed, t); // ç¾åœ¨ã®é€Ÿåº¦ã‹ã‚‰å…ƒã®é€Ÿåº¦ã«å¾ã€…ã«æˆ»ã™
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
-        m_speed = originalSpeed; // Œ³‚Ì‘¬“x‚É–ß‚·
+        m_speed = originalSpeed; // å…ƒã®é€Ÿåº¦ã«æˆ»ã™
     }
 }
