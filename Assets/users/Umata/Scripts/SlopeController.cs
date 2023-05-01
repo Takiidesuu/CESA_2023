@@ -10,8 +10,15 @@ public class SlopeController : MonoBehaviour
         DOWN
     }
     
+    [Tooltip("加速度")]
     [SerializeField] private float acceleration_speed = 20.0f;
+    [Tooltip("減速度")]
     [SerializeField] private float deceleration_speed = 10.0f;
+    
+    [Tooltip("加速される時間")]
+    [SerializeField] private float acceleration_time = 0.2f;
+    [Tooltip("減速される時間")]
+    [SerializeField] private float deceleration_time = 0.2f;
     
     private float slopeRayLength = 10f;
 
@@ -102,17 +109,18 @@ public class SlopeController : MonoBehaviour
             {
                 if (current_slope_state != previous_slope_state)
                 {
-                    float delay_time = Time.deltaTime / 4.0f;
+                    float delay_time = 0.2f;
                     float boost_speed = 0.0f;
                     
                     switch (current_slope_state)
                     {
                         case SLOPE_STATE.UP:
                             boost_speed = -deceleration_speed;
+                            delay_time = deceleration_time;
                         break;
                         case SLOPE_STATE.DOWN:
                             boost_speed = acceleration_speed;
-                            deceleration_time /= 2.0f;
+                            delay_time = acceleration_time;
                         break;
                     }
                     

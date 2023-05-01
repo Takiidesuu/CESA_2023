@@ -7,6 +7,9 @@ public class CameraMove : MonoBehaviour
     [Tooltip("プレイヤーからの距離")]
     [SerializeField] private float distance = 5.0f;
     
+    [Tooltip("ステージからの距離")]
+    [SerializeField] private float distance_from_stage = 70.0f;
+    
     [Tooltip("元の位置に戻る速度")]
     [SerializeField] private float return_speed = 5.0f;
     [Tooltip("切り替わり待ち時間")]
@@ -58,26 +61,13 @@ public class CameraMove : MonoBehaviour
     private void LateUpdate() 
     {
         float distance_from_obj;
-        GameObject target_obj = player_obj.GetComponent<PlayerMove>().GetGroundObj();
+        GameObject target_obj = player_obj.GetComponent<PlayerMove>().GetCurrentGravObj();
         
         bool is_player_smashing = player_obj.GetComponent<PlayerMove>().GetSmashingState();
         
         if (target_obj && !is_player_smashing && return_count <= 0)
         {
-            float[] num_to_compare = new float[4];
-            
-            Vector3 target_obj_size = target_obj.GetComponent<Collider>().bounds.size * 1.2f;
-            num_to_compare[0] = target_obj_size.x;
-            num_to_compare[1] = target_obj_size.y;
-            
-            Vector3 target_obj_distance = player_obj.transform.position - target_obj.transform.position;
-            
-            num_to_compare[2] = Mathf.Abs(target_obj_distance.x);
-            num_to_compare[3] = Mathf.Abs(target_obj_distance.y);
-            
-            distance_from_obj = Mathf.Max(num_to_compare);
-            
-            distance_from_obj *= distance * distance_scalar;
+            distance_from_obj = distance_from_stage * 10.0f * distance_scalar;
         }
         else
         {
@@ -97,6 +87,7 @@ public class CameraMove : MonoBehaviour
             if (return_count <= 0)
             {
                 targetLookAt = target_obj.transform.position;
+                
                 if (distance_scalar < 1.0f)
                 {
                     distance_scalar += Time.deltaTime * 8.0f;
