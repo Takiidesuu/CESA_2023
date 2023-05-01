@@ -81,6 +81,9 @@ public class PlayerMove : MonoBehaviour
     private ParticleSystem part_line_effect;
     private ParticleSystem part_circle_effect;
     
+    public bool in_grav_field {get; private set;}
+    private GameObject grav_obj;
+    
     private float target_rot;
 
     /// <summary>
@@ -116,6 +119,11 @@ public class PlayerMove : MonoBehaviour
         return ground_obj != null ? ground_obj : null;
     }
     
+    public GameObject GetCurrentGravObj()
+    {
+        return grav_obj != null ? grav_obj : null;
+    }
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -145,6 +153,8 @@ public class PlayerMove : MonoBehaviour
         blackPanel.SetActive(false);
         
         target_rot = 0.0f;
+        
+        in_grav_field = false;
 
         //soundmannagerを取得
         soundmanager = gameObject.GetComponent<SoundManager>();
@@ -758,6 +768,30 @@ public class PlayerMove : MonoBehaviour
         if (other.gameObject.tag == "FlipGate")
         {
             FlipUpsideDown(true);
+        }
+        
+        if (other.gameObject.tag == "GravityField")
+        {
+            in_grav_field = true;
+            grav_obj = other.gameObject;
+        }
+    }
+    
+    private void OnTriggerStay(Collider other) 
+    {
+        if (other.gameObject.tag == "GravityField")
+        {
+            in_grav_field = true;
+            grav_obj = other.gameObject;
+        }
+    }
+    
+    private void OnTriggerExit(Collider other) 
+    {
+        if (other.gameObject.tag == "GravityField")
+        {
+            in_grav_field = false;
+            grav_obj = null;
         }
     }
 }

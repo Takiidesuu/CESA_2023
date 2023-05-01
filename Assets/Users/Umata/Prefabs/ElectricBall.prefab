@@ -254,7 +254,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_speed: 25
   deceleration_speed: 0
-  m_destroy_time: 30
+  m_destroy_time: 10
   m_accelerator_time: 1
   m_accelerator_speed: 0.1
   turn_smooth_time: 1
@@ -412,9 +412,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a32d0f4d916f8064fb50fad26d4c8e1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 10
-  slopeForce: 100
-  slopeRayLength: 10
+  acceleration_speed: 20
+  deceleration_speed: 10
+  acceleration_time: 0.2
+  deceleration_time: 0.2
 --- !u!1001 &7990578983296405097
 PrefabInstance:
   m_ObjectHideFlags: 0
