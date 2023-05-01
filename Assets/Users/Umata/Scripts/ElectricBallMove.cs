@@ -41,7 +41,7 @@ public class ElectricBallMove : MonoBehaviour
         move_vec.y = 0;
         move_vec.z = 0;
 
-        transform.position += transform.rotation * move_vec;
+        transform.position += transform.rotation * move_vec * Time.deltaTime;
         m_destroy_timer += Time.deltaTime;
 
         //時間経過後削除
@@ -99,16 +99,17 @@ public class ElectricBallMove : MonoBehaviour
         
         if (collision.gameObject.tag == "SpeedBooster")
         {
-            BoostSpeed(m_accelerator_time,m_accelerator_speed);
+            BoostSpeed(m_accelerator_time,m_accelerator_speed, 0.5f);
         }
 
     }
-    public void BoostSpeed(float boostTime, float boostSpeed)
+    
+    public void BoostSpeed(float boostTime, float boostSpeed, float decelerationTime)
     {
-        StartCoroutine(BoostSpeedCoroutine(boostTime, boostSpeed));
+        StartCoroutine(BoostSpeedCoroutine(boostTime, boostSpeed, decelerationTime));
     }
 
-    private IEnumerator BoostSpeedCoroutine(float boostTime, float boostSpeed)
+    private IEnumerator BoostSpeedCoroutine(float boostTime, float boostSpeed, float decelerationTime)
     {
         float originalSpeed = m_speed; // 元の速度を保存する
 
@@ -117,7 +118,6 @@ public class ElectricBallMove : MonoBehaviour
         yield return new WaitForSeconds(boostTime); // 指定時間待つ
 
         // 元の速度に戻るまでの時間
-        float decelerationTime = 0.5f;
         float elapsedTime = 0f;
 
         while (elapsedTime < decelerationTime)
