@@ -159,6 +159,12 @@ public class DeformStage : MonoBehaviour
     //へこむオブジェクトを追加
     public void AddDeformpointDown(Vector3 position, float angleY, float smash_power,  bool isflip)
     {
+        if (player_gameobject.GetComponent<PlayerMove>().GetGroundObj().name == "WallSwich")
+        {
+            player_gameobject.GetComponent<PlayerMove>().GetWallswich().WallMove();
+            return;
+        } 
+
         List<GameObject> pointdown = new List<GameObject>();
 
         //内側からか外側からを判断
@@ -190,6 +196,10 @@ public class DeformStage : MonoBehaviour
         //}
 
         ///垂直にへこます場合
+        float offset = 1.5f;
+        float x = Mathf.Cos((-90 - GetAngle(transform.position, player_gameobject.transform.position) + 180) * Mathf.Deg2Rad);
+        float y = Mathf.Sin((-90 - GetAngle(transform.position, player_gameobject.transform.position) + 180) * Mathf.Deg2Rad);
+
         if (isflip)
         {
             if (10 > angleY && angleY > -10)    //プレイヤーの向きによってプラスかマイナスか判断
@@ -207,11 +217,15 @@ public class DeformStage : MonoBehaviour
         {
             if (170 < angleY && angleY < 190)
             {
+                position.x -= y * offset;
+                position.y += x * offset;
                 for (int i = 0; i < 3; i++)
                     pointdown.Add(Instantiate(point_down, position, Quaternion.Euler(-90 - GetAngle(transform.position, player_gameobject.transform.position), -90, 90), this.transform));
             }
             else
             {
+                position.x += y * offset;
+                position.y -= x * offset;
                 for (int i = 0; i < 3; i++)
                     pointdown.Add(Instantiate(point_down, position, Quaternion.Euler(-90 - GetAngle(transform.position, player_gameobject.transform.position), -90, 90), this.transform));
             }

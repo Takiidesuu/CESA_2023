@@ -26,7 +26,6 @@ public class WallMove : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         //最後から押した時間が過ぎたら戻る
         if (untilReturnTime < untilTime) 
         {
@@ -43,19 +42,17 @@ public class WallMove : MonoBehaviour
             transform.localPosition = Vector3.SmoothDamp(transform.localPosition, startPosition + (movePosition / separationCount * count), ref velocity, oneMoveTime);
         }
 
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            OnceWallMove();
-        }
-
         untilTime += Time.deltaTime;
     }
 
     //スイッチを押したら移動
     public void OnceWallMove()
     {
-        if (separationCount > count)
-            count++;
-        untilTime = 0;
+        if (wallSwitch.GetIsHit())
+        {
+            if (separationCount > count)
+                count++;
+            untilTime = 0;
+        }
     }
 }

@@ -90,6 +90,7 @@ public class PlayerMove : MonoBehaviour
     /// 平田
     /// </summary>
     private DeformStage deform_stage;
+    private WallSwitch wall_switch;
     private MinMaxDeform min_max_deform;
     private bool is_flip;
     
@@ -122,6 +123,11 @@ public class PlayerMove : MonoBehaviour
     public GameObject GetCurrentGravObj()
     {
         return grav_obj != null ? grav_obj : null;
+    }
+
+    public WallSwitch GetWallswich()
+    {
+        return wall_switch;
     }
     
     // Start is called before the first frame update
@@ -668,7 +674,17 @@ public class PlayerMove : MonoBehaviour
             camera_obj.GetComponent<CameraMove>().ShakeCamera(smash_power_num / 2.0f, 0.2f);
 
         }
+<<<<<<< Updated upstream
         
+=======
+        else
+        {
+            if (wall_switch != null) 
+            {
+                wall_switch.WallMove();
+            }
+        }
+>>>>>>> Stashed changes
         smash_state = SMASHSTATE.NORMAL;
         if (smash_power_num < smash_power_scalar)
         {
@@ -749,8 +765,10 @@ public class PlayerMove : MonoBehaviour
         if (other.gameObject.layer == 6)
         {
             is_grounded = true;
+            if (other.gameObject.name == "WallSwich")
+                wall_switch = other.gameObject.GetComponent<WallSwitch>();
+
         }
-        
         if (other.gameObject.layer == LayerMask.GetMask("ElectricalBall"))
         {
             Physics.IgnoreCollision(col, other.gameObject.GetComponent<Collider>());

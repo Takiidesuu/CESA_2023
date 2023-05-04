@@ -6,24 +6,29 @@ public class WallSwitch : MonoBehaviour
 {
     private bool player_hit;
 
-    private void OnTriggerEnter(Collider other)
+    public bool GetIsHit()
     {
-        if (other.CompareTag("Player"))
+        return player_hit;
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
         {
             player_hit = true;
         }
     }
 
-    private void OnTriggerExit(Collider other)
+    private void OnCollisionExit(Collision collision)
     {
-        if (other.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("Player"))
         {
             player_hit = false;
         }
     }
 
-    public bool GetIsHit()
+    public void WallMove()
     {
-        return player_hit;
+        transform.GetChild(0).GetComponent<WallMove>().OnceWallMove();
     }
 }

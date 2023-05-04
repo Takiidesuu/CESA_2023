@@ -29,7 +29,7 @@ public class StageBackgroundManager : MonoBehaviour
         for (int i = 0; i < SmokeObjects.Length; i++)
         {
             //‰Šú’lÝ’è
-            SmokeObjects[i].GetComponent<ParticleSystem>().maxParticles = 10;
+            //SmokeObjects[i].GetComponent<ParticleSystem>().maxParticles = 10;
         }
     }
 
