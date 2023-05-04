@@ -758,6 +758,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GearObjects: []
+  SmokeObjects: []
+  AddTime: 0
+  startDensity: 0.001
+  endDensity: 0.0001
+  duration: 5
 --- !u!1 &3840217295950846836
 GameObject:
   m_ObjectHideFlags: 0
@@ -1300,6 +1305,10 @@ PrefabInstance:
     - target: {fileID: 4219690010297635536, guid: c00fcf186e89ac643a3aa7f2ac759818, type: 3}
       propertyPath: m_Name
       value: Smoke_slow
+      objectReference: {fileID: 0}
+    - target: {fileID: 4219690010297635536, guid: c00fcf186e89ac643a3aa7f2ac759818, type: 3}
+      propertyPath: m_TagString
+      value: SmokeEffect
       objectReference: {fileID: 0}
     - target: {fileID: 5831076762806671941, guid: c00fcf186e89ac643a3aa7f2ac759818, type: 3}
       propertyPath: m_RootOrder
@@ -2135,6 +2144,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Smoke_Fast (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 4219690010297635536, guid: d91829a73c41bd444bfe32ed68822782, type: 3}
+      propertyPath: m_TagString
+      value: SmokeEffect
+      objectReference: {fileID: 0}
     - target: {fileID: 5831076762806671941, guid: d91829a73c41bd444bfe32ed68822782, type: 3}
       propertyPath: m_RootOrder
       value: 33
@@ -2543,6 +2556,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Smoke_Fast (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 4219690010297635536, guid: d91829a73c41bd444bfe32ed68822782, type: 3}
+      propertyPath: m_TagString
+      value: SmokeEffect
+      objectReference: {fileID: 0}
     - target: {fileID: 5831076762806671941, guid: d91829a73c41bd444bfe32ed68822782, type: 3}
       propertyPath: m_RootOrder
       value: 31
@@ -2740,6 +2757,10 @@ PrefabInstance:
     - target: {fileID: 4219690010297635536, guid: d91829a73c41bd444bfe32ed68822782, type: 3}
       propertyPath: m_Name
       value: Smoke_Fast (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4219690010297635536, guid: d91829a73c41bd444bfe32ed68822782, type: 3}
+      propertyPath: m_TagString
+      value: SmokeEffect
       objectReference: {fileID: 0}
     - target: {fileID: 5831076762806671941, guid: d91829a73c41bd444bfe32ed68822782, type: 3}
       propertyPath: m_RootOrder
@@ -11804,6 +11825,10 @@ PrefabInstance:
     - target: {fileID: 4219690010297635536, guid: d91829a73c41bd444bfe32ed68822782, type: 3}
       propertyPath: m_Name
       value: Smoke_Fast (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4219690010297635536, guid: d91829a73c41bd444bfe32ed68822782, type: 3}
+      propertyPath: m_TagString
+      value: SmokeEffect
       objectReference: {fileID: 0}
     - target: {fileID: 5831076762806671941, guid: d91829a73c41bd444bfe32ed68822782, type: 3}
       propertyPath: m_RootOrder

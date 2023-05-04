@@ -16,7 +16,7 @@ public class RotateGear : MonoBehaviour
     private float m_RotateAngle = 90.0f; // 回転角度
     private float m_ToggleInterval = 1.0f; // トグルの間隔
     private float m_ToggleDuration = 1.0f; // トグルの回転時間
-                  
+
     private float toggleTimer = 0.0f; // トグル用タイマー
     private float toggleDurationTimer = 0.0f; // トグル用回転時間タイマー
     private bool isToggling = false; // トグル中フラグ
@@ -90,19 +90,19 @@ public class RotateGear : MonoBehaviour
         isToggling = true;
         toggleDurationTimer = 0.0f;
     }
-    public void ChangeGearMode(float ComplateRate,float difference,float time)
+    public void ChangeGearMode(float ComplateRate, float difference, float time)
     {
 
-            GearParam gear_param;
-            //スコアの増減に応じて変更
-            gear_param.Timer = time;
-            gear_param.Speed = difference;
-            GearRotateVector.Add(gear_param);
-            m_RotateSpeed = RotateSpeed * ComplateRate;
-            //IsToggle = true;
-            //m_RotateAngle = 10 + (RotateAngle * ComplateRate);
-            //m_ToggleDuration = 1 +(ToggleDuration * ComplateRate);
-            //m_ToggleInterval = 1 +(ToggleInterval * (1 -ComplateRate));
+        GearParam gear_param;
+        //スコアの増減に応じて変更
+        gear_param.Timer = time;
+        gear_param.Speed = difference;
+        GearRotateVector.Add(gear_param);
+        m_RotateSpeed = RotateSpeed * ComplateRate;
+        //IsToggle = true;
+        //m_RotateAngle = 10 + (RotateAngle * ComplateRate);
+        //m_ToggleDuration = 1 +(ToggleDuration * ComplateRate);
+        //m_ToggleInterval = 1 +(ToggleInterval * (1 -ComplateRate));
     }
-        
+
 }
