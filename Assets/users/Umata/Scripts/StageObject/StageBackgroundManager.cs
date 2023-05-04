@@ -26,7 +26,7 @@ public class StageBackgroundManager : MonoBehaviour
         Canvas = GameObject.Find("Canvas");
 
         //煙エフェクト調整
-        for (int i = 0; i < GearObjects.Length; i++)
+        for (int i = 0; i < SmokeObjects.Length; i++)
         {
             //初期値設定
             SmokeObjects[i].GetComponent<ParticleSystem>().maxParticles = 10;
@@ -69,7 +69,7 @@ public class StageBackgroundManager : MonoBehaviour
     public void ChangeSmokeEffect()
     {
         float ParticleMagnification = (float)Canvas.GetComponent<LightBulbCollector>().LightBulb_active / (float)Canvas.GetComponent<LightBulbCollector>().LightBulb_num;
-        for (int i = 0; i < GearObjects.Length; i++)
+        for (int i = 0; i < SmokeObjects.Length; i++)
         {
             SmokeObjects[i].GetComponent<ParticleSystem>().maxParticles = 10 + (int)(100 * ParticleMagnification);
         }
