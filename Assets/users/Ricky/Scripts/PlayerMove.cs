@@ -674,9 +674,6 @@ public class PlayerMove : MonoBehaviour
             camera_obj.GetComponent<CameraMove>().ShakeCamera(smash_power_num / 2.0f, 0.2f);
 
         }
-<<<<<<< Updated upstream
-        
-=======
         else
         {
             if (wall_switch != null) 
@@ -684,7 +681,6 @@ public class PlayerMove : MonoBehaviour
                 wall_switch.WallMove();
             }
         }
->>>>>>> Stashed changes
         smash_state = SMASHSTATE.NORMAL;
         if (smash_power_num < smash_power_scalar)
         {
