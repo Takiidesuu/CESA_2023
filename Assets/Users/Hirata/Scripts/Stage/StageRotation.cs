@@ -96,6 +96,7 @@ public class StageRotation : MonoBehaviour
                     transform.rotation = Quaternion.Euler(transform.rotation.x, transform.rotation.y, LastAngle + 190);
                     is_rotation = false;
                     easeCount = 0;
+                    player_obj.transform.parent = null;
                 }
             }
         }

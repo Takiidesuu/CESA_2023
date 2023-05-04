@@ -26,18 +26,22 @@ public class ElectricBallMove : MonoBehaviour
     private float m_destroy_timer;
     private GameObject player;
     public GameObject ParentGenerator;
+    
+    private float m_real_speed;
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();                 //リギッドボディー取得
         player = GameObject.Find("Player");
+        
+        m_real_speed = m_speed;
     }
 
     // Update is called once per frame
     void Update()
     {
         Vector3 move_vec;
-        move_vec.x = m_speed;
+        move_vec.x = m_real_speed;
         move_vec.y = 0;
         move_vec.z = 0;
 
@@ -99,35 +103,34 @@ public class ElectricBallMove : MonoBehaviour
         
         if (collision.gameObject.tag == "SpeedBooster")
         {
-            BoostSpeed(m_accelerator_time,m_accelerator_speed);
+            BoostSpeed(m_accelerator_time,m_accelerator_speed, 0.5f);
         }
 
     }
-    public void BoostSpeed(float boostTime, float boostSpeed)
+    
+    public void BoostSpeed(float boostTime, float boostSpeed, float decelerationTime)
     {
-        StartCoroutine(BoostSpeedCoroutine(boostTime, boostSpeed));
+        StopCoroutine("BoostSpeedCoroutine");
+        StartCoroutine(BoostSpeedCoroutine(boostTime, boostSpeed, decelerationTime));
     }
 
-    private IEnumerator BoostSpeedCoroutine(float boostTime, float boostSpeed)
+    private IEnumerator BoostSpeedCoroutine(float boostTime, float boostSpeed, float decelerationTime)
     {
-        float originalSpeed = m_speed; // 元の速度を保存する
-
-        m_speed += boostSpeed; // 速度を増加させる
+        m_real_speed += boostSpeed; // 速度を増加させる
 
         yield return new WaitForSeconds(boostTime); // 指定時間待つ
 
         // 元の速度に戻るまでの時間
-        float decelerationTime = 0.5f;
         float elapsedTime = 0f;
 
         while (elapsedTime < decelerationTime)
         {
             float t = elapsedTime / decelerationTime;
-            m_speed = Mathf.Lerp(m_speed, originalSpeed, t); // 現在の速度から元の速度に徐々に戻す
+            m_real_speed = Mathf.Lerp(m_real_speed, m_speed, t); // 現在の速度から元の速度に徐々に戻す
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
-        m_speed = originalSpeed; // 元の速度に戻す
+        m_real_speed = m_speed; // 元の速度に戻す
     }
 }

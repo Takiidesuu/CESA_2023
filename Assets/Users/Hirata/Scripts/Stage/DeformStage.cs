@@ -233,11 +233,13 @@ public class DeformStage : MonoBehaviour
             {
                 if (deformerElement.Component == null)
                     continue;
+                if (deformerElement.Component.transform.eulerAngles.y != pointdown[0].transform.eulerAngles.y)
+                    continue;
 
                 float error = Mathf.Abs(deformerElement.Component.transform.eulerAngles.x - pointdown[0].transform.eulerAngles.x);
-                if (error < 1)
+                if (error < 0.5f)
                 {
-                    deformerElement.Component.GetComponent<RadialCurveDeformer>().Factor += pointdown[0].GetComponent<RadialCurveDeformer>().Factor;
+                     deformerElement.Component.GetComponent<RadialCurveDeformer>().Factor += pointdown[0].GetComponent<RadialCurveDeformer>().Factor;
                     synthesis = true;
                     break;
                 }

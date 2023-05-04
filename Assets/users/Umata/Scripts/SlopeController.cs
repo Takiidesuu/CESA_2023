@@ -3,47 +3,135 @@ using System.Collections.Generic;
 using UnityEngine;
 public class SlopeController : MonoBehaviour
 {
-    public float moveSpeed = 10f;
-    public float slopeForce = 100f;
-    public float slopeRayLength = 10f;
+    enum SLOPE_STATE
+    {
+        NONE,
+        UP,
+        DOWN
+    }
+    
+    [Tooltip("Âä†ÈÄüÂ∫¶")]
+    [SerializeField] private float acceleration_speed = 20.0f;
+    [Tooltip("Ê∏õÈÄüÂ∫¶")]
+    [SerializeField] private float deceleration_speed = 10.0f;
+    
+    [Tooltip("Âä†ÈÄü„Åï„Çå„ÇãÊôÇÈñì")]
+    [SerializeField] private float acceleration_time = 0.2f;
+    [Tooltip("Ê∏õÈÄü„Åï„Çå„ÇãÊôÇÈñì")]
+    [SerializeField] private float deceleration_time = 0.2f;
+    
+    private float slopeRayLength = 10f;
 
     private Rigidbody rb;
     private float slopeAngle;
-    private Vector3 fowordVec;
+    private Vector3 forwardVec;
+    
+    private ElectricBallMove move_script;
+    private SLOPE_STATE current_slope_state;
+    
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        move_script = GetComponent<ElectricBallMove>();
+        
+        current_slope_state = SLOPE_STATE.NONE;
     }
 
     void FixedUpdate()
     {
-        Vector3 rayOrigin =transform.position; // RayÇÃénì_
-        Vector3 rayDirection = transform.up * -1; // RayÇÃï˚å¸
-        fowordVec = transform.right;
-
-        Debug.Log(fowordVec);
-
-        float rayDistance = 10f; // RayÇÃí∑Ç≥
-
-        // RayÇâ¬éãâªÇ∑ÇÈ
-        Debug.DrawRay(rayOrigin, rayDirection * slopeRayLength, Color.green);
+        forwardVec = transform.right;
 
         RaycastHit hit;
         if (Physics.Raycast(transform.position,transform.up * -1, out hit, slopeRayLength, LayerMask.GetMask("Ground")))
         {
-            slopeAngle = 180 - Vector3.Angle(hit.normal,transform.up * - 1);
-           
-
+            Vector3 center_vec = hit.point - hit.transform.root.gameObject.transform.position;
+            float dot_to_center = Vector3.Dot(center_vec.normalized, transform.up);
+            
+            slopeAngle = Vector3.SignedAngle(center_vec.normalized, transform.up, new Vector3(0, 0, 1));
+            
+            Vector3 displacement = transform.position + transform.right * 5.0f;
+            Vector3 vecToFront = displacement - hit.point;
+            float moveDir = Vector3.SignedAngle(transform.up, vecToFront.normalized, new Vector3(0, 0, 1));
+            
+            if (dot_to_center > 0)
+            {
+                moveDir *= -1.0f;
+            }
+            
+            if (moveDir < 0.0f)
+            {
+                slopeAngle *= -1.0f;
+            }
+            
+            bool is_on_slope = false;
+            float deceleration_time = 1.0f;
+            SLOPE_STATE previous_slope_state = current_slope_state;
+            
+            // Â§ñÂÅ¥„Å´„ÅÑ„Çã
+            if (dot_to_center > 0)
+            {
+                if (slopeAngle > 10.0f || slopeAngle < -10.0f)
+                {
+                    // ‰∏ä„Çä
+                    if (Mathf.Sign(slopeAngle) > 0.0f)
+                    {
+                        current_slope_state = SLOPE_STATE.UP;
+                    }
+                    else
+                    {
+                        current_slope_state = SLOPE_STATE.DOWN;
+                    }
+                    
+                    deceleration_time /= (50.0f / Mathf.Abs(slopeAngle));
+                    is_on_slope = true;
+                }
+            }
+            else
+            {
+                if (slopeAngle > -170.0f || slopeAngle < -190.0f)
+                {
+                    // ‰∏ä„Çä
+                    if (Mathf.Sign(slopeAngle) > 0.0f)
+                    {
+                        current_slope_state = SLOPE_STATE.UP;
+                    }
+                    else
+                    {
+                        current_slope_state = SLOPE_STATE.DOWN;
+                    }
+                    
+                    deceleration_time /= (50.0f / (Mathf.Abs(slopeAngle + 180.0f)));
+                    is_on_slope = true;
+                }
+            }
+            
+            if (is_on_slope)
+            {
+                if (current_slope_state != previous_slope_state)
+                {
+                    float delay_time = 0.2f;
+                    float boost_speed = 0.0f;
+                    
+                    switch (current_slope_state)
+                    {
+                        case SLOPE_STATE.UP:
+                            boost_speed = -deceleration_speed;
+                            delay_time = deceleration_time;
+                        break;
+                        case SLOPE_STATE.DOWN:
+                            boost_speed = acceleration_speed;
+                            delay_time = acceleration_time;
+                        break;
+                    }
+                    
+                    move_script.BoostSpeed(delay_time, boost_speed, deceleration_time);
+                }
+            }
+            
         }
         else
         {
             slopeAngle = 0f;
         }
-
-        float h = Input.GetAxis("Horizontal");
-        float v = Input.GetAxis("Vertical");
-
-        Vector3 moveDirection = new Vector3(h, 0, v).normalized;
-        rb.AddForce(moveDirection * moveSpeed * Time.fixedDeltaTime, ForceMode.VelocityChange);
     }
 }
