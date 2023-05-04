@@ -29,6 +29,11 @@ public class SlopeController : MonoBehaviour
     private ElectricBallMove move_script;
     private SLOPE_STATE current_slope_state;
     
+    public bool IsOnIncline()
+    {
+        return current_slope_state == SLOPE_STATE.UP ? true : false;
+    }
+    
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -64,7 +69,7 @@ public class SlopeController : MonoBehaviour
             }
             
             bool is_on_slope = false;
-            float deceleration_time = 1.0f;
+            float decelerate_real_time = deceleration_time;
             SLOPE_STATE previous_slope_state = current_slope_state;
             
             // 外側にいる
@@ -82,7 +87,7 @@ public class SlopeController : MonoBehaviour
                         current_slope_state = SLOPE_STATE.DOWN;
                     }
                     
-                    deceleration_time /= (50.0f / Mathf.Abs(slopeAngle));
+                    decelerate_real_time /= (50.0f / Mathf.Abs(slopeAngle));
                     is_on_slope = true;
                 }
             }
@@ -100,7 +105,7 @@ public class SlopeController : MonoBehaviour
                         current_slope_state = SLOPE_STATE.DOWN;
                     }
                     
-                    deceleration_time /= (50.0f / (Mathf.Abs(slopeAngle + 180.0f)));
+                    decelerate_real_time /= (50.0f / (Mathf.Abs(slopeAngle + 180.0f)));
                     is_on_slope = true;
                 }
             }
@@ -116,7 +121,7 @@ public class SlopeController : MonoBehaviour
                     {
                         case SLOPE_STATE.UP:
                             boost_speed = -deceleration_speed;
-                            delay_time = deceleration_time;
+                            delay_time = decelerate_real_time;
                         break;
                         case SLOPE_STATE.DOWN:
                             boost_speed = acceleration_speed;
@@ -124,10 +129,13 @@ public class SlopeController : MonoBehaviour
                         break;
                     }
                     
-                    move_script.BoostSpeed(delay_time, boost_speed, deceleration_time);
+                    move_script.BoostSpeed(delay_time, boost_speed, delay_time);
                 }
             }
-            
+            else
+            {
+                current_slope_state = SLOPE_STATE.NONE;
+            }
         }
         else
         {

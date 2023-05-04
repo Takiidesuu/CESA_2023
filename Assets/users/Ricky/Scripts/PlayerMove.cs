@@ -156,7 +156,7 @@ public class PlayerMove : MonoBehaviour
         in_grav_field = false;
 
         //soundmannagerを取得
-        soundmanager = gameObject.GetComponent<SoundManager>();
+        soundmanager = GetComponent<SoundManager>();
     }
 
     // Update is called once per frame
@@ -675,7 +675,7 @@ public class PlayerMove : MonoBehaviour
             anim.speed = 1.0f;
         }
         
-        InputManager.instance.VibrateController(0.5f, smash_power_num / smash_max_time);
+        InputManager.instance.VibrateController(0.2f, smash_power_num / smash_max_time * 1.5f);
         
         anim.ResetTrigger("holdSmash");
     }

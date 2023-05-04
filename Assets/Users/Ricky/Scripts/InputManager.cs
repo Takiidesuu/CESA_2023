@@ -137,6 +137,8 @@ public class InputManager : MonoBehaviour
             {
                 gamepad.SetMotorSpeeds(vibrate_strength, vibrate_strength);
             }
+            
+            vibrate_duration -= Time.deltaTime;
         }
         else
         {
