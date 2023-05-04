@@ -28,6 +28,9 @@ public class ElectricBallMove : MonoBehaviour
     public GameObject ParentGenerator;
     
     private float m_real_speed;
+    
+    private bool has_jumped;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -35,17 +38,16 @@ public class ElectricBallMove : MonoBehaviour
         player = GameObject.Find("Player");
         
         m_real_speed = m_speed;
+        has_jumped = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        Vector3 move_vec;
-        move_vec.x = m_real_speed;
-        move_vec.y = 0;
-        move_vec.z = 0;
+        var locVel = transform.InverseTransformDirection(rb.velocity);
+        locVel.x = m_real_speed;
+        rb.velocity = transform.TransformDirection(locVel);
 
-        transform.position += transform.rotation * move_vec * Time.deltaTime;
         m_destroy_timer += Time.deltaTime;
 
         //時間経過後削除
@@ -53,15 +55,16 @@ public class ElectricBallMove : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
-        transform.position.Set(transform.position.x, transform.position.y,0);
-
+        
         Vector3 playerpos;
         playerpos.x = transform.position.x;
         playerpos.y = transform.position.y;
         playerpos.z = 0;
+        
         //Z軸を強制的にPlayer座標に設定
         transform.position = playerpos;
     }
+    
     private void OnTriggerEnter(Collider collision)
     {
         if (collision.gameObject.tag == "ElectricitySource")
@@ -116,6 +119,8 @@ public class ElectricBallMove : MonoBehaviour
 
     private IEnumerator BoostSpeedCoroutine(float boostTime, float boostSpeed, float decelerationTime)
     {
+        yield return new WaitForSeconds(0.05f);
+        
         m_real_speed += boostSpeed; // 速度を増加させる
 
         yield return new WaitForSeconds(boostTime); // 指定時間待つ

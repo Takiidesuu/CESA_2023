@@ -148,8 +148,7 @@ public class PlayerMove : MonoBehaviour
         speed = 0.0f;
         is_dead = false;
         
-        blackPanel = GameObject.Find("Canvas");
-        blackPanel = blackPanel.transform.GetChild(5).gameObject;
+        blackPanel = GameObject.Find("BlackPanel");
         blackPanel.SetActive(false);
         
         target_rot = 0.0f;
@@ -157,7 +156,7 @@ public class PlayerMove : MonoBehaviour
         in_grav_field = false;
 
         //soundmannagerを取得
-        soundmanager = gameObject.GetComponent<SoundManager>();
+        soundmanager = GetComponent<SoundManager>();
     }
 
     // Update is called once per frame
@@ -626,6 +625,10 @@ public class PlayerMove : MonoBehaviour
             }
             else
             {
+                if (smash_power_num < smash_power_scalar)
+                {
+                    anim.speed = 1.5f;
+                }
                 anim.SetTrigger("isSmash");
             }
         }
@@ -665,7 +668,14 @@ public class PlayerMove : MonoBehaviour
             camera_obj.GetComponent<CameraMove>().ShakeCamera(smash_power_num / 2.0f, 0.2f);
 
         }
+        
         smash_state = SMASHSTATE.NORMAL;
+        if (smash_power_num < smash_power_scalar)
+        {
+            anim.speed = 1.0f;
+        }
+        
+        InputManager.instance.VibrateController(0.2f, smash_power_num / smash_max_time * 1.5f);
         
         anim.ResetTrigger("holdSmash");
     }

@@ -9,6 +9,8 @@ public class InputManager : MonoBehaviour
     public static InputManager instance {get; private set;}
     MainInputControls input_system;
     
+    private Gamepad gamepad;
+    
     private string current_scene;
     
     public Vector2 player_move_float {get; private set;}
@@ -24,6 +26,9 @@ public class InputManager : MonoBehaviour
     
     private float input_delay;
     
+    private float vibrate_duration;
+    private float vibrate_strength;
+    
     public int GetMenuMoveFloat()
     {
         int return_num = menu_move_input;
@@ -34,6 +39,12 @@ public class InputManager : MonoBehaviour
         }
         
         return return_num;
+    }
+    
+    public void VibrateController(float fvibrate_duration, float fstrength)
+    {
+        vibrate_duration = fvibrate_duration;
+        vibrate_strength = fstrength;
     }
     
     private void Awake() 
@@ -54,6 +65,8 @@ public class InputManager : MonoBehaviour
     void Start()
     {
         current_scene = SceneManager.GetActiveScene().name;
+        
+        gamepad = Gamepad.current;
         
         if (current_scene.Contains("Stage"))
         {
@@ -116,6 +129,23 @@ public class InputManager : MonoBehaviour
         else
         {
             menu_move_input = input_system.Menu.VerticalMove.ReadValue<int>();
+        }
+        
+        if (vibrate_duration > 0.0f)
+        {
+            if (gamepad != null)
+            {
+                gamepad.SetMotorSpeeds(vibrate_strength, vibrate_strength);
+            }
+            
+            vibrate_duration -= Time.deltaTime;
+        }
+        else
+        {
+            if (gamepad != null)
+            {
+                gamepad.SetMotorSpeeds(0.0f, 0.0f);
+            }
         }
     }
     

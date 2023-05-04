@@ -5,11 +5,13 @@ using UnityEngine;
 public class CameraMove : MonoBehaviour 
 {
     [Tooltip("プレイヤーからの距離")]
-    [SerializeField] private float distance = 5.0f;
+    [SerializeField] private float player_distance = 5.0f;
     
     [Tooltip("ステージからの距離")]
     [SerializeField] private float distance_from_stage = 70.0f;
     
+    [Tooltip("プレイヤーに近づく速度")]
+    [SerializeField] private float time_to_player = 10.0f;
     [Tooltip("元の位置に戻る速度")]
     [SerializeField] private float return_speed = 5.0f;
     [Tooltip("切り替わり待ち時間")]
@@ -17,6 +19,9 @@ public class CameraMove : MonoBehaviour
     
     [Tooltip("FOV")]
     [SerializeField] private float camera_fov = 15.0f;
+    
+    [Tooltip("カメラ揺れ力")]
+    [SerializeField] private float camera_shake_power = 5.0f;
     
     Camera cam;
     
@@ -33,7 +38,7 @@ public class CameraMove : MonoBehaviour
     
     public void ShakeCamera(float fpower, float fduration)
     {
-        shake_power = fpower / 5.0f;
+        shake_power = fpower * camera_shake_power;
         shake_camera = true;
         
         StartCoroutine("StopShake", fduration);
@@ -72,7 +77,7 @@ public class CameraMove : MonoBehaviour
         else
         {
             target_obj = player_obj;
-            distance_from_obj = distance * 10.0f * distance_scalar;
+            distance_from_obj = player_distance * 10.0f * distance_scalar;
         }
         
         Vector3 targetLookAt;
@@ -107,8 +112,9 @@ public class CameraMove : MonoBehaviour
         
         if (is_player_smashing)
         {
-            lookat_pos.transform.position = targetLookAt;
-            transform.position = target_pos + player_obj.transform.up * 5.0f;
+            float look_speed = 200.0f * time_to_player;
+            lookat_pos.transform.position = Vector3.MoveTowards(lookat_pos.transform.position, targetLookAt, Time.deltaTime * look_speed / 5.0f);
+            transform.position = Vector3.MoveTowards(transform.position, target_pos + player_obj.transform.up * 10.0f, Time.deltaTime * look_speed);
             return_count = time_to_return;
         }
         else
