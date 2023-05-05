@@ -16,6 +16,7 @@ public class StageBackgroundManager : MonoBehaviour
     private GameObject Canvas;
 
     private float ComplateRate = 0;
+    private SoundManager SoundManager;
 
     // Start is called before the first frame update
     void Start()
@@ -24,7 +25,7 @@ public class StageBackgroundManager : MonoBehaviour
         SmokeObjects = GameObject.FindGameObjectsWithTag("SmokeEffect");
 
         Canvas = GameObject.Find("Canvas");
-
+        SoundManager = gameObject.GetComponent<SoundManager>();
         //煙エフェクト調整
         for (int i = 0; i < SmokeObjects.Length; i++)
         {
@@ -60,6 +61,15 @@ public class StageBackgroundManager : MonoBehaviour
     public void ChangeGearsMove()
     {
         float SecondComplateRate = (float)Canvas.GetComponent<LightBulbCollector>().LightBulb_active / (float)Canvas.GetComponent<LightBulbCollector>().LightBulb_num;
+        //SE再生
+        if(SecondComplateRate - ComplateRate > 0)
+        {
+            SoundManager.PlaySoundEffect("GearMove");
+        }
+        else
+        {
+            SoundManager.PlaySoundEffect("ReverseGear");
+        }
         for (int i = 0; i < GearObjects.Length; i++)
         {
             GearObjects[i].ChangeGearMode(SecondComplateRate, SecondComplateRate - ComplateRate, AddTime);
