@@ -128,7 +128,7 @@ public class InputManager : MonoBehaviour
         }
         else
         {
-            menu_move_input = input_system.Menu.VerticalMove.ReadValue<int>();
+            menu_move_input = (int)input_system.Menu.VerticalMove.ReadValue<float>();
         }
         
         if (vibrate_duration > 0.0f)
