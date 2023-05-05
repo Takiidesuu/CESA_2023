@@ -56,6 +56,7 @@ public class LightBulb : MonoBehaviour
         if (other.gameObject.CompareTag("ElectricalBall"))
         {
             soundManager.PlaySoundEffect("Hit");
+            m_destroy_timer = 0;
             is_stage_hit = true;
             Quaternion LaserRotation = CalculateRotation(gameObject.transform.position, other.gameObject.GetComponent<ElectricBallMove>().ParentGenerator.gameObject.transform.position);
             Instantiate(Laser, gameObject.transform.position,LaserRotation);
