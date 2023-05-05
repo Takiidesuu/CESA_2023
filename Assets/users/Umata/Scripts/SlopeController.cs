@@ -15,11 +15,6 @@ public class SlopeController : MonoBehaviour
     [Tooltip("減速度")]
     [SerializeField] private float deceleration_speed = 10.0f;
     
-    [Tooltip("加速される時間")]
-    [SerializeField] private float acceleration_time = 0.2f;
-    [Tooltip("減速される時間")]
-    [SerializeField] private float deceleration_time = 0.2f;
-    
     private float slopeRayLength = 10f;
 
     private Rigidbody rb;
@@ -29,10 +24,7 @@ public class SlopeController : MonoBehaviour
     private ElectricBallMove move_script;
     private SLOPE_STATE current_slope_state;
     
-    public bool IsOnIncline()
-    {
-        return current_slope_state == SLOPE_STATE.UP ? true : false;
-    }
+    public bool is_on_slope {get; private set;}
     
     void Start()
     {
@@ -68,8 +60,7 @@ public class SlopeController : MonoBehaviour
                 slopeAngle *= -1.0f;
             }
             
-            bool is_on_slope = false;
-            float decelerate_real_time = deceleration_time;
+            is_on_slope = false;
             SLOPE_STATE previous_slope_state = current_slope_state;
             
             // 外側にいる
@@ -87,7 +78,6 @@ public class SlopeController : MonoBehaviour
                         current_slope_state = SLOPE_STATE.DOWN;
                     }
                     
-                    decelerate_real_time /= (50.0f / Mathf.Abs(slopeAngle));
                     is_on_slope = true;
                 }
             }
@@ -104,33 +94,26 @@ public class SlopeController : MonoBehaviour
                     {
                         current_slope_state = SLOPE_STATE.DOWN;
                     }
-                    
-                    decelerate_real_time /= (50.0f / (Mathf.Abs(slopeAngle + 180.0f)));
+
                     is_on_slope = true;
                 }
             }
             
             if (is_on_slope)
             {
-                if (current_slope_state != previous_slope_state)
+                float boost_speed = 0.0f;
+                
+                switch (current_slope_state)
                 {
-                    float delay_time = 0.2f;
-                    float boost_speed = 0.0f;
-                    
-                    switch (current_slope_state)
-                    {
-                        case SLOPE_STATE.UP:
-                            boost_speed = -deceleration_speed;
-                            delay_time = decelerate_real_time;
-                        break;
-                        case SLOPE_STATE.DOWN:
-                            boost_speed = acceleration_speed;
-                            delay_time = acceleration_time;
-                        break;
-                    }
-                    
-                    move_script.BoostSpeed(delay_time, boost_speed, delay_time);
+                    case SLOPE_STATE.UP:
+                        boost_speed = -deceleration_speed;
+                    break;
+                    case SLOPE_STATE.DOWN:
+                        boost_speed = acceleration_speed;
+                    break;
                 }
+                
+                move_script.ChangeSpeed(boost_speed);
             }
             else
             {
