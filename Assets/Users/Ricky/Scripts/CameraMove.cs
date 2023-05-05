@@ -36,6 +36,8 @@ public class CameraMove : MonoBehaviour
     private bool shake_camera;
     private float shake_power;
     
+    public bool is_zooming {get; private set;}
+    
     public void ShakeCamera(float fpower, float fduration)
     {
         shake_power = fpower * camera_shake_power;
@@ -56,6 +58,8 @@ public class CameraMove : MonoBehaviour
         return_count = 0;
         
         shake_camera = false;
+        
+        is_zooming = false;
     }
     
     private void Update() 
@@ -65,6 +69,8 @@ public class CameraMove : MonoBehaviour
     
     private void LateUpdate() 
     {
+        is_zooming = true;
+        
         float distance_from_obj;
         GameObject target_obj = player_obj.GetComponent<PlayerMove>().GetCurrentGravObj();
         
@@ -123,6 +129,11 @@ public class CameraMove : MonoBehaviour
             {
                 lookat_pos.transform.position = Vector3.MoveTowards(lookat_pos.transform.position, targetLookAt, Time.deltaTime * return_speed * 30.0f);
                 transform.position = Vector3.MoveTowards(transform.position, target_pos, 300.0f * return_speed * Time.deltaTime);
+                
+                if (transform.position == target_pos)
+                {
+                    is_zooming = false;
+                }
             }
             else
             {

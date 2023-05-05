@@ -7,20 +7,18 @@ public class ElectricBallMove : MonoBehaviour
     [Tooltip("移動速度")]
     [SerializeField] private float m_speed = 5.0f;
 
-    [Tooltip("減速速度")]
-    [SerializeField] private float deceleration_speed = 5.0f;
-
     [Tooltip("消滅時間")]
     [SerializeField] private float m_destroy_time = 5.0f;
 
-    [Tooltip("坂での加速時間")]
-    [SerializeField] private float m_accelerator_time = 1.0f;
-
-    [Tooltip("坂での加速量")]
-    [SerializeField] private float m_accelerator_speed = 2.0f;
-
-    [Tooltip("回転の滑らかさ")]
-    [SerializeField] private float turn_smooth_time = 1.0f;
+    [Tooltip("ブースとでの加速時間")]
+    [SerializeField] private float m_boost_time = 1.0f;
+    [Tooltip("ブースとでの加速量")]
+    [SerializeField] private float m_boost_speed = 2.0f;
+    
+    [Tooltip("本来のスピードに戻るまでの時間")]
+    [SerializeField] private float time_to_normal_speed = 1.0f;
+    [Tooltip("本来のスピードに戻るまでの速度")]
+    [SerializeField] private float return_speed = 1.0f;
 
     private Rigidbody rb;                   //リギッドボディー
     private float m_destroy_timer;
@@ -30,6 +28,7 @@ public class ElectricBallMove : MonoBehaviour
     private float m_real_speed;
     
     private bool has_jumped;
+    private float elapsed_time;
     
     // Start is called before the first frame update
     void Start()
@@ -39,6 +38,8 @@ public class ElectricBallMove : MonoBehaviour
         
         m_real_speed = m_speed;
         has_jumped = false;
+        
+        elapsed_time = 0.0f;
     }
 
     // Update is called once per frame
@@ -63,6 +64,32 @@ public class ElectricBallMove : MonoBehaviour
         
         //Z軸を強制的にPlayer座標に設定
         transform.position = playerpos;
+    }
+    
+    private void FixedUpdate() 
+    {
+        if (!GetComponent<SlopeController>().is_on_slope)
+        {
+            if (elapsed_time >= time_to_normal_speed)
+            {
+                if (m_real_speed != m_speed)
+                {
+                    m_real_speed = Mathf.MoveTowards(m_real_speed, m_speed, return_speed);
+                }
+                else
+                {
+                    m_real_speed = m_speed;
+                }
+            }
+            else
+            {
+                elapsed_time += Time.deltaTime;
+            }
+        }
+        else
+        {
+            elapsed_time = 0.0f;
+        }
     }
     
     private void OnTriggerEnter(Collider collision)
@@ -106,36 +133,22 @@ public class ElectricBallMove : MonoBehaviour
         
         if (collision.gameObject.tag == "SpeedBooster")
         {
-            BoostSpeed(m_accelerator_time,m_accelerator_speed, 0.5f);
+            StartCoroutine(BoostSpeedCoroutine(m_boost_time,m_boost_speed, 0.5f));
         }
 
     }
     
-    public void BoostSpeed(float boostTime, float boostSpeed, float decelerationTime)
+    public void ChangeSpeed(float boostSpeed)
     {
-        StopCoroutine("BoostSpeedCoroutine");
-        StartCoroutine(BoostSpeedCoroutine(boostTime, boostSpeed, decelerationTime));
+        m_real_speed += boostSpeed;
     }
 
     private IEnumerator BoostSpeedCoroutine(float boostTime, float boostSpeed, float decelerationTime)
     {
-        yield return new WaitForSeconds(0.05f);
-        
-        m_real_speed += boostSpeed; // 速度を増加させる
+        InvokeRepeating("ChangeSpeed", 0.0f, Time.deltaTime);
 
         yield return new WaitForSeconds(boostTime); // 指定時間待つ
 
-        // 元の速度に戻るまでの時間
-        float elapsedTime = 0f;
-
-        while (elapsedTime < decelerationTime)
-        {
-            float t = elapsedTime / decelerationTime;
-            m_real_speed = Mathf.Lerp(m_real_speed, m_speed, t); // 現在の速度から元の速度に徐々に戻す
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        m_real_speed = m_speed; // 元の速度に戻す
+        CancelInvoke();
     }
 }
