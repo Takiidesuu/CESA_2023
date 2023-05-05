@@ -19,6 +19,9 @@ public class ElectricBallMove : MonoBehaviour
     [SerializeField] private float time_to_normal_speed = 1.0f;
     [Tooltip("本来のスピードに戻るまでの速度")]
     [SerializeField] private float return_speed = 1.0f;
+    
+    [Tooltip("スピード限界")]
+    [SerializeField] private Vector2 speed_limit = new Vector2(2.0f, 50.0f);
 
     private Rigidbody rb;                   //リギッドボディー
     private float m_destroy_timer;
@@ -30,6 +33,8 @@ public class ElectricBallMove : MonoBehaviour
     private bool has_jumped;
     private float elapsed_time;
     
+    LightBulbCollector check_is_cleared;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -39,31 +44,40 @@ public class ElectricBallMove : MonoBehaviour
         m_real_speed = m_speed;
         has_jumped = false;
         
+        check_is_cleared = GameObject.FindObjectOfType<LightBulbCollector>();
+
         elapsed_time = 0.0f;
     }
 
     // Update is called once per frame
     void Update()
     {
-        var locVel = transform.InverseTransformDirection(rb.velocity);
-        locVel.x = m_real_speed;
-        rb.velocity = transform.TransformDirection(locVel);
-
-        m_destroy_timer += Time.deltaTime;
-
-        //時間経過後削除
-        if(m_destroy_timer > m_destroy_time)
+        if (!check_is_cleared.IsCleared())
         {
-            Destroy(this.gameObject);
+            var locVel = transform.InverseTransformDirection(rb.velocity);
+            locVel.x = m_real_speed;
+            rb.velocity = transform.TransformDirection(locVel);
+
+            m_destroy_timer += Time.deltaTime;
+
+            //時間経過後削除
+            if(m_destroy_timer > m_destroy_time)
+            {
+                Destroy(this.gameObject);
+            }
+            
+            Vector3 playerpos;
+            playerpos.x = transform.position.x;
+            playerpos.y = transform.position.y;
+            playerpos.z = 0;
+            
+            //Z軸を強制的にPlayer座標に設定
+            transform.position = playerpos;
         }
-        
-        Vector3 playerpos;
-        playerpos.x = transform.position.x;
-        playerpos.y = transform.position.y;
-        playerpos.z = 0;
-        
-        //Z軸を強制的にPlayer座標に設定
-        transform.position = playerpos;
+        else
+        {
+            rb.velocity = Vector3.zero;
+        }
     }
     
     private void FixedUpdate() 
@@ -90,6 +104,11 @@ public class ElectricBallMove : MonoBehaviour
         {
             elapsed_time = 0.0f;
         }
+    }
+    
+    private void LateUpdate() 
+    {
+        m_real_speed = Mathf.Clamp(m_real_speed, speed_limit.x, speed_limit.y);
     }
     
     private void OnTriggerEnter(Collider collision)
