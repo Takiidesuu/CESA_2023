@@ -64,7 +64,7 @@ public class ScoreManager : MonoBehaviour
                 timeLeft = Mathf.Min(timeLeft, ClearTime);
                 TimeText.text = "" + Mathf.RoundToInt(timeLeft).ToString();
 
-                if (Input.GetKeyDown(KeyCode.Space))
+                if (InputManager.instance.press_select)
                 {
                     counting = false;
                     timeLeft = ClearTime;
@@ -93,7 +93,7 @@ public class ScoreManager : MonoBehaviour
 
                 ScoreText.text = "" + score.ToString();
 
-                if (Input.GetKeyDown(KeyCode.Space))
+                if (InputManager.instance.press_select)
                 {
                     counting = true;
                     ScoreText.text = "" + Score.ToString();
@@ -141,7 +141,7 @@ public class ScoreManager : MonoBehaviour
 
                 }
                 //ç≈èIì¸óÕ
-                if (Input.GetKeyDown(KeyCode.Space))
+                if (InputManager.instance.press_select)
                 {
                     SceneManager.LoadScene(NextSceneName);
                 }

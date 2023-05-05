@@ -29,6 +29,8 @@ public class InputManager : MonoBehaviour
     private float vibrate_duration;
     private float vibrate_strength;
     
+    private LightBulbCollector check_is_cleared;
+    
     public int GetMenuMoveFloat()
     {
         int return_num = menu_move_input;
@@ -72,6 +74,8 @@ public class InputManager : MonoBehaviour
         {
             input_system.Player.Enable();
             input_system.Menu.Disable();
+            
+            check_is_cleared = GameObject.FindObjectOfType<LightBulbCollector>();
         }
         else
         {
@@ -89,7 +93,7 @@ public class InputManager : MonoBehaviour
     {
         if (current_scene.Contains("Stage"))
         {
-            if (PauseManager.instance.pause_flg)
+            if (PauseManager.instance.pause_flg || check_is_cleared.IsCleared())
             {
                 if (!input_system.Menu.enabled)
                 {
@@ -101,7 +105,7 @@ public class InputManager : MonoBehaviour
                 {
                     if (input_delay < 0.6f)
                     {
-                        input_delay += Time.deltaTime;
+                        input_delay += Time.unscaledDeltaTime;
                     }
                     else
                     {

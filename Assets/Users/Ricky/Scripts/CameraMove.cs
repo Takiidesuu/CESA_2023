@@ -50,6 +50,7 @@ public class CameraMove : MonoBehaviour
     {
         cam = GetComponent<Camera>();
         cam.fieldOfView = camera_fov;
+        GameObject.Find("SubCamera").GetComponent<Camera>().fieldOfView = camera_fov;
         
         player_obj = GameObject.FindGameObjectWithTag("Player");
         lookat_pos = new GameObject("CameraLookAtObj");

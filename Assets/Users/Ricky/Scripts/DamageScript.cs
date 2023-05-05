@@ -16,6 +16,8 @@ public class DamageScript : MonoBehaviour
     
     private bool is_invincible = false;
     
+    private LightBulbCollector check_is_cleared;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -23,6 +25,8 @@ public class DamageScript : MonoBehaviour
         {
             renderer_component = GetComponent<Renderer>();
         }
+        
+        check_is_cleared = GameObject.FindObjectOfType<LightBulbCollector>();
     }
 
     // Update is called once per frame
@@ -33,30 +37,33 @@ public class DamageScript : MonoBehaviour
     
     private void OnTriggerEnter(Collider other) 
     {
-        if (other.gameObject.tag == "ElectricalBall")
+        if (!check_is_cleared.IsCleared())
         {
-            if (!is_invincible)
+            if (other.gameObject.tag == "ElectricalBall")
             {
-                StartCoroutine("InvincibleStatus");
-                hp--;
-                
-                if (hp <= 0)
+                if (!is_invincible)
                 {
-                    if (this.gameObject.tag == "Player")
+                    StartCoroutine("InvincibleStatus");
+                    hp--;
+                    
+                    if (hp <= 0)
                     {
-                        this.GetComponent<PlayerMove>().GameOver();
+                        if (this.gameObject.tag == "Player")
+                        {
+                            this.GetComponent<PlayerMove>().GameOver();
+                        }
                     }
-                }
-                else
-                {
-                    if (this.gameObject.tag == "Player")
+                    else
                     {
-                        this.GetComponent<PlayerMove>().TookDamage();
+                        if (this.gameObject.tag == "Player")
+                        {
+                            this.GetComponent<PlayerMove>().TookDamage();
+                        }
                     }
+                    
+                    InvokeRepeating("InvincibleFlicker", 0.0f, invincible_flicker_time);
+                    is_invincible = true;
                 }
-                
-                InvokeRepeating("InvincibleFlicker", 0.0f, invincible_flicker_time);
-                is_invincible = true;
             }
         }
     }
@@ -65,6 +72,7 @@ public class DamageScript : MonoBehaviour
     {
         return hp;
     }
+    
     IEnumerator InvincibleStatus()
     {
         yield return new WaitForSeconds(invincible_duration);
