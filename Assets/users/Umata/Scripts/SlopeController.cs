@@ -113,7 +113,7 @@ public class SlopeController : MonoBehaviour
                     break;
                 }
                 
-                move_script.ChangeSpeed(boost_speed);
+                //move_script.ChangeSpeed(boost_speed);
             }
             else
             {
