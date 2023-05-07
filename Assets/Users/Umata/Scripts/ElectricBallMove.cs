@@ -3,17 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 public class ElectricBallMove : MonoBehaviour
 {
-
     [Tooltip("移動速度")]
     [SerializeField] private float m_speed = 5.0f;
 
     [Tooltip("消滅時間")]
     [SerializeField] private float m_destroy_time = 5.0f;
-
-    [Tooltip("ブースとでの加速時間")]
-    [SerializeField] private float m_boost_time = 1.0f;
-    [Tooltip("ブースとでの加速量")]
-    [SerializeField] private float m_boost_speed = 2.0f;
     
     [Tooltip("本来のスピードに戻るまでの時間")]
     [SerializeField] private float time_to_normal_speed = 1.0f;
@@ -33,6 +27,8 @@ public class ElectricBallMove : MonoBehaviour
     private bool has_jumped;
     private float elapsed_time;
     
+    private bool is_on_boost;
+    
     LightBulbCollector check_is_cleared;
     
     // Start is called before the first frame update
@@ -47,6 +43,7 @@ public class ElectricBallMove : MonoBehaviour
         check_is_cleared = GameObject.FindObjectOfType<LightBulbCollector>();
 
         elapsed_time = 0.0f;
+        is_on_boost = false;
     }
 
     // Update is called once per frame
@@ -82,7 +79,7 @@ public class ElectricBallMove : MonoBehaviour
     
     private void FixedUpdate() 
     {
-        if (!GetComponent<SlopeController>().is_on_slope)
+        if (!is_on_boost)
         {
             if (elapsed_time >= time_to_normal_speed)
             {
@@ -108,7 +105,12 @@ public class ElectricBallMove : MonoBehaviour
     
     private void LateUpdate() 
     {
-        m_real_speed = Mathf.Clamp(m_real_speed, speed_limit.x, speed_limit.y);
+        //m_real_speed = Mathf.Clamp(m_real_speed, speed_limit.x, speed_limit.y);
+    }
+    
+    public void ChangeSpeed(float boostSpeed)
+    {
+        m_real_speed = m_speed + boostSpeed;
     }
     
     private void OnTriggerEnter(Collider collision)
@@ -152,22 +154,23 @@ public class ElectricBallMove : MonoBehaviour
         
         if (collision.gameObject.tag == "SpeedBooster")
         {
-            StartCoroutine(BoostSpeedCoroutine(m_boost_time,m_boost_speed, 0.5f));
+            is_on_boost = true;
         }
-
     }
     
-    public void ChangeSpeed(float boostSpeed)
+    private void OnTriggerStay(Collider other) 
     {
-        m_real_speed += boostSpeed;
+        if (other.gameObject.tag == "SpeedBooster")
+        {
+            is_on_boost = true;
+        }
     }
-
-    private IEnumerator BoostSpeedCoroutine(float boostTime, float boostSpeed, float decelerationTime)
+    
+    private void OnTriggerExit(Collider other) 
     {
-        InvokeRepeating("ChangeSpeed", 0.0f, Time.deltaTime);
-
-        yield return new WaitForSeconds(boostTime); // 指定時間待つ
-
-        CancelInvoke();
+        if (other.gameObject.tag == "SpeedBooster")
+        {
+            is_on_boost = false;
+        }
     }
 }
