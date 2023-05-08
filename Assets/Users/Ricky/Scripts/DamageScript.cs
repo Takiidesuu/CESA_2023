@@ -16,10 +16,17 @@ public class DamageScript : MonoBehaviour
     
     private bool is_invincible = false;
     
+    private LightBulbCollector check_is_cleared;
+    
     // Start is called before the first frame update
     void Start()
     {
-        renderer_component = GetComponent<Renderer>();
+        if (GetComponent<Renderer>() != null)
+        {
+            renderer_component = GetComponent<Renderer>();
+        }
+        
+        check_is_cleared = GameObject.FindObjectOfType<LightBulbCollector>();
     }
 
     // Update is called once per frame
@@ -30,25 +37,40 @@ public class DamageScript : MonoBehaviour
     
     private void OnTriggerEnter(Collider other) 
     {
-        if (other.gameObject.tag == "ElectricalBall")
+        if (!check_is_cleared.IsCleared())
         {
-            if (!is_invincible)
+            if (other.gameObject.tag == "ElectricalBall")
             {
-                StartCoroutine("InvincibleStatus");
-                hp--;
-                
-                if (hp <= 0)
+                if (!is_invincible)
                 {
-                    if (this.gameObject.tag == "Player")
+                    StartCoroutine("InvincibleStatus");
+                    hp--;
+                    
+                    if (hp <= 0)
                     {
-                        this.GetComponent<PlayerMove>().GameOver();
+                        if (this.gameObject.tag == "Player")
+                        {
+                            this.GetComponent<PlayerMove>().GameOver();
+                        }
                     }
+                    else
+                    {
+                        if (this.gameObject.tag == "Player")
+                        {
+                            this.GetComponent<PlayerMove>().TookDamage();
+                        }
+                    }
+                    
+                    InvokeRepeating("InvincibleFlicker", 0.0f, invincible_flicker_time);
+                    is_invincible = true;
                 }
-                
-                InvokeRepeating("InvincibleFlicker", 0.0f, invincible_flicker_time);
-                is_invincible = true;
             }
         }
+    }
+    
+    public int GetHitPoint()
+    {
+        return hp;
     }
     
     IEnumerator InvincibleStatus()
@@ -57,14 +79,35 @@ public class DamageScript : MonoBehaviour
         
         CancelInvoke();
         
-        renderer_component.enabled = true;
-        this.transform.GetChild(3).gameObject.SetActive(true);
         is_invincible = false;
+        
+        if (renderer_component != null)
+        {
+            renderer_component.enabled = true;
+        }
+        
+        if (this.gameObject.tag == "Player" || this.gameObject.tag == "PlayerNPC")
+        {
+            foreach (Transform child in this.transform.GetChild(0))
+            {
+                child.gameObject.SetActive(true);
+            }
+        }
     }
     
     private void InvincibleFlicker()
     {
-        renderer_component.enabled = !renderer_component.enabled;
-        this.transform.GetChild(3).gameObject.SetActive(renderer_component.enabled);
+        if (renderer_component != null)
+        {
+            renderer_component.enabled = !renderer_component.enabled;
+        }
+        
+        if (this.gameObject.tag == "Player" || this.gameObject.tag == "PlayerNPC")
+        {
+            foreach (Transform child in this.transform.GetChild(0))
+            {
+                child.gameObject.SetActive(!child.gameObject.activeSelf);
+            }
+        }
     }
 }

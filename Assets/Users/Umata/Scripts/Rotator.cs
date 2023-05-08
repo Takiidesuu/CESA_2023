@@ -29,7 +29,7 @@ public class Rotator : MonoBehaviour
                 obj.transform.RotateAround(transform.position, Vector3.forward, rotate_speed * Time.deltaTime);
             }
         }
-        is_rotate = trigger_switch.is_stage_hit;
+        is_rotate = trigger_switch.player_hit;
     }
 
     void OnValidate()

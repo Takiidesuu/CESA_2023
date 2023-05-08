@@ -7,40 +7,39 @@ public class LightBulb : MonoBehaviour
     public bool is_stage_hit = false;   //ステージに当たっているか
     private int nothit_count;           //当たってらずに何フレーム立ったか (Exitが呼ばれないため)
 
-    private DeformStage deform_stage;    //電源がステージが当たっているかを取得
     private LightBulbChangeMaterial changeMaterial;    //マテリアルを変更
+    private SoundManager soundManager;
+    public GameObject Laser;
+    public GameObject HitEffect;    //接触時に発光する
+    [Tooltip("消滅時間")]
+    [SerializeField] private float m_destroy_time = 5.0f;
+    private float m_destroy_timer;
 
     private void Start()
     {
         changeMaterial = GetComponent<LightBulbChangeMaterial>();
+        soundManager = GetComponent<SoundManager>();    
     }
 
     private void Update()
     {
-        //ステージに当たっていなければフラグを変える
-        if (is_stage_hit)
+
+        if(is_stage_hit)
         {
-            if (nothit_count > 5)
-            {
-                changeMaterial.OnPower = false;
-                is_stage_hit = false;
-                deform_stage = null;
-            }
-            else
-                nothit_count++;
+            changeMaterial.OnPower = true;
+            m_destroy_timer += Time.deltaTime;
+        }
+        else
+        {
+            changeMaterial.OnPower = false;
+
         }
 
-        //どちらもステージに当たっているか
-        if (deform_stage != null)
+        //時間経過後削除
+        if (m_destroy_timer > m_destroy_time)
         {
-            if (deform_stage.hit_electrical && is_stage_hit)
-            {
-            }
-            else
-            {
-                is_stage_hit = false;
-                changeMaterial.OnPower = false;
-            }
+            is_stage_hit = false;
+            m_destroy_timer = 0;
         }
     }
 
@@ -48,14 +47,28 @@ public class LightBulb : MonoBehaviour
     {
         if (other.gameObject.CompareTag("ElectricalBall"))
         {
-            changeMaterial.OnPower = true;
             is_stage_hit = true;
             nothit_count = 0;
         }
-        if (other.gameObject.layer == 6 && is_stage_hit)
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("ElectricalBall"))
         {
-            deform_stage = other.transform.root.GetComponent<DeformStage>();
-            nothit_count = 0;
+            soundManager.PlaySoundEffect("Hit");
+            m_destroy_timer = 0;
+            is_stage_hit = true;
+            Quaternion LaserRotation = CalculateRotation(gameObject.transform.position, other.gameObject.GetComponent<ElectricBallMove>().ParentGenerator.gameObject.transform.position);
+            Instantiate(Laser, gameObject.transform.position,LaserRotation);
+            Instantiate(HitEffect, gameObject.transform.position,transform.rotation);
+
         }
+    }
+    public Quaternion CalculateRotation(Vector3 startPos, Vector3 endPos)
+    {
+        Vector3 direction = endPos - startPos;
+        Quaternion rotation = Quaternion.LookRotation(direction);
+
+        return rotation;
     }
 }

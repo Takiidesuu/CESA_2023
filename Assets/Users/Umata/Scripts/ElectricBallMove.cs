@@ -3,47 +3,116 @@ using System.Collections.Generic;
 using UnityEngine;
 public class ElectricBallMove : MonoBehaviour
 {
-
-    [Tooltip("ˆÚ“®‘¬“x")]
+    [Tooltip("ç§»å‹•é€Ÿåº¦")]
     [SerializeField] private float m_speed = 5.0f;
 
-    [Tooltip("Œ¸‘¬‘¬“x")]
-    [SerializeField] private float deceleration_speed = 5.0f;
-
-    [Tooltip("Á–ÅŠÔ")]
+    [Tooltip("æ¶ˆæ»…æ™‚é–“")]
     [SerializeField] private float m_destroy_time = 5.0f;
+    
+    [Tooltip("æœ¬æ¥ã®ã‚¹ãƒ”ãƒ¼ãƒ‰ã«æˆ»ã‚‹ã¾ã§ã®æ™‚é–“")]
+    [SerializeField] private float time_to_normal_speed = 1.0f;
+    [Tooltip("æœ¬æ¥ã®ã‚¹ãƒ”ãƒ¼ãƒ‰ã«æˆ»ã‚‹ã¾ã§ã®é€Ÿåº¦")]
+    [SerializeField] private float return_speed = 1.0f;
+    
+    [Tooltip("ã‚¹ãƒ”ãƒ¼ãƒ‰é™ç•Œ")]
+    [SerializeField] private Vector2 speed_limit = new Vector2(2.0f, 50.0f);
 
-    [Tooltip("‰ñ“]‚ÌŠŠ‚ç‚©‚³")]
-    [SerializeField] private float turn_smooth_time = 1.0f;
-
-    private Rigidbody rb;                   //ƒŠƒMƒbƒhƒ{ƒfƒB[
+    private Rigidbody rb;                   //ãƒªã‚®ãƒƒãƒ‰ãƒœãƒ‡ã‚£ãƒ¼
     private float m_destroy_timer;
-
+    private GameObject player;
+    public GameObject ParentGenerator;
+    
+    private float m_real_speed;
+    
+    private bool has_jumped;
+    private float elapsed_time;
+    
+    private bool is_on_boost;
+    
+    LightBulbCollector check_is_cleared;
+    
     // Start is called before the first frame update
     void Start()
     {
-        rb = GetComponent<Rigidbody>();                 //ƒŠƒMƒbƒhƒ{ƒfƒB[æ“¾
+        rb = GetComponent<Rigidbody>();                 //ãƒªã‚®ãƒƒãƒ‰ãƒœãƒ‡ã‚£ãƒ¼å–å¾—
+        player = GameObject.Find("Player");
+        
+        m_real_speed = m_speed;
+        has_jumped = false;
+        
+        check_is_cleared = GameObject.FindObjectOfType<LightBulbCollector>();
 
+        elapsed_time = 0.0f;
+        is_on_boost = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        Vector3 move_vec;
-        move_vec.x = m_speed;
-        move_vec.y = 0;
-        move_vec.z = 0;
-
-        transform.position += transform.rotation * move_vec;
-        m_destroy_timer += Time.deltaTime;
-
-        //ŠÔŒo‰ßŒãíœ
-        if(m_destroy_timer > m_destroy_time)
+        if (!check_is_cleared.IsCleared())
         {
-            Destroy(this.gameObject);
+            var locVel = transform.InverseTransformDirection(rb.velocity);
+            locVel.x = m_real_speed;
+            rb.velocity = transform.TransformDirection(locVel);
+
+            m_destroy_timer += Time.deltaTime;
+
+            //æ™‚é–“çµŒéå¾Œå‰Šé™¤
+            if(m_destroy_timer > m_destroy_time)
+            {
+                Destroy(this.gameObject);
+            }
+            
+            Vector3 playerpos;
+            playerpos.x = transform.position.x;
+            playerpos.y = transform.position.y;
+            playerpos.z = 0;
+            
+            //Zè»¸ã‚’å¼·åˆ¶çš„ã«Playeråº§æ¨™ã«è¨­å®š
+            transform.position = playerpos;
         }
-        transform.position.Set(transform.position.x, transform.position.y,0);
+        else
+        {
+            rb.velocity = Vector3.zero;
+        }
     }
+    
+    private void FixedUpdate() 
+    {
+        if (!is_on_boost)
+        {
+            if (elapsed_time >= time_to_normal_speed)
+            {
+                if (m_real_speed != m_speed)
+                {
+                    m_real_speed = Mathf.MoveTowards(m_real_speed, m_speed, return_speed);
+                }
+                else
+                {
+                    m_real_speed = m_speed;
+                }
+            }
+            else
+            {
+                elapsed_time += Time.deltaTime;
+            }
+        }
+        else
+        {
+            elapsed_time = 0.0f;
+        }
+    }
+    
+    private void LateUpdate() 
+    {
+        //m_real_speed = Mathf.Clamp(m_real_speed, speed_limit.x, speed_limit.y);
+    }
+    
+    public void ChangeSpeed(float boostSpeed)
+    {
+        m_real_speed = m_speed + boostSpeed;
+    }
+    
     private void OnTriggerEnter(Collider collision)
     {
         if (collision.gameObject.tag == "ElectricitySource")
@@ -53,6 +122,55 @@ public class ElectricBallMove : MonoBehaviour
                 Destroy(this.gameObject);
             }
         }
+        
+        if (collision.gameObject.tag == "FlipGate")
+        {
+            RaycastHit hit_info;
+            if (Physics.Raycast(this.transform.position + this.transform.up * 0.25f, this.transform.up * -1.0f, out hit_info, 5.0f, LayerMask.GetMask("Ground")))
+            {
+                float dis = Vector3.Distance(this.transform.position, hit_info.point);
+                Vector3 new_pos;
+                
+                while (true)
+                {
+                    Vector3 check_pos = this.transform.position + -this.transform.up * dis;
+                    Collider[] hit_col = Physics.OverlapSphere(check_pos, 2.0f, LayerMask.GetMask("Ground"));
+                    if (hit_col.Length == 0)
+                    {
+                        new_pos = check_pos;
+                        break;
+                    }
+                    else
+                    {
+                        dis += 1.0f;
+                    }
+                }
+                
+                transform.Rotate(new Vector3(180.0f, 0.0f, 0.0f), Space.Self);
+                
+                this.transform.position = new_pos;
+            }
+        }
+        
+        if (collision.gameObject.tag == "SpeedBooster")
+        {
+            is_on_boost = true;
+        }
     }
-
+    
+    private void OnTriggerStay(Collider other) 
+    {
+        if (other.gameObject.tag == "SpeedBooster")
+        {
+            is_on_boost = true;
+        }
+    }
+    
+    private void OnTriggerExit(Collider other) 
+    {
+        if (other.gameObject.tag == "SpeedBooster")
+        {
+            is_on_boost = false;
+        }
+    }
 }
