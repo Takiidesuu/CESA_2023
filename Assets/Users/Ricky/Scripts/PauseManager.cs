@@ -134,7 +134,10 @@ public class PauseManager : MonoBehaviour
                 pause_flg = true;
             }
             
-            Time.timeScale = 1.0f;
+            if (!HitstopManager.instance.is_stopped)
+            {
+                Time.timeScale = 1.0f;
+            }
         }
     }
     

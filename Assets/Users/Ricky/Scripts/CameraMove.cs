@@ -146,7 +146,7 @@ public class CameraMove : MonoBehaviour
         
         if (shake_camera)
         {
-            transform.position = origin_pos + Random.insideUnitSphere * shake_power;
+            transform.position = origin_pos + Random.insideUnitSphere * shake_power * Time.timeScale;
         }
     }
     

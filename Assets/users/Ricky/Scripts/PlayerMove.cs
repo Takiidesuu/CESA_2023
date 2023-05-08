@@ -46,9 +46,9 @@ public class PlayerMove : MonoBehaviour
     [Header("叩く力")]
     [SerializeField] private float smash_power_scalar = 3.0f;
  
-    [Header("加速用プレハブ")]
-    [SerializeField] public GameObject SpeedBooster;
-    [SerializeField] private Vector3 foot_pos;
+    [Header("プレハブ")]
+    [Tooltip("火花")]
+    [SerializeField] private GameObject spark_effect;
     
     private GameObject blackPanel;
     
@@ -62,7 +62,7 @@ public class PlayerMove : MonoBehaviour
     private float input_modifier;
     private Vector2 move_dir;
     private float speed;
-    public bool is_dead;
+    private bool is_dead;
     
     private bool is_grounded;       //地面についているか
     private GameObject ground_obj;  //ついてる地面
@@ -607,8 +607,6 @@ public class PlayerMove : MonoBehaviour
             ground_obj_parent = ground_obj.transform.root.gameObject;
             deform_stage = ground_obj_parent.GetComponent<DeformStage>();
             min_max_deform = ground_obj_parent.GetComponent<MinMaxDeform>();
-            //足元の位置を保存
-            foot_pos = hit.point;
         }
         else
         {
@@ -654,16 +652,16 @@ public class PlayerMove : MonoBehaviour
     {
         if (can_jump_status == SMASHJUMP.CAN_JUMP)
         {
-            rb.AddForce(this.transform.up * jump_power * smash_power_num / smash_threshold * 0.5f, ForceMode.Impulse);
+            var locVel = transform.InverseTransformDirection(rb.velocity);
+            locVel.y = jump_power * smash_power_num / smash_threshold * 0.5f;
+            rb.velocity = transform.TransformDirection(locVel);
         }
-
+        
         //叩くSEの再生
         soundmanager.PlaySoundEffect("Strike");
-        //Instantiate(SpeedBooster,foot_pos, Quaternion.identity);
 
         if (deform_stage)
         {
-
             bool isSmash = true;
             if (is_flip)
             {
@@ -682,7 +680,6 @@ public class PlayerMove : MonoBehaviour
             }
             
             camera_obj.GetComponent<CameraMove>().ShakeCamera(smash_power_num / 2.0f, 0.2f);
-
         }
         else
         {
@@ -691,15 +688,29 @@ public class PlayerMove : MonoBehaviour
                 wall_switch.WallMove();
             }
         }
-        smash_state = SMASHSTATE.NORMAL;
+        
         if (smash_power_num < smash_power_scalar)
         {
             anim.speed = 1.0f;
         }
         
-        InputManager.instance.VibrateController(0.2f, smash_power_num / smash_max_time * 1.5f);
+        float hit_stop_delay = smash_power_num / 10.0f;
+        HitstopManager.instance.StartHitStop(hit_stop_delay);
+        Invoke("SpawnSparks", hit_stop_delay);
         
+        smash_state = SMASHSTATE.NORMAL;
         anim.ResetTrigger("holdSmash");
+        
+        InputManager.instance.VibrateController(0.2f, smash_power_num / smash_max_time * 1.5f);
+    }
+    
+    private void SpawnSparks()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, transform.up * -1.0f, out hit, 5.0f, LayerMask.GetMask("Ground")))
+        {
+            Instantiate(spark_effect, hit.point, Quaternion.identity);
+        }
     }
     
     private void FlipCharacter()
