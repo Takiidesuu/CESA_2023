@@ -7,10 +7,14 @@ public class LightBulbCollector : MonoBehaviour
     public int LightBulb_num;
     public int LightBulb_active;
     public GameObject[] lightBulbs;
+    
+    public bool IsCleared()
+    {
+        return LightBulb_active == LightBulb_num ? true : false;
+    }
 
     void Start()
     {
-
         // タグが "LightBulb" のオブジェクトを検索し、配列に格納する
         lightBulbs = GameObject.FindGameObjectsWithTag("LightBulb");
         LightBulb_num = lightBulbs.Length;

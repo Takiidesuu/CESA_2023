@@ -46,9 +46,9 @@ public class PlayerMove : MonoBehaviour
     [Header("叩く力")]
     [SerializeField] private float smash_power_scalar = 3.0f;
  
-    [Header("加速用プレハブ")]
-    [SerializeField] public GameObject SpeedBooster;
-    [SerializeField] private Vector3 foot_pos;
+    [Header("プレハブ")]
+    [Tooltip("火花")]
+    [SerializeField] private GameObject spark_effect;
     
     private GameObject blackPanel;
     
@@ -62,7 +62,7 @@ public class PlayerMove : MonoBehaviour
     private float input_modifier;
     private Vector2 move_dir;
     private float speed;
-    public bool is_dead;
+    private bool is_dead;
     
     private bool is_grounded;       //地面についているか
     private GameObject ground_obj;  //ついてる地面
@@ -85,11 +85,14 @@ public class PlayerMove : MonoBehaviour
     private GameObject grav_obj;
     
     private float target_rot;
+    
+    private LightBulbCollector check_is_cleared;
 
     /// <summary>
     /// 平田
     /// </summary>
     private DeformStage deform_stage;
+    private WallSwitch wall_switch;
     private MinMaxDeform min_max_deform;
     private bool is_flip;
     
@@ -123,6 +126,11 @@ public class PlayerMove : MonoBehaviour
     {
         return grav_obj != null ? grav_obj : null;
     }
+
+    public WallSwitch GetWallswich()
+    {
+        return wall_switch;
+    }
     
     // Start is called before the first frame update
     void Start()
@@ -148,8 +156,7 @@ public class PlayerMove : MonoBehaviour
         speed = 0.0f;
         is_dead = false;
         
-        blackPanel = GameObject.Find("Canvas");
-        blackPanel = blackPanel.transform.GetChild(5).gameObject;
+        blackPanel = GameObject.Find("BlackPanel");
         blackPanel.SetActive(false);
         
         target_rot = 0.0f;
@@ -157,153 +164,161 @@ public class PlayerMove : MonoBehaviour
         in_grav_field = false;
 
         //soundmannagerを取得
-        soundmanager = gameObject.GetComponent<SoundManager>();
+        soundmanager = GetComponent<SoundManager>();
+        
+        check_is_cleared = GameObject.FindObjectOfType<LightBulbCollector>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!is_dead)
+        if (!check_is_cleared.IsCleared())
         {
-            if (!TakingDamage())
+            if (!is_dead)
             {
-                //インプット方向を取得
-                input_direction = InputManager.instance.player_move_float;
-            }
-            
-            CheckIsGrounded();
-            
-            speed = Mathf.MoveTowards(speed, input_direction.magnitude * max_speed, acceleration_speed);
-            
-            if (rb.velocity.magnitude > 0.0f && is_grounded && input_direction == Vector2.zero)
-            {
-                rb.velocity = Vector3.MoveTowards(rb.velocity, Vector3.zero, deceleration_speed * Time.deltaTime * 4.0f);
-                speed = Mathf.MoveTowards(speed, 0.0f, deceleration_speed * 0.5f);
-            }
-        }
-        else
-        {
-            RectTransform rTrans = blackPanel.GetComponent<RectTransform>();
-            if (rTrans.localPosition != Vector3.zero)
-            {
-                rTrans.localPosition = new Vector3(rTrans.localPosition.x + 10.0f, rTrans.localPosition.y, 0.0f);
+                if (!TakingDamage())
+                {
+                    //インプット方向を取得
+                    input_direction = InputManager.instance.player_move_float;
+                }
+                
+                CheckIsGrounded();
+                
+                speed = Mathf.MoveTowards(speed, input_direction.magnitude * max_speed, acceleration_speed);
+                
+                if (rb.velocity.magnitude > 0.0f && is_grounded && input_direction == Vector2.zero)
+                {
+                    rb.velocity = Vector3.MoveTowards(rb.velocity, Vector3.zero, deceleration_speed * Time.deltaTime * 4.0f);
+                    speed = Mathf.MoveTowards(speed, 0.0f, deceleration_speed * 0.5f);
+                }
             }
             else
             {
-                SceneManager.LoadScene("GameOverScene");
+                RectTransform rTrans = blackPanel.GetComponent<RectTransform>();
+                if (rTrans.localPosition != Vector3.zero)
+                {
+                    rTrans.localPosition = new Vector3(rTrans.localPosition.x + 10.0f, rTrans.localPosition.y, 0.0f);
+                }
+                else
+                {
+                    SceneManager.LoadScene("GameOverScene");
+                }
             }
-        }
-        
-        if (InputManager.instance.press_smash)
-        {
-            HoldSmash();
-        }
-        else
-        {
-            ReleaseSmash();
-        }
-        
-        if (InputManager.instance.press_flip)
-        {
-            FlipCharacter();
-        }
-        
-        if (InputManager.instance.press_rotate)
-        {
-            RotateGround();
-        }
-        
-        anim.SetBool("isWalking", input_direction != Vector2.zero);
+            
+            if (InputManager.instance.press_smash)
+            {
+                HoldSmash();
+            }
+            else
+            {
+                ReleaseSmash();
+            }
+            
+            if (InputManager.instance.press_flip)
+            {
+                FlipCharacter();
+            }
+            
+            if (InputManager.instance.press_rotate)
+            {
+                RotateGround();
+            }
+            
+            anim.SetBool("isWalking", input_direction != Vector2.zero);
 
-        transform.position = new Vector3(transform.position.x, transform.position.y, 0);
+            transform.position = new Vector3(transform.position.x, transform.position.y, 0);
+        }
     }
     
     void FixedUpdate() 
     {   
-        if (!is_dead)
+        if (!check_is_cleared.IsCleared())
         {
-            if (ground_obj != null)
+            if (!is_dead)
             {
-                if (!ground_obj_parent.gameObject.GetComponent<StageRotation>().GetRotatingStatus())
+                if (ground_obj != null)
                 {
-                    //叩く状態によって、更新を変える
-                    switch (smash_state)
+                    if (!ground_obj_parent.gameObject.GetComponent<StageRotation>().GetRotatingStatus())
                     {
-                        case SMASHSTATE.NORMAL:     //通常状態
-                        
-                        //インプット方向があったら、移動させる
-                        if (input_direction != Vector2.zero)
+                        //叩く状態によって、更新を変える
+                        switch (smash_state)
                         {
-                            Move();
-                        }
-                        else
-                        {
-                            input_check_pos = true;
-                            move_dir = Vector2.zero;
-                        }
-                        
-                        smash_power_num = 0.0f;
-                        
-                        var emis = part_line_effect.emission;
-                        emis.enabled = false;
-                        emis = part_circle_effect.emission;
-                        emis.enabled = false;
-                        
-                        break;
-                        case SMASHSTATE.HOLDING:    //力を溜めてる状態
-                        
-                        var emisss = part_line_effect.emission;
-                        emisss.enabled = true;
-                        var emiss_circle = part_circle_effect.emission;
-                        emiss_circle.enabled = true;
-                        
-                        var line_color = part_line_effect.main;
-                        var circle_color = part_circle_effect.main;
-                        
-                        //溜めた力を加算する
-                        if (smash_power_num >= smash_max_time)
-                        {
-                            smash_power_num = smash_max_time;
-                        }
-                        else
-                        {
-                            smash_power_num += Time.deltaTime;
-                        }
-                        
-                        if (smash_power_num >= smash_threshold)
-                        {
-                            can_jump_status = SMASHJUMP.CAN_JUMP;
+                            case SMASHSTATE.NORMAL:     //通常状態
                             
-                            if (smash_power_num >= smash_max_time)
+                            //インプット方向があったら、移動させる
+                            if (input_direction != Vector2.zero)
                             {
-                                line_color.startColor = new Color(1.0f, 0.0f, 0.0f);
-                                circle_color.startColor = new Color(1.0f, 0.0f, 0.0f);
+                                Move();
                             }
                             else
                             {
-                                line_color.startColor = new Color(0.0f, 1.0f, 0.0f);
-                                circle_color.startColor = new Color(0.0f, 1.0f, 0.0f);
-                            }   
+                                input_check_pos = true;
+                                move_dir = Vector2.zero;
+                            }
+                            
+                            smash_power_num = 0.0f;
+                            
+                            var emis = part_line_effect.emission;
+                            emis.enabled = false;
+                            emis = part_circle_effect.emission;
+                            emis.enabled = false;
+                            
+                            break;
+                            case SMASHSTATE.HOLDING:    //力を溜めてる状態
+                            
+                            var emisss = part_line_effect.emission;
+                            emisss.enabled = true;
+                            var emiss_circle = part_circle_effect.emission;
+                            emiss_circle.enabled = true;
+                            
+                            var line_color = part_line_effect.main;
+                            var circle_color = part_circle_effect.main;
+                            
+                            //溜めた力を加算する
+                            if (smash_power_num >= smash_max_time)
+                            {
+                                smash_power_num = smash_max_time;
+                            }
+                            else
+                            {
+                                smash_power_num += Time.deltaTime;
+                            }
+                            
+                            if (smash_power_num >= smash_threshold)
+                            {
+                                can_jump_status = SMASHJUMP.CAN_JUMP;
+                                
+                                if (smash_power_num >= smash_max_time)
+                                {
+                                    line_color.startColor = new Color(1.0f, 0.0f, 0.0f);
+                                    circle_color.startColor = new Color(1.0f, 0.0f, 0.0f);
+                                }
+                                else
+                                {
+                                    line_color.startColor = new Color(0.0f, 1.0f, 0.0f);
+                                    circle_color.startColor = new Color(0.0f, 1.0f, 0.0f);
+                                }   
+                            }
+                            else
+                            {
+                                can_jump_status = SMASHJUMP.NONE;
+                                line_color.startColor = new Color(0.0f, 0.0f, 1.0f);
+                                circle_color.startColor = new Color(0.0f, 0.0f, 1.0f);
+                            }
+                            
+                            emisss.rateOverTime = 90.0f * (smash_power_num / smash_threshold);
+                            circle_color.startSize = 8.0f * (smash_power_num / smash_threshold);
+                            
+                            break;
+                            case SMASHSTATE.SMASHING:   //力を放ってる状態
+                            
+                            var emissss = part_line_effect.emission;
+                            emissss.enabled = false;
+                            emissss = part_circle_effect.emission;
+                            emissss.enabled = false;
+                            
+                            break;
                         }
-                        else
-                        {
-                            can_jump_status = SMASHJUMP.NONE;
-                            line_color.startColor = new Color(0.0f, 0.0f, 1.0f);
-                            circle_color.startColor = new Color(0.0f, 0.0f, 1.0f);
-                        }
-                        
-                        emisss.rateOverTime = 90.0f * (smash_power_num / smash_threshold);
-                        circle_color.startSize = 8.0f * (smash_power_num / smash_threshold);
-                        
-                        break;
-                        case SMASHSTATE.SMASHING:   //力を放ってる状態
-                        
-                        var emissss = part_line_effect.emission;
-                        emissss.enabled = false;
-                        emissss = part_circle_effect.emission;
-                        emissss.enabled = false;
-                        
-                        break;
                     }
                 }
             }
@@ -592,8 +607,6 @@ public class PlayerMove : MonoBehaviour
             ground_obj_parent = ground_obj.transform.root.gameObject;
             deform_stage = ground_obj_parent.GetComponent<DeformStage>();
             min_max_deform = ground_obj_parent.GetComponent<MinMaxDeform>();
-            //足元の位置を保存
-            foot_pos = hit.point;
         }
         else
         {
@@ -626,6 +639,10 @@ public class PlayerMove : MonoBehaviour
             }
             else
             {
+                if (smash_power_num < smash_power_scalar)
+                {
+                    anim.speed = 1.5f;
+                }
                 anim.SetTrigger("isSmash");
             }
         }
@@ -635,16 +652,16 @@ public class PlayerMove : MonoBehaviour
     {
         if (can_jump_status == SMASHJUMP.CAN_JUMP)
         {
-            rb.AddForce(this.transform.up * jump_power * smash_power_num / smash_threshold * 0.5f, ForceMode.Impulse);
+            var locVel = transform.InverseTransformDirection(rb.velocity);
+            locVel.y = jump_power * smash_power_num / smash_threshold * 0.5f;
+            rb.velocity = transform.TransformDirection(locVel);
         }
-
+        
         //叩くSEの再生
         soundmanager.PlaySoundEffect("Strike");
-        //Instantiate(SpeedBooster,foot_pos, Quaternion.identity);
 
         if (deform_stage)
         {
-
             bool isSmash = true;
             if (is_flip)
             {
@@ -663,11 +680,37 @@ public class PlayerMove : MonoBehaviour
             }
             
             camera_obj.GetComponent<CameraMove>().ShakeCamera(smash_power_num / 2.0f, 0.2f);
-
         }
-        smash_state = SMASHSTATE.NORMAL;
+        else
+        {
+            if (wall_switch != null)
+            {
+                wall_switch.WallMove();
+            }
+        }
         
+        if (smash_power_num < smash_power_scalar)
+        {
+            anim.speed = 1.0f;
+        }
+        
+        float hit_stop_delay = smash_power_num / 10.0f;
+        HitstopManager.instance.StartHitStop(hit_stop_delay);
+        Invoke("SpawnSparks", hit_stop_delay);
+        
+        smash_state = SMASHSTATE.NORMAL;
         anim.ResetTrigger("holdSmash");
+        
+        InputManager.instance.VibrateController(0.2f, smash_power_num / smash_max_time * 1.5f);
+    }
+    
+    private void SpawnSparks()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, transform.up * -1.0f, out hit, 5.0f, LayerMask.GetMask("Ground")))
+        {
+            Instantiate(spark_effect, hit.point, Quaternion.identity);
+        }
     }
     
     private void FlipCharacter()
@@ -739,8 +782,10 @@ public class PlayerMove : MonoBehaviour
         if (other.gameObject.layer == 6)
         {
             is_grounded = true;
+            if (other.gameObject.name == "Swich")
+                wall_switch = other.gameObject.GetComponent<WallSwitch>();
+
         }
-        
         if (other.gameObject.layer == LayerMask.GetMask("ElectricalBall"))
         {
             Physics.IgnoreCollision(col, other.gameObject.GetComponent<Collider>());
@@ -760,6 +805,8 @@ public class PlayerMove : MonoBehaviour
         if (other.gameObject.layer == 6)
         {
             is_grounded = false;
+            if (other.gameObject.name == "Swich")
+                wall_switch = null;
         }
     }
     

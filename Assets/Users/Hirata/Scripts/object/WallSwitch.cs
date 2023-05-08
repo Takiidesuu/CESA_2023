@@ -5,25 +5,35 @@ using UnityEngine;
 public class WallSwitch : MonoBehaviour
 {
     private bool player_hit;
+    private WallMove wall_move;
 
-    private void OnTriggerEnter(Collider other)
+    private void Start()
     {
-        if (other.CompareTag("Player"))
+        wall_move = transform.parent.Find("Wall").GetComponent<WallMove>();
+    }
+    public bool GetIsHit()
+    {
+        return player_hit;
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
         {
             player_hit = true;
         }
     }
 
-    private void OnTriggerExit(Collider other)
+    private void OnCollisionExit(Collision collision)
     {
-        if (other.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("Player"))
         {
             player_hit = false;
         }
     }
 
-    public bool GetIsHit()
+    public void WallMove()
     {
-        return player_hit;
+        wall_move.OnceWallMove();
     }
 }

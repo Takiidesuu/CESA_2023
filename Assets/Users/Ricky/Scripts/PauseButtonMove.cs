@@ -38,12 +38,7 @@ public class PauseButtonMove : MonoBehaviour
         
         current_menu_id = transform.GetSiblingIndex() - 1;
         
-        default_x_pos = Screen.width / 2.0f;
-        default_y_pos = Screen.height / 2.0f - ((Screen.height / 6.0f) * (current_menu_id + 1));
-        if (current_menu_id == 4)
-        {
-            default_y_pos = Screen.height / 2.0f * -1.0f + ((Screen.height / 6.0f) - 60.0f);
-        }
+        ResetScreenDefaultParams();
         
         rect_transform = GetComponent<RectTransform>();
         current_pos = rect_transform.localPosition;
@@ -52,6 +47,8 @@ public class PauseButtonMove : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        ResetScreenDefaultParams();
+        
         if (is_selected)
         {
             target_y_pos = default_y_pos;
@@ -72,7 +69,7 @@ public class PauseButtonMove : MonoBehaviour
         
         if (elapsed_time < 1.0f)
         {
-            elapsed_time += Time.deltaTime * 10.0f;
+            elapsed_time += Time.unscaledDeltaTime * 10.0f;
         }
         else
         {
@@ -80,5 +77,15 @@ public class PauseButtonMove : MonoBehaviour
         }
         
         rect_transform.localPosition = Vector3.Lerp(current_pos, new Vector3(target_x_pos, target_y_pos, rect_transform.localPosition.z), Mathf.Pow(elapsed_time / 1.0f, 2.0f));
+    }
+    
+    private void ResetScreenDefaultParams()
+    {
+        default_x_pos = Screen.width / 2.0f;
+        default_y_pos = Screen.height / 2.0f - ((Screen.height / 6.0f) * (current_menu_id + 1));
+        if (current_menu_id == 4)
+        {
+            default_y_pos = Screen.height / 2.0f * -1.0f + ((Screen.height / 6.0f) - 60.0f);
+        }
     }
 }

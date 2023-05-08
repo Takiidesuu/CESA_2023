@@ -44,7 +44,7 @@ public class ImageSlider : MonoBehaviour
     void Update()
     {
         //シーン切替
-        if (Input.GetKeyDown(KeyCode.Space) || Input.GetButtonDown("Jump"))
+        if (InputManager.instance.press_select)
         {
             // スペースキーまたはジャンプボタンが押されたときの処理
             switch (select_button){
@@ -77,7 +77,7 @@ public class ImageSlider : MonoBehaviour
         timeSinceSelect += Time.deltaTime;
 
         // キーボード操作で選択中のボタンを変更
-        if (canSelect && (Input.GetKeyDown(KeyCode.W) || Input.GetAxis("Vertical") > 0))
+        if (canSelect && InputManager.instance.GetMenuMoveFloat() < 0)
         {
             timeSinceSelect = 0f;
             canSelect = false;
@@ -87,7 +87,7 @@ public class ImageSlider : MonoBehaviour
                 select_button = images.Length - 1;
             }
         }
-        else if (canSelect && (Input.GetKeyDown(KeyCode.S) || Input.GetAxis("Vertical") < 0))
+        else if (canSelect && InputManager.instance.GetMenuMoveFloat() > 0)
         {
             timeSinceSelect = 0f;
             canSelect = false;

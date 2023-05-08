@@ -66,7 +66,7 @@ public class PauseManager : MonoBehaviour
             {
                 if (curtain_transform.localPosition != Vector3.zero)
                 {
-                    curtain_transform.localPosition = Vector3.MoveTowards(curtain_transform.localPosition, Vector3.zero, Time.deltaTime * 20.0f);
+                    curtain_transform.localPosition = Vector3.MoveTowards(curtain_transform.localPosition, Vector3.zero, Time.unscaledDeltaTime * 20.0f);
                 }
                 else
                 {
@@ -119,6 +119,8 @@ public class PauseManager : MonoBehaviour
                     }
                 }
             }
+            
+            Time.timeScale = 0.0f;
         }
         else
         {   
@@ -130,6 +132,11 @@ public class PauseManager : MonoBehaviour
             if (InputManager.instance.press_pause)
             {
                 pause_flg = true;
+            }
+            
+            if (!HitstopManager.instance.is_stopped)
+            {
+                Time.timeScale = 1.0f;
             }
         }
     }

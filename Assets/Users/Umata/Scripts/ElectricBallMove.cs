@@ -3,24 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 public class ElectricBallMove : MonoBehaviour
 {
-
     [Tooltip("移動速度")]
     [SerializeField] private float m_speed = 5.0f;
 
-    [Tooltip("減速速度")]
-    [SerializeField] private float deceleration_speed = 5.0f;
-
     [Tooltip("消滅時間")]
     [SerializeField] private float m_destroy_time = 5.0f;
-
-    [Tooltip("坂での加速時間")]
-    [SerializeField] private float m_accelerator_time = 1.0f;
-
-    [Tooltip("坂での加速量")]
-    [SerializeField] private float m_accelerator_speed = 2.0f;
-
-    [Tooltip("回転の滑らかさ")]
-    [SerializeField] private float turn_smooth_time = 1.0f;
+    
+    [Tooltip("本来のスピードに戻るまでの時間")]
+    [SerializeField] private float time_to_normal_speed = 1.0f;
+    [Tooltip("本来のスピードに戻るまでの速度")]
+    [SerializeField] private float return_speed = 1.0f;
+    
+    [Tooltip("スピード限界")]
+    [SerializeField] private Vector2 speed_limit = new Vector2(2.0f, 50.0f);
 
     private Rigidbody rb;                   //リギッドボディー
     private float m_destroy_timer;
@@ -28,6 +23,14 @@ public class ElectricBallMove : MonoBehaviour
     public GameObject ParentGenerator;
     
     private float m_real_speed;
+    
+    private bool has_jumped;
+    private float elapsed_time;
+    
+    private bool is_on_boost;
+    
+    LightBulbCollector check_is_cleared;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -35,33 +38,81 @@ public class ElectricBallMove : MonoBehaviour
         player = GameObject.Find("Player");
         
         m_real_speed = m_speed;
+        has_jumped = false;
+        
+        check_is_cleared = GameObject.FindObjectOfType<LightBulbCollector>();
+
+        elapsed_time = 0.0f;
+        is_on_boost = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        Vector3 move_vec;
-        move_vec.x = m_real_speed;
-        move_vec.y = 0;
-        move_vec.z = 0;
-
-        transform.position += transform.rotation * move_vec * Time.deltaTime;
-        m_destroy_timer += Time.deltaTime;
-
-        //時間経過後削除
-        if(m_destroy_timer > m_destroy_time)
+        if (!check_is_cleared.IsCleared())
         {
-            Destroy(this.gameObject);
-        }
-        transform.position.Set(transform.position.x, transform.position.y,0);
+            var locVel = transform.InverseTransformDirection(rb.velocity);
+            locVel.x = m_real_speed;
+            rb.velocity = transform.TransformDirection(locVel);
 
-        Vector3 playerpos;
-        playerpos.x = transform.position.x;
-        playerpos.y = transform.position.y;
-        playerpos.z = 0;
-        //Z軸を強制的にPlayer座標に設定
-        transform.position = playerpos;
+            m_destroy_timer += Time.deltaTime;
+
+            //時間経過後削除
+            if(m_destroy_timer > m_destroy_time)
+            {
+                Destroy(this.gameObject);
+            }
+            
+            Vector3 playerpos;
+            playerpos.x = transform.position.x;
+            playerpos.y = transform.position.y;
+            playerpos.z = 0;
+            
+            //Z軸を強制的にPlayer座標に設定
+            transform.position = playerpos;
+        }
+        else
+        {
+            rb.velocity = Vector3.zero;
+        }
     }
+    
+    private void FixedUpdate() 
+    {
+        if (!is_on_boost)
+        {
+            if (elapsed_time >= time_to_normal_speed)
+            {
+                if (m_real_speed != m_speed)
+                {
+                    m_real_speed = Mathf.MoveTowards(m_real_speed, m_speed, return_speed);
+                }
+                else
+                {
+                    m_real_speed = m_speed;
+                }
+            }
+            else
+            {
+                elapsed_time += Time.deltaTime;
+            }
+        }
+        else
+        {
+            elapsed_time = 0.0f;
+        }
+    }
+    
+    private void LateUpdate() 
+    {
+        //m_real_speed = Mathf.Clamp(m_real_speed, speed_limit.x, speed_limit.y);
+    }
+    
+    public void ChangeSpeed(float boostSpeed)
+    {
+        m_real_speed = m_speed + boostSpeed;
+    }
+    
     private void OnTriggerEnter(Collider collision)
     {
         if (collision.gameObject.tag == "ElectricitySource")
@@ -103,34 +154,23 @@ public class ElectricBallMove : MonoBehaviour
         
         if (collision.gameObject.tag == "SpeedBooster")
         {
-            BoostSpeed(m_accelerator_time,m_accelerator_speed, 0.5f);
+            is_on_boost = true;
         }
-
     }
     
-    public void BoostSpeed(float boostTime, float boostSpeed, float decelerationTime)
+    private void OnTriggerStay(Collider other) 
     {
-        StopCoroutine("BoostSpeedCoroutine");
-        StartCoroutine(BoostSpeedCoroutine(boostTime, boostSpeed, decelerationTime));
-    }
-
-    private IEnumerator BoostSpeedCoroutine(float boostTime, float boostSpeed, float decelerationTime)
-    {
-        m_real_speed += boostSpeed; // 速度を増加させる
-
-        yield return new WaitForSeconds(boostTime); // 指定時間待つ
-
-        // 元の速度に戻るまでの時間
-        float elapsedTime = 0f;
-
-        while (elapsedTime < decelerationTime)
+        if (other.gameObject.tag == "SpeedBooster")
         {
-            float t = elapsedTime / decelerationTime;
-            m_real_speed = Mathf.Lerp(m_real_speed, m_speed, t); // 現在の速度から元の速度に徐々に戻す
-            elapsedTime += Time.deltaTime;
-            yield return null;
+            is_on_boost = true;
         }
-
-        m_real_speed = m_speed; // 元の速度に戻す
+    }
+    
+    private void OnTriggerExit(Collider other) 
+    {
+        if (other.gameObject.tag == "SpeedBooster")
+        {
+            is_on_boost = false;
+        }
     }
 }

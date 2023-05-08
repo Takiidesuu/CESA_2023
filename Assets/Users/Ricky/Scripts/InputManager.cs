@@ -9,6 +9,8 @@ public class InputManager : MonoBehaviour
     public static InputManager instance {get; private set;}
     MainInputControls input_system;
     
+    private Gamepad gamepad;
+    
     private string current_scene;
     
     public Vector2 player_move_float {get; private set;}
@@ -24,6 +26,11 @@ public class InputManager : MonoBehaviour
     
     private float input_delay;
     
+    private float vibrate_duration;
+    private float vibrate_strength;
+    
+    private LightBulbCollector check_is_cleared;
+    
     public int GetMenuMoveFloat()
     {
         int return_num = menu_move_input;
@@ -34,6 +41,12 @@ public class InputManager : MonoBehaviour
         }
         
         return return_num;
+    }
+    
+    public void VibrateController(float fvibrate_duration, float fstrength)
+    {
+        vibrate_duration = fvibrate_duration;
+        vibrate_strength = fstrength;
     }
     
     private void Awake() 
@@ -55,10 +68,14 @@ public class InputManager : MonoBehaviour
     {
         current_scene = SceneManager.GetActiveScene().name;
         
+        gamepad = Gamepad.current;
+        
         if (current_scene.Contains("Stage"))
         {
             input_system.Player.Enable();
             input_system.Menu.Disable();
+            
+            check_is_cleared = GameObject.FindObjectOfType<LightBulbCollector>();
         }
         else
         {
@@ -76,7 +93,7 @@ public class InputManager : MonoBehaviour
     {
         if (current_scene.Contains("Stage"))
         {
-            if (PauseManager.instance.pause_flg)
+            if (PauseManager.instance.pause_flg || check_is_cleared.IsCleared())
             {
                 if (!input_system.Menu.enabled)
                 {
@@ -88,7 +105,7 @@ public class InputManager : MonoBehaviour
                 {
                     if (input_delay < 0.6f)
                     {
-                        input_delay += Time.deltaTime;
+                        input_delay += Time.unscaledDeltaTime;
                     }
                     else
                     {
@@ -115,7 +132,24 @@ public class InputManager : MonoBehaviour
         }
         else
         {
-            menu_move_input = input_system.Menu.VerticalMove.ReadValue<int>();
+            menu_move_input = (int)input_system.Menu.VerticalMove.ReadValue<float>();
+        }
+        
+        if (vibrate_duration > 0.0f)
+        {
+            if (gamepad != null)
+            {
+                gamepad.SetMotorSpeeds(vibrate_strength, vibrate_strength);
+            }
+            
+            vibrate_duration -= Time.deltaTime;
+        }
+        else
+        {
+            if (gamepad != null)
+            {
+                gamepad.SetMotorSpeeds(0.0f, 0.0f);
+            }
         }
     }
     

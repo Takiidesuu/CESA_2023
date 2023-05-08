@@ -4,58 +4,55 @@ using UnityEngine;
 
 public class WallMove : MonoBehaviour
 {       
-    private WallSwitch wallSwitch;            //switch‚ÌƒXƒNƒŠƒvƒg
+    private WallSwitch wallSwitch;            //switchï¿½ÌƒXï¿½Nï¿½ï¿½ï¿½vï¿½g
 
-    public Vector3 movePosition;              //ˆê“x‚ÌˆÚ“®—Ê
-    public int separationCount;               //‰½‰ñ‚É•ª‚¯‚é‚©  
-    public float oneMoveTime;                 //ˆê“x‚ÌˆÚ“®ŠÔ
-    public float untilReturnTime;             //–ß‚é‚Ü‚Å‚ÌŠÔ 
-    public float returnTime;                  //–ß‚é‚ÌˆÚ“®ŠÔ
+    public Vector3 movePosition;              //ï¿½ï¿½xï¿½ÌˆÚ“ï¿½ï¿½ï¿½
+    public int separationCount;               //ï¿½ï¿½ï¿½ï¿½É•ï¿½ï¿½ï¿½ï¿½é‚©  
+    public float oneMoveTime;                 //ï¿½ï¿½xï¿½ÌˆÚ“ï¿½ï¿½ï¿½ï¿½ï¿½
+    public float untilReturnTime;             //ï¿½ß‚ï¿½Ü‚Å‚Ìï¿½ï¿½ï¿½ 
+    public float returnTime;                  //ï¿½ß‚ï¿½ÌˆÚ“ï¿½ï¿½ï¿½ï¿½ï¿½
 
-    private Vector3 startPosition;            //‰ŠúˆÊ’u
-    private Vector3 velocity = Vector3.zero;  //ˆÚ“®—Ê•Û‘¶
-    private int count;                        //Œ»İ‰ñ”
-    private float untilTime;                  //ÅŒã‚ÉˆÚ“®‚³‚¹‚Ä‚©‚ç‚ÌŠÔ
+    private Vector3 startPosition;            //ï¿½ï¿½ï¿½ï¿½ï¿½Ê’u
+    private Vector3 velocity = Vector3.zero;  //ï¿½Ú“ï¿½ï¿½Ê•Û‘ï¿½
+    private int count;                        //ï¿½ï¿½ï¿½İ‰ï¿½
+    private float untilTime;                  //ï¿½ÅŒï¿½ÉˆÚ“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½Ìï¿½ï¿½ï¿½
 
     void Start()
     {
-        wallSwitch = transform.parent.GetComponent<WallSwitch>();
+        wallSwitch = transform.parent.Find("Swich").GetComponent<WallSwitch>();
         startPosition = transform.localPosition;
     }
 
     // Update is called once per frame
     void Update()
     {
-
-        //ÅŒã‚©‚ç‰Ÿ‚µ‚½ŠÔ‚ª‰ß‚¬‚½‚ç–ß‚é
+        //ï¿½ÅŒã‚©ï¿½ç‰Ÿï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô‚ï¿½ï¿½ß‚ï¿½ï¿½ï¿½ï¿½ï¿½ß‚ï¿½
         if (untilReturnTime < untilTime) 
         {
             transform.localPosition = Vector3.SmoothDamp(transform.localPosition, startPosition, ref velocity, returnTime);
-            //–ß‚é“r’†‚ÉƒJƒEƒ“ƒg‚ğXV
+            //ï¿½ß‚ï¿½rï¿½ï¿½ï¿½ÉƒJï¿½Eï¿½ï¿½ï¿½gï¿½ï¿½Xï¿½V
             Vector3 pos = transform.localPosition - startPosition;
             if (pos.x != 0)
                 count = (int)(pos.x / (movePosition.x / separationCount));
             else if (pos.y != 0)
                 count = (int)(pos.y / (movePosition.y / separationCount));
         }
-        else //‚»‚êˆÈŠO‚Í‰ñ”‚²‚Æ‚ÉXV
+        else //ï¿½ï¿½ï¿½ï¿½ÈŠOï¿½Í‰ñ”‚ï¿½ï¿½Æ‚ÉXï¿½V
         {
             transform.localPosition = Vector3.SmoothDamp(transform.localPosition, startPosition + (movePosition / separationCount * count), ref velocity, oneMoveTime);
-        }
-
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            OnceWallMove();
         }
 
         untilTime += Time.deltaTime;
     }
 
-    //ƒXƒCƒbƒ`‚ğ‰Ÿ‚µ‚½‚çˆÚ“®
+    //ï¿½Xï¿½Cï¿½bï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú“ï¿½
     public void OnceWallMove()
     {
-        if (separationCount > count)
-            count++;
-        untilTime = 0;
+        if (wallSwitch.GetIsHit())
+        {
+            if (separationCount > count)
+                count++;
+            untilTime = 0;
+        }
     }
 }
