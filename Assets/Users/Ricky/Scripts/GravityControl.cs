@@ -119,7 +119,7 @@ public class GravityControl : MonoBehaviour
 
         bool found_ground = false;
         
-        float ray_length = 20.0f;
+        float ray_length = 5.0f;
 
         found_ground = Physics.Raycast(feet_pos + this.transform.right * 0.2f, dir_offset_front, out hit_front, ray_length, ground_layer_mask);
 
@@ -186,7 +186,7 @@ public class GravityControl : MonoBehaviour
             Vector3 back_dir_down = this.transform.up * -1.0f + this.transform.forward * -0.25f;
             back_dir_down.Normalize();
             
-            ray_length = 40.0f;
+            ray_length = 30.0f;
             
             Physics.Raycast(this.transform.position, transform.up, out check_ground[0], ray_length, ground_layer_mask);
             Physics.Raycast(this.transform.position, front_dir, out check_ground[1], ray_length, ground_layer_mask);
