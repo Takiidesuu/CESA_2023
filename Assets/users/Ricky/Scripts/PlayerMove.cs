@@ -686,7 +686,7 @@ public class PlayerMove : MonoBehaviour
         }
         else
         {
-            if (wall_switch != null) 
+            if (wall_switch != null)
             {
                 wall_switch.WallMove();
             }
@@ -771,7 +771,7 @@ public class PlayerMove : MonoBehaviour
         if (other.gameObject.layer == 6)
         {
             is_grounded = true;
-            if (other.gameObject.name == "WallSwich")
+            if (other.gameObject.name == "Swich")
                 wall_switch = other.gameObject.GetComponent<WallSwitch>();
 
         }
@@ -794,6 +794,8 @@ public class PlayerMove : MonoBehaviour
         if (other.gameObject.layer == 6)
         {
             is_grounded = false;
+            if (other.gameObject.name == "Swich")
+                wall_switch = null;
         }
     }
     

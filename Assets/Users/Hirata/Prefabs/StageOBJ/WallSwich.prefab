@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8328027034084767732}
   - component: {fileID: 8328027034084767735}
   - component: {fileID: 8328027034084767731}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28,7 +28,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8328027034084767734}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.9, z: 0}
+  m_LocalPosition: {x: -1.11, y: -3.14, z: 0}
   m_LocalScale: {x: 5, y: 0.2, z: 2}
   m_Children: []
   m_Father: {fileID: 8328027034149785565}
@@ -126,9 +126,10 @@ GameObject:
   - component: {fileID: 8328027034149785567}
   - component: {fileID: 8328027034149785566}
   - component: {fileID: 8328027034149785562}
-  m_Layer: 0
+  - component: {fileID: 809728898}
+  m_Layer: 6
   m_Name: WallSwich
-  m_TagString: Untagged
+  m_TagString: Stage
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -140,7 +141,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8328027034149785505}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 18.5, z: 0}
   m_LocalScale: {x: 5, y: 5, z: 5}
   m_Children:
@@ -205,7 +206,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8328027034149785505}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -220,5 +221,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 699e4a9ae8e12f5428faf576c1874d53, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &809728898
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8328027034149785505}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f64f13748c364284d911cec422d94c0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

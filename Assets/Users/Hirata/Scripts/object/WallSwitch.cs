@@ -5,7 +5,12 @@ using UnityEngine;
 public class WallSwitch : MonoBehaviour
 {
     private bool player_hit;
+    private WallMove wall_move;
 
+    private void Start()
+    {
+        wall_move = transform.parent.Find("Wall").GetComponent<WallMove>();
+    }
     public bool GetIsHit()
     {
         return player_hit;
@@ -29,6 +34,6 @@ public class WallSwitch : MonoBehaviour
 
     public void WallMove()
     {
-        transform.GetChild(0).GetComponent<WallMove>().OnceWallMove();
+        wall_move.OnceWallMove();
     }
 }

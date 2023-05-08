@@ -159,7 +159,7 @@ public class DeformStage : MonoBehaviour
     //へこむオブジェクトを追加
     public void AddDeformpointDown(Vector3 position, float angleY, float smash_power,  bool isflip)
     {
-        if (player_gameobject.GetComponent<PlayerMove>().GetGroundObj().name == "WallSwich")
+        if (player_gameobject.GetComponent<PlayerMove>().GetGroundObj().name == "Swich")
         {
             player_gameobject.GetComponent<PlayerMove>().GetWallswich().WallMove();
             return;
