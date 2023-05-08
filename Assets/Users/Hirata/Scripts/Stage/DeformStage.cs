@@ -157,12 +157,12 @@ public class DeformStage : MonoBehaviour
     }
 
     //へこむオブジェクトを追加
-    public void AddDeformpointDown(Vector3 position, float angleY, float smash_power,  bool isflip)
+    public Vector3 AddDeformpointDown(Vector3 position, float angleY, float smash_power,  bool isflip)
     {
         if (player_gameobject.GetComponent<PlayerMove>().GetGroundObj().name == "Swich")
         {
             player_gameobject.GetComponent<PlayerMove>().GetWallswich().WallMove();
-            return;
+            return Vector3.zero;
         } 
 
         List<GameObject> pointdown = new List<GameObject>();
@@ -274,6 +274,7 @@ public class DeformStage : MonoBehaviour
 
         //へこみを全て保管する
         ////all_point_down.Add(pointdown[0].GetComponent<RadialCurveDeformer>());
+        return new Vector3(x, y, 0);
     }
 
     //電源に当たったか
