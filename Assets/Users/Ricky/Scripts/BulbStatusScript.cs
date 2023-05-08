@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BulbStatusScript : MonoBehaviour
 {
+    private Image[] progress_bar;
+    
     // Start is called before the first frame update
     void Start()
     {
