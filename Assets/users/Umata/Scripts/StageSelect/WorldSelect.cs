@@ -11,8 +11,8 @@ public class WorldSelect : MonoBehaviour
     public float time = 1f;
 
     // 選択中のワールドとステージ
-    private int currentWorld = 0;
-    private int currentStage = 0;
+    public int currentWorld = 0;
+    public int currentStage = 0;
 
     // カメラの移動先の位置と回転
     public Transform worldSelectPos;
@@ -47,7 +47,14 @@ public class WorldSelect : MonoBehaviour
                 }
             }
         }
-
+        if (selectingWorld)
+        {
+            transform.GetComponent<StageSelectManager>().IsWorldSelect = false;
+        }
+        else
+        {
+            transform.GetComponent<StageSelectManager>().IsWorldSelect = true;
+        }
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
             // 右キーでワールドまたはステージを1つ進める
