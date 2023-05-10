@@ -10,7 +10,7 @@ public class StageSprite : MonoBehaviour
     public GameObject text_S, text_A, text_B, text_C;
     public GameObject StageName;
     public GameObject StageSelectManager;
-
+    public GameObject StageData;
     private WorldSelect ssmanager;
     private TextMeshPro text_S_component, text_A_component, text_B_component, text_C_component,stage_name;
 
@@ -20,6 +20,9 @@ public class StageSprite : MonoBehaviour
         text_A_component = text_A.GetComponent<TextMeshPro>();
         text_B_component = text_B.GetComponent<TextMeshPro>();
         text_C_component = text_C.GetComponent<TextMeshPro>();
+
+        //ステージデータの取得
+        StageData = GameObject.Find("StageData").gameObject;
 
         ssmanager = StageSelectManager.GetComponent<WorldSelect>();
 
@@ -34,6 +37,12 @@ public class StageSprite : MonoBehaviour
 
     private void UpdateRankImage()
     {
+        rank_S = StageData.GetComponent<StageDataManager>().GetStageData(ssmanager.currentWorld, ssmanager.currentStage).rank_s_border;
+        rank_A = StageData.GetComponent<StageDataManager>().GetStageData(ssmanager.currentWorld, ssmanager.currentStage).rank_a_border;
+        rank_B = StageData.GetComponent<StageDataManager>().GetStageData(ssmanager.currentWorld, ssmanager.currentStage).rank_b_border;
+        rank_C = StageData.GetComponent<StageDataManager>().GetStageData(ssmanager.currentWorld, ssmanager.currentStage).rank_c_border;
+        CurrentScore = StageData.GetComponent<StageDataManager>().GetStageData(ssmanager.currentWorld, ssmanager.currentStage).Score;
+
         SetRankText(text_S_component,rank_S);
         SetRankText(text_A_component,rank_A);
         SetRankText(text_B_component,rank_B);
