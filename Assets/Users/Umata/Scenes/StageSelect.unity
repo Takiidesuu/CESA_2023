@@ -5169,7 +5169,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: deeb5f636ba220e48994a3b2fc32812d, type: 2}
+  - {fileID: 2100000, guid: f293bd426bd84ef4b9f49ba3f10c8951, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5211,7 +5211,6 @@ GameObject:
   - component: {fileID: 69743395}
   - component: {fileID: 69743394}
   - component: {fileID: 69743393}
-  - component: {fileID: 69743392}
   m_Layer: 0
   m_Name: OptionHorogram (1)
   m_TagString: Untagged
@@ -5234,34 +5233,6 @@ Transform:
   m_Father: {fileID: 2140826730}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: -62.29, z: 0}
---- !u!114 &69743392
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 69743390}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36b8bedb460d74e44aa9b705f9070d1e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rank_S: 3000
-  rank_A: 2500
-  rank_B: 1000
-  rank_C: 500
-  CurrentScore: 3000
-  rank_S_image: {fileID: 0}
-  rank_A_image: {fileID: 0}
-  rank_B_image: {fileID: 0}
-  rank_C_image: {fileID: 0}
-  Stage_Image: {fileID: 0}
-  text_S: {fileID: 0}
-  text_A: {fileID: 0}
-  text_B: {fileID: 0}
-  text_C: {fileID: 0}
-  StageName: {fileID: 0}
-  StageSelectManager: {fileID: 1689811622}
 --- !u!65 &69743393
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5715,7 +5686,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: deeb5f636ba220e48994a3b2fc32812d, type: 2}
+  - {fileID: 2100000, guid: f293bd426bd84ef4b9f49ba3f10c8951, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -6279,8 +6250,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 421599715}
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: 0.5183, y: -0.24232663, z: 1.1647573}
-  m_LocalScale: {x: 0.034430683, y: 0.036379825, z: 2.056443}
+  m_LocalPosition: {x: 0.4616, y: -0.2559, z: 1.1647573}
+  m_LocalScale: {x: 0.029954694, y: 0.031650446, z: 1.7891054}
   m_Children: []
   m_Father: {fileID: 997395866}
   m_RootOrder: 15
@@ -6754,7 +6725,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: deeb5f636ba220e48994a3b2fc32812d, type: 2}
+  - {fileID: 2100000, guid: f293bd426bd84ef4b9f49ba3f10c8951, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -6796,7 +6767,6 @@ GameObject:
   - component: {fileID: 531650331}
   - component: {fileID: 531650330}
   - component: {fileID: 531650329}
-  - component: {fileID: 531650328}
   m_Layer: 0
   m_Name: OptionHorogram (6)
   m_TagString: Untagged
@@ -6819,34 +6789,6 @@ Transform:
   m_Father: {fileID: 2140826730}
   m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 44.165, y: -3.971, z: 37.284}
---- !u!114 &531650328
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 531650326}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36b8bedb460d74e44aa9b705f9070d1e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rank_S: 3000
-  rank_A: 2500
-  rank_B: 1000
-  rank_C: 500
-  CurrentScore: 3000
-  rank_S_image: {fileID: 0}
-  rank_A_image: {fileID: 0}
-  rank_B_image: {fileID: 0}
-  rank_C_image: {fileID: 0}
-  Stage_Image: {fileID: 0}
-  text_S: {fileID: 0}
-  text_A: {fileID: 0}
-  text_B: {fileID: 0}
-  text_C: {fileID: 0}
-  StageName: {fileID: 0}
-  StageSelectManager: {fileID: 1689811622}
 --- !u!65 &531650329
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -7185,7 +7127,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: deeb5f636ba220e48994a3b2fc32812d, type: 2}
+  - {fileID: 2100000, guid: f293bd426bd84ef4b9f49ba3f10c8951, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -12135,7 +12077,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 896738943}
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: 0.3058, y: -0.24232663, z: 1.1647573}
+  m_LocalPosition: {x: 0.2117, y: -0.356, z: 1.1647573}
   m_LocalScale: {x: 0.046253555, y: 0.048871998, z: 2.762588}
   m_Children: []
   m_Father: {fileID: 997395866}
@@ -17229,7 +17171,6 @@ GameObject:
   - component: {fileID: 982716519}
   - component: {fileID: 982716518}
   - component: {fileID: 982716517}
-  - component: {fileID: 982716516}
   m_Layer: 0
   m_Name: OptionHorogram (3)
   m_TagString: Untagged
@@ -17252,34 +17193,6 @@ Transform:
   m_Father: {fileID: 2140826730}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: -62.29, z: -33.174}
---- !u!114 &982716516
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 982716514}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36b8bedb460d74e44aa9b705f9070d1e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rank_S: 3000
-  rank_A: 2500
-  rank_B: 1000
-  rank_C: 500
-  CurrentScore: 3000
-  rank_S_image: {fileID: 0}
-  rank_A_image: {fileID: 0}
-  rank_B_image: {fileID: 0}
-  rank_C_image: {fileID: 0}
-  Stage_Image: {fileID: 0}
-  text_S: {fileID: 0}
-  text_A: {fileID: 0}
-  text_B: {fileID: 0}
-  text_C: {fileID: 0}
-  StageName: {fileID: 0}
-  StageSelectManager: {fileID: 1689811622}
 --- !u!65 &982716517
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -17482,6 +17395,7 @@ MonoBehaviour:
   text_C: {fileID: 189840404}
   StageName: {fileID: 447658785}
   StageSelectManager: {fileID: 1689811622}
+  StageData: {fileID: 0}
 --- !u!1001 &1004005858
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -17864,7 +17778,6 @@ GameObject:
   - component: {fileID: 1056053320}
   - component: {fileID: 1056053319}
   - component: {fileID: 1056053318}
-  - component: {fileID: 1056053317}
   m_Layer: 0
   m_Name: OptionHorogram (4)
   m_TagString: Untagged
@@ -17887,34 +17800,6 @@ Transform:
   m_Father: {fileID: 2140826730}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: -62.29, z: -40.901}
---- !u!114 &1056053317
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1056053315}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36b8bedb460d74e44aa9b705f9070d1e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rank_S: 3000
-  rank_A: 2500
-  rank_B: 1000
-  rank_C: 500
-  CurrentScore: 3000
-  rank_S_image: {fileID: 0}
-  rank_A_image: {fileID: 0}
-  rank_B_image: {fileID: 0}
-  rank_C_image: {fileID: 0}
-  Stage_Image: {fileID: 0}
-  text_S: {fileID: 0}
-  text_A: {fileID: 0}
-  text_B: {fileID: 0}
-  text_C: {fileID: 0}
-  StageName: {fileID: 0}
-  StageSelectManager: {fileID: 1689811622}
 --- !u!65 &1056053318
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -27888,7 +27773,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1373011956}
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: 0.26612723, y: -0.34947538, z: 2.7954433}
+  m_LocalPosition: {x: 0.2535, y: -0.251, z: 2.7954433}
   m_LocalScale: {x: 0.046253555, y: 0.048871998, z: 2.762588}
   m_Children: []
   m_Father: {fileID: 997395866}
@@ -27960,7 +27845,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: deeb5f636ba220e48994a3b2fc32812d, type: 2}
+  - {fileID: 2100000, guid: f293bd426bd84ef4b9f49ba3f10c8951, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -33298,6 +33183,9 @@ MonoBehaviour:
   worldSelectPos: {fileID: 440538135}
   stageSelectPos: {fileID: 556099587}
   LastCameraPos: {fileID: 1753487042}
+  HammerPos: {fileID: 421599716}
+  BackImagePos: {fileID: 896738945}
+  StartImagePos: {fileID: 1373011958}
   CameraObj: {fileID: 3136558889460555510}
   PlayerObj: {fileID: 2101685263}
 --- !u!1 &1706742803
@@ -33312,7 +33200,6 @@ GameObject:
   - component: {fileID: 1706742808}
   - component: {fileID: 1706742807}
   - component: {fileID: 1706742806}
-  - component: {fileID: 1706742805}
   m_Layer: 0
   m_Name: OptionHorogram (5)
   m_TagString: Untagged
@@ -33336,34 +33223,6 @@ Transform:
   m_Father: {fileID: 2140826730}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 6.852, z: 0}
---- !u!114 &1706742805
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1706742803}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36b8bedb460d74e44aa9b705f9070d1e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rank_S: 3000
-  rank_A: 2500
-  rank_B: 1000
-  rank_C: 500
-  CurrentScore: 3000
-  rank_S_image: {fileID: 0}
-  rank_A_image: {fileID: 0}
-  rank_B_image: {fileID: 0}
-  rank_C_image: {fileID: 0}
-  Stage_Image: {fileID: 0}
-  text_S: {fileID: 0}
-  text_A: {fileID: 0}
-  text_B: {fileID: 0}
-  text_C: {fileID: 0}
-  StageName: {fileID: 0}
-  StageSelectManager: {fileID: 1689811622}
 --- !u!65 &1706742806
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -33564,7 +33423,6 @@ GameObject:
   - component: {fileID: 1767147739}
   - component: {fileID: 1767147738}
   - component: {fileID: 1767147737}
-  - component: {fileID: 1767147736}
   m_Layer: 0
   m_Name: OptionHorogram (2)
   m_TagString: Untagged
@@ -33588,34 +33446,6 @@ Transform:
   m_Father: {fileID: 2140826730}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: -14.355, z: 0}
---- !u!114 &1767147736
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1767147734}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36b8bedb460d74e44aa9b705f9070d1e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rank_S: 3000
-  rank_A: 2500
-  rank_B: 1000
-  rank_C: 500
-  CurrentScore: 3000
-  rank_S_image: {fileID: 0}
-  rank_A_image: {fileID: 0}
-  rank_B_image: {fileID: 0}
-  rank_C_image: {fileID: 0}
-  Stage_Image: {fileID: 0}
-  text_S: {fileID: 0}
-  text_A: {fileID: 0}
-  text_B: {fileID: 0}
-  text_C: {fileID: 0}
-  StageName: {fileID: 0}
-  StageSelectManager: {fileID: 1689811622}
 --- !u!65 &1767147737
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -33729,7 +33559,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: deeb5f636ba220e48994a3b2fc32812d, type: 2}
+  - {fileID: 2100000, guid: f293bd426bd84ef4b9f49ba3f10c8951, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -33830,7 +33660,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: deeb5f636ba220e48994a3b2fc32812d, type: 2}
+  - {fileID: 2100000, guid: f293bd426bd84ef4b9f49ba3f10c8951, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -33941,7 +33771,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: deeb5f636ba220e48994a3b2fc32812d, type: 2}
+  - {fileID: 2100000, guid: f293bd426bd84ef4b9f49ba3f10c8951, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -34923,6 +34753,63 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5467462157082488725}
   m_Mesh: {fileID: -760978700780430236, guid: 7ab72c8443a7db5499b972c373185d19, type: 3}
+--- !u!1001 &4210229903350563611
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4210229903609980113, guid: 185547682b3932645807c17eeb26c040, type: 3}
+      propertyPath: m_Name
+      value: SpeedEffect
+      objectReference: {fileID: 0}
+    - target: {fileID: 4210229903609980118, guid: 185547682b3932645807c17eeb26c040, type: 3}
+      propertyPath: m_RootOrder
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 4210229903609980118, guid: 185547682b3932645807c17eeb26c040, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -2.53
+      objectReference: {fileID: 0}
+    - target: {fileID: 4210229903609980118, guid: 185547682b3932645807c17eeb26c040, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.23
+      objectReference: {fileID: 0}
+    - target: {fileID: 4210229903609980118, guid: 185547682b3932645807c17eeb26c040, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1.22
+      objectReference: {fileID: 0}
+    - target: {fileID: 4210229903609980118, guid: 185547682b3932645807c17eeb26c040, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4210229903609980118, guid: 185547682b3932645807c17eeb26c040, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4210229903609980118, guid: 185547682b3932645807c17eeb26c040, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4210229903609980118, guid: 185547682b3932645807c17eeb26c040, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4210229903609980118, guid: 185547682b3932645807c17eeb26c040, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4210229903609980118, guid: 185547682b3932645807c17eeb26c040, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4210229903609980118, guid: 185547682b3932645807c17eeb26c040, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 185547682b3932645807c17eeb26c040, type: 3}
 --- !u!4 &4231633730432350534
 Transform:
   m_ObjectHideFlags: 0

@@ -23,15 +23,26 @@ public class WorldSelect : MonoBehaviour
     public Transform worldSelectPos;
     public Transform stageSelectPos;
     public Transform LastCameraPos;
+    public Transform HammerPos;
+    public Transform BackImagePos;
+    public Transform StartImagePos;
 
     public GameObject CameraObj;
     public GameObject PlayerObj;
 
+    private Vector3 StartHammerPos;
+    private Vector3 StartBackImagePos;
+    private Vector3 StartStartImagePos;
+
     private bool selectingWorld = true; // ワールドを選択中かどうか
     private bool selectingStage = true; // ステージを選択中かどうか
+    private bool isStart = true;
 
     void Start()
     {
+        StartHammerPos = HammerPos.position;
+        StartBackImagePos = BackImagePos.position;
+        StartStartImagePos = StartImagePos.position;
         //ポストプロセスを格納
         // 初期位置にカメラを移動
         CameraObj.transform.position = worldSelectPos.position;
@@ -49,11 +60,18 @@ public class WorldSelect : MonoBehaviour
             }
             else
             {
-                // ステージを選択中の場合、シーンをロード
-                if (CameraObj.transform.position.x - stageSelectPos.position.x < 0.05)
+                if (isStart)
                 {
-                    selectingStage = false;
-                    Invoke("LoadScene",time);
+                    // ステージを選択中の場合、シーンをロード
+                    if (CameraObj.transform.position.x - stageSelectPos.position.x < 0.05)
+                    {
+                        selectingStage = false;
+                        Invoke("LoadScene", time * 2);
+                    }
+                }
+                else
+                {
+                    selectingWorld = true;
                 }
             }
         }
@@ -104,7 +122,53 @@ public class WorldSelect : MonoBehaviour
                 selectingWorld = true;
             }
         }
+        if (!selectingWorld)
+        {
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                Vector3 startpos;
+                startpos.x = StartHammerPos.x;
+                startpos.y = StartHammerPos.y;
+                startpos.z = StartHammerPos.z;
 
+                HammerPos.position = startpos;
+
+                startpos.x = StartBackImagePos.x;
+                startpos.y = StartBackImagePos.y;
+                startpos.z = StartBackImagePos.z;
+
+                BackImagePos.position = startpos;
+
+                startpos.x = StartStartImagePos.x;
+                startpos.y = StartStartImagePos.y;
+                startpos.z = StartStartImagePos.z;
+                StartImagePos.position = startpos;
+
+                isStart = true;
+            }
+
+            if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                Vector3 startpos;
+                startpos.x = StartHammerPos.x;
+                startpos.y = StartHammerPos.y - 0.165f;
+                startpos.z = StartHammerPos.z;
+                HammerPos.position = startpos;
+
+                startpos.x = StartBackImagePos.x + 0.08f;
+                startpos.y = StartBackImagePos.y;
+                startpos.z = StartBackImagePos.z;
+                BackImagePos.position = startpos;
+
+                startpos.x = StartStartImagePos.x - 0.08f;
+                startpos.y = StartStartImagePos.y;
+                startpos.z = StartStartImagePos.z;
+                StartImagePos.position = startpos;
+
+                isStart = false;
+            }
+
+        }
         // カメラを移動する
         if (!selectingStage)
         {

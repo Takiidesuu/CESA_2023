@@ -48,7 +48,14 @@ public class StageSprite : MonoBehaviour
         SetRankText(text_B_component,rank_B);
         SetRankText(text_C_component,rank_C);
         stage_name.text = "STAGE" + (ssmanager.currentWorld+1).ToString() + "-" + (ssmanager.currentStage + 1).ToString();
-        if (CurrentScore >= rank_S)
+        if(CurrentScore == 0)
+        {
+            rank_S_image.gameObject.SetActive(false);
+            rank_A_image.gameObject.SetActive(false);
+            rank_B_image.gameObject.SetActive(false);
+            rank_C_image.gameObject.SetActive(false);
+        }
+        else if (CurrentScore >= rank_S)
         {
             rank_S_image.gameObject.SetActive(true);
             rank_A_image.gameObject.SetActive(false);
