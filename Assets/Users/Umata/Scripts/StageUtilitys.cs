@@ -19,12 +19,10 @@ public class StageUtilitys : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning("Invalid scene name format: " + currentSceneName);
             }
         }
         else
         {
-            Debug.LogWarning("This function can only be used in stage scenes");
         }
     }
 }

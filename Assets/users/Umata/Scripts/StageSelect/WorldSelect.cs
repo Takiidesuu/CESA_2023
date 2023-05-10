@@ -12,6 +12,7 @@ public class WorldSelect : MonoBehaviour
 
     //PostProcess
     public GameObject postProcessVolume;
+    private Vignette vignette;
     // カメラの移動に使用する時間
     public float time = 1f;
 
@@ -23,19 +24,45 @@ public class WorldSelect : MonoBehaviour
     public Transform worldSelectPos;
     public Transform stageSelectPos;
     public Transform LastCameraPos;
+    public Transform HammerPos;
+    public Transform BackImagePos;
+    public Transform StartImagePos;
 
     public GameObject CameraObj;
     public GameObject PlayerObj;
 
+    private Vector3 StartHammerPos;
+    private Vector3 StartBackImagePos;
+    private Vector3 StartStartImagePos;
+
     private bool selectingWorld = true; // ワールドを選択中かどうか
     private bool selectingStage = true; // ステージを選択中かどうか
+    private bool isStart = true;
+    private bool isTransitioning = false;
+
+    // 変更後の強さ
+    private float targetIntensity;
+
+    // 変更にかかる時間
+    public float duration;
+
+    // 変更を開始した時刻
+    private float startTime;
 
     void Start()
     {
+        postProcessVolume.transform.GetComponent<Volume>().profile.TryGet(out vignette);
+
+        StartHammerPos = HammerPos.position;
+        StartBackImagePos = BackImagePos.position;
+        StartStartImagePos = StartImagePos.position;
         //ポストプロセスを格納
         // 初期位置にカメラを移動
         CameraObj.transform.position = worldSelectPos.position;
         CameraObj.transform.rotation = worldSelectPos.rotation;
+
+        // 初期値を設定
+        targetIntensity = vignette.intensity.value;
     }
 
     void Update()
@@ -49,13 +76,35 @@ public class WorldSelect : MonoBehaviour
             }
             else
             {
-                // ステージを選択中の場合、シーンをロード
-                if (CameraObj.transform.position.x - stageSelectPos.position.x < 0.05)
+                if (isStart)
                 {
-                    selectingStage = false;
-                    Invoke("LoadScene",time);
+                    // ステージを選択中の場合、シーンをロード
+                    if (CameraObj.transform.position.x - stageSelectPos.position.x < 0.05)
+                    {
+                        isTransitioning = true;
+                        //Vignetイージングを開始
+                        SetVignetteIntensity(duration,20);
+                        startTime = Time.time;
+                        postProcessVolume.SetActive(true);
+                        selectingStage = false;
+                        Invoke("LoadScene", time * 2);
+                    }
+                }
+                else
+                {
+                    selectingWorld = true;
                 }
             }
+        }
+        //シーン遷移エフェクト中
+        if(isTransitioning)
+        {
+            // 変更する値をイージングで計算
+            float t = (Time.time - startTime) / duration;
+            float intensity = Mathf.Lerp(vignette.intensity.value, targetIntensity, t * t);
+
+            // 値を設定
+            vignette.intensity.value = intensity;
         }
         //デバッグ用エフェクト再生
         if (Input.GetKeyDown(KeyCode.U))
@@ -104,7 +153,53 @@ public class WorldSelect : MonoBehaviour
                 selectingWorld = true;
             }
         }
+        if (!selectingWorld)
+        {
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                Vector3 startpos;
+                startpos.x = StartHammerPos.x;
+                startpos.y = StartHammerPos.y;
+                startpos.z = StartHammerPos.z;
 
+                HammerPos.position = startpos;
+
+                startpos.x = StartBackImagePos.x;
+                startpos.y = StartBackImagePos.y;
+                startpos.z = StartBackImagePos.z;
+
+                BackImagePos.position = startpos;
+
+                startpos.x = StartStartImagePos.x;
+                startpos.y = StartStartImagePos.y;
+                startpos.z = StartStartImagePos.z;
+                StartImagePos.position = startpos;
+
+                isStart = true;
+            }
+
+            if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                Vector3 startpos;
+                startpos.x = StartHammerPos.x;
+                startpos.y = StartHammerPos.y - 0.165f;
+                startpos.z = StartHammerPos.z;
+                HammerPos.position = startpos;
+
+                startpos.x = StartBackImagePos.x + 0.08f;
+                startpos.y = StartBackImagePos.y;
+                startpos.z = StartBackImagePos.z;
+                BackImagePos.position = startpos;
+
+                startpos.x = StartStartImagePos.x - 0.08f;
+                startpos.y = StartStartImagePos.y;
+                startpos.z = StartStartImagePos.z;
+                StartImagePos.position = startpos;
+
+                isStart = false;
+            }
+
+        }
         // カメラを移動する
         if (!selectingStage)
         {
@@ -148,5 +243,21 @@ public class WorldSelect : MonoBehaviour
         // ワールドとステージに応じてシーンをロードする処理を書く
         string stage_name = "Stage" + (currentWorld+1) + "-" + (currentStage+1);
         SceneManager.LoadScene(stage_name);
+    }
+    public void SetVignetteIntensity(float intensity, float time)
+    {
+        // 変更前の値を保存
+        float currentIntensity = vignette.intensity.value;
+
+        // 変更後の値と時間を設定
+        targetIntensity = intensity;
+        duration = time;
+        startTime = Time.time;
+
+        // 変更前と後の値を比較して、変更が必要な場合にのみUpdateを有効にする
+        if (currentIntensity != targetIntensity)
+        {
+            enabled = true;
+        }
     }
 }
