@@ -1,5 +1,8 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
+
 
 public class WorldSelect : MonoBehaviour
 {
@@ -7,23 +10,29 @@ public class WorldSelect : MonoBehaviour
     public int numWorlds = 4;
     public int numStages = 6;
 
+    //PostProcess
+    public GameObject postProcessVolume;
     // カメラの移動に使用する時間
     public float time = 1f;
 
     // 選択中のワールドとステージ
-    private int currentWorld = 0;
-    private int currentStage = 0;
+    public int currentWorld = 0;
+    public int currentStage = 0;
 
     // カメラの移動先の位置と回転
     public Transform worldSelectPos;
     public Transform stageSelectPos;
+    public Transform LastCameraPos;
 
     public GameObject CameraObj;
+    public GameObject PlayerObj;
 
     private bool selectingWorld = true; // ワールドを選択中かどうか
+    private bool selectingStage = true; // ステージを選択中かどうか
 
     void Start()
     {
+        //ポストプロセスを格納
         // 初期位置にカメラを移動
         CameraObj.transform.position = worldSelectPos.position;
         CameraObj.transform.rotation = worldSelectPos.rotation;
@@ -43,11 +52,24 @@ public class WorldSelect : MonoBehaviour
                 // ステージを選択中の場合、シーンをロード
                 if (CameraObj.transform.position.x - stageSelectPos.position.x < 0.05)
                 {
-                    LoadScene();
+                    selectingStage = false;
+                    Invoke("LoadScene",time);
                 }
             }
         }
-
+        //デバッグ用エフェクト再生
+        if (Input.GetKeyDown(KeyCode.U))
+        {
+            PlayerObj.GetComponent<CellEffect>().ChangeMaterialsToInvisible();
+        }
+        if (selectingWorld)
+        {
+            transform.GetComponent<StageSelectManager>().IsWorldSelect = false;
+        }
+        else
+        {
+            transform.GetComponent<StageSelectManager>().IsWorldSelect = true;
+        }
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
             // 右キーでワールドまたはステージを1つ進める
@@ -84,23 +106,40 @@ public class WorldSelect : MonoBehaviour
         }
 
         // カメラを移動する
-        if (selectingWorld)
+        if (!selectingStage)
         {
-            // ワールド選択中の場合、WorldSelectPosに移動
-            MoveCamera(worldSelectPos);
+            MoveCamera(LastCameraPos);
         }
         else
         {
-            // ステージ選択中の場合、StageSelectPosに移動する
-            MoveCamera(stageSelectPos);
+            if (selectingWorld)
+            {
+                // ワールド選択中の場合、WorldSelectPosに移動
+                MoveCamera(worldSelectPos);
+            }
+            else
+            {
+                // ステージ選択中の場合、StageSelectPosに移動する
+                MoveCamera(stageSelectPos);
+            }
         }
+        
     }
 
     // カメラを移動する
     private void MoveCamera(Transform targetPos)
     {
-        CameraObj.transform.position = Vector3.Lerp(CameraObj.transform.position, targetPos.position, time * Time.deltaTime);
-        CameraObj.transform.rotation = Quaternion.Lerp(CameraObj.transform.rotation, targetPos.rotation, time * Time.deltaTime);
+        if (!selectingStage)
+        {
+            CameraObj.transform.position = Vector3.Lerp(CameraObj.transform.position, targetPos.position, (time/2) * Time.deltaTime);
+            CameraObj.transform.rotation = Quaternion.Lerp(CameraObj.transform.rotation, targetPos.rotation, (time/2) * Time.deltaTime);
+            CameraObj.transform.GetComponent<Camera>().fieldOfView += (float)(20 * Time.deltaTime);
+        }
+        else
+        {
+            CameraObj.transform.position = Vector3.Lerp(CameraObj.transform.position, targetPos.position, time * Time.deltaTime);
+            CameraObj.transform.rotation = Quaternion.Lerp(CameraObj.transform.rotation, targetPos.rotation, time * Time.deltaTime);
+        }
     }
 
     // シーンをロードする
