@@ -31,6 +31,8 @@ public class BulbStatusScript : MonoBehaviour
         collector = GameObject.FindObjectOfType<LightBulbCollector>();
         
         num_of_bulbs = collector.LightBulb_num;
+        
+        progress_bar = new List<BulbLineScript>();
     }
 
     // Update is called once per frame
@@ -43,12 +45,15 @@ public class BulbStatusScript : MonoBehaviour
             y_pos += space / 2.0f;
         }
         
-        for (int i = progress_bar.Count; i >= 0; i--)
+        if (progress_bar.Count > 0)
         {
-            RectTransform rect_transform = progress_bar[i].gameObject.GetComponent<RectTransform>();
-            rect_transform.localPosition = new Vector3(rect_transform.localPosition.x, y_pos, rect_transform.localPosition.z);
-            
-            y_pos += space;
+            for (int i = progress_bar.Count; i >= 0; i--)
+            {
+                RectTransform rect_transform = progress_bar[i].gameObject.GetComponent<RectTransform>();
+                rect_transform.localPosition = new Vector3(rect_transform.localPosition.x, y_pos, rect_transform.localPosition.z);
+                
+                y_pos += space;
+            }
         }
     }
 }

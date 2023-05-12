@@ -329,19 +329,28 @@ public class PlayerMove : MonoBehaviour
     {
         if (input_direction.magnitude >= 0.01f)
         { 
-            if (Mathf.Abs(input_direction.x) >= Mathf.Abs(input_direction.y))
-            {
-                input_direction.y = 0.0f;
-            }
-            else
-            {
-                input_direction.x = 0.0f;
-            }
-            
             Vector2 norm_input = input_direction.normalized;
+            
+            Vector3 move_point = this.transform.position + new Vector3(norm_input.x, norm_input.y, 0.0f);
+                
+            Debug.DrawRay(this.transform.position, move_point.normalized * 10.0f, Color.yellow);
+            Debug.DrawRay(this.transform.position, transform.right * 10.0f, Color.green);
+            
+            Debug.Log(Vector3.Angle(transform.right, move_point.normalized));
             
             if (norm_input != move_dir)
             {
+                /* Vector3 targetVector = ground_obj_parent.transform.position + new Vector3(input_direction.x, input_direction.y, 0.0f);
+                Vector3 currentVector = ground_obj_parent.transform.position + this.transform.position;
+                
+                Vector3 forwardVector = ground_obj_parent.transform.position + (this.transform.position + this.transform.forward * 2.0f);
+                
+                //((crossProduct v1, v) * (crossProduct v2, v) >= 0 )
+                
+                Debug.Log(Vector3.Dot(forwardVector, targetVector) + " target");
+                Debug.Log(Vector3.Dot(forwardVector, currentVector) + " current");
+                Debug.Log(Vector3.Dot(currentVector, targetVector) + " current target"); */
+                
                 if (input_check_pos)
                 {
                     float temp_rot = target_rot;
@@ -576,11 +585,11 @@ public class PlayerMove : MonoBehaviour
                         move_value = Mathf.Abs(input_direction.y);
                     }
                     
-                    if (temp_rot != target_rot)
+                    /* if (temp_rot != target_rot)
                     {
                         transform.Rotate(new Vector3(0.0f, 180.0f, 0.0f), Space.Self);
                         target_rot = temp_rot;
-                    }
+                    } */
                     
                     input_check_pos = false;
                 }
@@ -591,7 +600,7 @@ public class PlayerMove : MonoBehaviour
             
             var locVel = transform.InverseTransformDirection(rb.velocity);
             locVel.x = move_value * (speed / 20.0f);
-            rb.velocity = transform.TransformDirection(locVel);
+            //rb.velocity = transform.TransformDirection(locVel);
         }
     }
     
