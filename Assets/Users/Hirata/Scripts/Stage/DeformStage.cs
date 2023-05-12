@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Deform;
 
+[ExecuteInEditMode]
 
 public class DeformStage : MonoBehaviour
 {
@@ -204,11 +205,15 @@ public class DeformStage : MonoBehaviour
         {
             if (10 > angleY && angleY > -10)    //プレイヤーの向きによってプラスかマイナスか判断
             {
+                position.x -= y * offset;
+                position.y += x * offset;
                 for (int i = 0; i < 3; i++)
                     pointdown.Add(Instantiate(point_down, position, Quaternion.Euler(-90 - GetAngle(transform.position, player_gameobject.transform.position) + 180, -90, 90), this.transform));
             }
             else
             {
+                position.x += y * offset;
+                position.y -= x * offset;
                 for (int i = 0; i < 3; i++)
                     pointdown.Add(Instantiate(point_down, position, Quaternion.Euler(-90 - GetAngle(transform.position, player_gameobject.transform.position) + 180, -90, 90), this.transform));
             }

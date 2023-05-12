@@ -60,10 +60,10 @@ Camera:
   field of view: 30
   orthographic: 0
   orthographic size: 5
-  m_Depth: 100
+  m_Depth: 1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4096
+    m_Bits: 8224
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -90,12 +90,12 @@ MonoBehaviour:
   m_RenderShadows: 1
   m_RequiresDepthTextureOption: 2
   m_RequiresOpaqueTextureOption: 2
-  m_CameraType: 0
+  m_CameraType: 1
   m_Cameras: []
   m_RendererIndex: -1
   m_VolumeLayerMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 8225
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
   m_RenderPostProcessing: 0
@@ -120,8 +120,8 @@ GameObject:
   - component: {fileID: 3769128981547737935}
   - component: {fileID: 1800531625320507133}
   - component: {fileID: 9190910036058340702}
-  m_Layer: 12
-  m_Name: Flame
+  m_Layer: 13
+  m_Name: Frame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -135,8 +135,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 87309554066050108}
   m_LocalRotation: {x: -0, y: -0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 0.0135908015, y: -0.5002579, z: 1.8080536}
-  m_LocalScale: {x: 0.0696142, y: 1.013243, z: 15.070194}
+  m_LocalPosition: {x: 0.0135908015, y: -0.50025785, z: 1.8080536}
+  m_LocalScale: {x: 0.0696142, y: 1.0132428, z: 15.070194}
   m_Children: []
   m_Father: {fileID: 6421557362072623220}
   m_RootOrder: 3
@@ -198,7 +198,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 87309554066050108}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -215,8 +215,8 @@ GameObject:
   - component: {fileID: 3025350057523601656}
   - component: {fileID: 2228237395985950705}
   - component: {fileID: 6255918849131853326}
-  m_Layer: 12
-  m_Name: Flame
+  m_Layer: 13
+  m_Name: Frame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -230,7 +230,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2097931604485365312}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.49436548, y: 0.003241404, z: 1.8080536}
+  m_LocalPosition: {x: -0.4943655, y: 0.003241404, z: 1.8080536}
   m_LocalScale: {x: 0.036485367, y: 1.0794572, z: 15.070194}
   m_Children: []
   m_Father: {fileID: 6421557362072623220}
@@ -293,7 +293,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2097931604485365312}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -395,8 +395,8 @@ GameObject:
   - component: {fileID: 8348569513511279388}
   - component: {fileID: 5246461880558046710}
   - component: {fileID: 2132707833083558125}
-  m_Layer: 12
-  m_Name: Flame
+  m_Layer: 13
+  m_Name: Frame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -411,7 +411,7 @@ Transform:
   m_GameObject: {fileID: 4103617435798555814}
   m_LocalRotation: {x: -0, y: -0, z: 0.7071068, w: 0.7071068}
   m_LocalPosition: {x: 0.0135908015, y: 0.5132236, z: 1.8080536}
-  m_LocalScale: {x: 0.0696142, y: 1.013243, z: 15.070194}
+  m_LocalScale: {x: 0.0696142, y: 1.0132428, z: 15.070194}
   m_Children: []
   m_Father: {fileID: 6421557362072623220}
   m_RootOrder: 2
@@ -473,7 +473,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4103617435798555814}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -541,10 +541,10 @@ Camera:
   field of view: 30
   orthographic: 0
   orthographic size: 5
-  m_Depth: -1
+  m_Depth: 1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4055
+    m_Bits: 8151
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -572,7 +572,8 @@ MonoBehaviour:
   m_RequiresDepthTextureOption: 2
   m_RequiresOpaqueTextureOption: 2
   m_CameraType: 0
-  m_Cameras: []
+  m_Cameras:
+  - {fileID: 1832194008}
   m_RendererIndex: -1
   m_VolumeLayerMask:
     serializedVersion: 2
@@ -603,9 +604,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player_distance: 15
   distance_from_stage: 15
-  time_to_player: 10
-  return_speed: 5
-  time_to_return: 60
   camera_fov: 30
   camera_shake_power: 5
 --- !u!1 &5575743278352349313
@@ -620,8 +618,8 @@ GameObject:
   - component: {fileID: 8531156073086406082}
   - component: {fileID: 100953144160373159}
   - component: {fileID: 6385555295754166073}
-  m_Layer: 12
-  m_Name: Flame
+  m_Layer: 13
+  m_Name: Frame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -636,7 +634,7 @@ Transform:
   m_GameObject: {fileID: 5575743278352349313}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0.52041453, y: 0.003241404, z: 1.8080536}
-  m_LocalScale: {x: 0.036485367, y: 1.0811123, z: 15.070194}
+  m_LocalScale: {x: 0.036485367, y: 1.0811121, z: 15.070194}
   m_Children: []
   m_Father: {fileID: 6421557362072623220}
   m_RootOrder: 1
@@ -698,7 +696,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5575743278352349313}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}

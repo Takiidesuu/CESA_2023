@@ -6,6 +6,8 @@ public class DamageScript : MonoBehaviour
 {
     [Tooltip("無敵時間")]
     [SerializeField] private float invincible_duration = 2.0f;
+    [Tooltip("ダメージ受けた時のヒットストップ時間")]
+    [SerializeField] private float damage_stop_time = 0.1f;
     
     [Tooltip("体力")]
     [SerializeField] private int hp = 3;
@@ -58,6 +60,7 @@ public class DamageScript : MonoBehaviour
                         if (this.gameObject.tag == "Player")
                         {
                             this.GetComponent<PlayerMove>().TookDamage();
+                            HitstopManager.instance.StartHitStop(damage_stop_time);
                         }
                     }
                     
