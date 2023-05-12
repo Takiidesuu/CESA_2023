@@ -50,8 +50,18 @@ public class ElectricalPower : MonoBehaviour
         //生成数がMAXの場合Updateを回さない
         if (InstantElectricBall.Count >= electricball_max)
         {
+            ChargeEffect.gameObject.active = false;
+            Vector3 ballsize = ElectricBallScale;
+
+            ballsize.x = 0;
+            ballsize.y = 0;
+            ballsize.z = 0;
+
+            ElectricBallEffect.transform.localScale = ballsize;
+
             return;
         }
+        ChargeEffect.gameObject.active = true;
         time = Time.time - old_time;
         hit_elapsed_time += Time.deltaTime;
         //deformstage.IsElectricalPower(true);                                //電源が当たった事をステージに渡す
