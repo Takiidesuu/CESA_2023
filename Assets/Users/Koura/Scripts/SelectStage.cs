@@ -16,7 +16,13 @@ public class SelectStage : MonoBehaviour
     //開始するステージの名前
     public string start_stage;
 
+    //シーンを移動するフラグ
+    [System.NonSerialized]
     public bool change_flg = false;
+
+    //現在画面遷移しているか
+    [System.NonSerialized]
+    public bool now_scene_change = false;
 
     //ワールド選択の場所以外で回転させないよう管理するためのもの
     public KarteRotation karteRotation;
@@ -138,7 +144,7 @@ public class SelectStage : MonoBehaviour
             }
 
             //spaceキーを押したら
-            if (Keyboard.current.spaceKey.wasPressedThisFrame && !change_flg)
+            if (Keyboard.current.spaceKey.wasPressedThisFrame && !now_scene_change)
             {
                start_stage = "Stage" +
                               karteRotation.g_now_world.ToString() +
@@ -146,6 +152,7 @@ public class SelectStage : MonoBehaviour
                               karteRotation.g_now_stage.ToString();
 
                change_flg = true;
+               now_scene_change = true;
             }
 
         }
