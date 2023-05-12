@@ -57,11 +57,9 @@ public class PlayerMove : MonoBehaviour
     private CapsuleCollider col;            //コライダー
     private Animator anim;                  //アニメーター
 
-    private bool input_check_pos;
-    private float move_value;
-    private float input_modifier;
-    private Vector2 move_dir;
     private float speed;
+    private bool recheck_input;
+    private Vector2 prev_input;
     private bool is_dead;
     
     private bool is_grounded;       //地面についているか
@@ -150,10 +148,9 @@ public class PlayerMove : MonoBehaviour
         is_grounded = false;
         is_flip = false;
         input_direction = Vector2.zero;
-        input_check_pos = true;
-        move_value = 0.0f;
-        move_dir = Vector2.zero;
         speed = 0.0f;
+        recheck_input = false;
+        prev_input = Vector2.zero;
         is_dead = false;
         
         blackPanel = GameObject.Find("BlackPanel");
@@ -186,7 +183,7 @@ public class PlayerMove : MonoBehaviour
                 
                 speed = Mathf.MoveTowards(speed, input_direction.magnitude * max_speed, acceleration_speed);
                 
-                if (rb.velocity.magnitude > 0.0f && is_grounded && input_direction == Vector2.zero)
+                if ((rb.velocity.magnitude > 0.0f && is_grounded && input_direction == Vector2.zero) || recheck_input)
                 {
                     rb.velocity = Vector3.MoveTowards(rb.velocity, Vector3.zero, deceleration_speed * Time.deltaTime * 4.0f);
                     speed = Mathf.MoveTowards(speed, 0.0f, deceleration_speed * 0.5f);
@@ -223,8 +220,6 @@ public class PlayerMove : MonoBehaviour
             {
                 RotateGround();
             }
-            
-            anim.SetBool("isWalking", input_direction != Vector2.zero);
 
             transform.position = new Vector3(transform.position.x, transform.position.y, 0);
         }
@@ -252,8 +247,7 @@ public class PlayerMove : MonoBehaviour
                             }
                             else
                             {
-                                input_check_pos = true;
-                                move_dir = Vector2.zero;
+                                anim.SetBool("isWalking", false);
                             }
                             
                             smash_power_num = 0.0f;
@@ -327,271 +321,51 @@ public class PlayerMove : MonoBehaviour
     
     void Move()
     {
-        if (input_direction.magnitude >= 0.01f)
-        { 
-            if (Mathf.Abs(input_direction.x) >= Mathf.Abs(input_direction.y))
+        Vector2 norm_input = input_direction.normalized;
+        Vector3 move_point = new Vector3(norm_input.x, norm_input.y, 0.0f);
+        
+        Debug.DrawRay(this.transform.position, move_point.normalized * 10.0f, Color.yellow);
+        Debug.DrawRay(this.transform.position, transform.right * 10.0f, Color.green);
+        
+        float angle_difference = Mathf.Abs(Vector3.SignedAngle(transform.right, move_point.normalized, new Vector3(0, 0, 1)));
+        Debug.Log(angle_difference);
+        
+        if (!recheck_input)
+        {
+            var locVel = transform.InverseTransformDirection(rb.velocity);
+        
+            if (angle_difference < 87.0f || angle_difference > 93.0f)
             {
-                input_direction.y = 0.0f;
+                prev_input = norm_input;
+                
+                // インプットの方向はプレイヤーの後ろ方向の場合は、プレイヤーを反転する
+                if (angle_difference > 93.0f)
+                {   
+                    transform.Rotate(new Vector3(0.0f, 180.0f, 0.0f), Space.Self);
+                }
+                
+                if (angle_difference < 87.0f)
+                {
+                    float reduce_speed_scalar = 25.0f;
+                    locVel.x = speed / reduce_speed_scalar;
+                    
+                    anim.SetBool("isWalking", true);
+                }
             }
             else
             {
-                input_direction.x = 0.0f;
+                recheck_input = true;
+                anim.SetBool("isWalking", false);
             }
             
-            Vector2 norm_input = input_direction.normalized;
-            
-            if (norm_input != move_dir)
-            {
-                if (input_check_pos)
-                {
-                    float temp_rot = target_rot;
-                    
-                    //左右移動
-                    if (Mathf.Abs(norm_input.x) > 0.0f)
-                    {
-                        //右のほうにいる
-                        if (Camera.main.WorldToScreenPoint(this.transform.position).x >= Screen.width / 2)
-                        {
-                            //下の方にいる
-                            if (Camera.main.WorldToScreenPoint(this.transform.position).y <= Screen.height / 2)
-                            {
-                                if (norm_input.x > 0.0f)
-                                {
-                                    if (this.transform.up.y >= 0.0f)
-                                    {
-                                        temp_rot = 0.0f;
-                                    }
-                                    else
-                                    {
-                                        temp_rot = 180.0f;
-                                    }
-                                }
-                                else
-                                {
-                                    if (this.transform.up.y >= 0.0f)
-                                    {
-                                        temp_rot = 180.0f;
-                                    }
-                                    else
-                                    {
-                                        temp_rot = 0.0f;
-                                    }
-                                }
-                            }
-                            else    //上の方にいる
-                            {
-                                if (norm_input.x > 0.0f)
-                                {
-                                    if (this.transform.up.y >= 0.0f)
-                                    {
-                                        temp_rot = 0.0f;
-                                    }
-                                    else
-                                    {
-                                        temp_rot = 180.0f;
-                                    }
-                                }
-                                else
-                                {
-                                    if (this.transform.up.y >= 0.0f)
-                                    {
-                                        temp_rot = 180.0f;
-                                    }
-                                    else
-                                    {
-                                        temp_rot = 0.0f;
-                                    }
-                                }
-                            }
-                        }
-                        else    //左の方にいる
-                        {
-                            //下の方にいる
-                            if (Camera.main.WorldToScreenPoint(this.transform.position).y <= Screen.height / 2)
-                            {
-                                if (norm_input.x > 0.0f)
-                                {
-                                    if (this.transform.up.y >= 0.0f)
-                                    {
-                                        temp_rot = 180.0f;
-                                    }
-                                    else
-                                    {
-                                        temp_rot = 0.0f;
-                                    }
-                                }
-                                else
-                                {
-                                    if (this.transform.up.y >= 0.0f)
-                                    {
-                                        temp_rot = 0.0f;
-                                    }
-                                    else
-                                    {
-                                        temp_rot = 180.0f;
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                if (norm_input.x > 0.0f)
-                                {
-                                    if (this.transform.up.y >= 0.0f)
-                                    {
-                                        temp_rot = 0.0f;
-                                    }
-                                    else
-                                    {
-                                        temp_rot = 180.0f;
-                                    }
-                                }
-                                else
-                                {
-                                    if (this.transform.up.y >= 0.0f)
-                                    {
-                                        temp_rot = 180.0f;
-                                    }
-                                    else
-                                    {
-                                        temp_rot = 0.0f;
-                                    }
-                                }
-                            }
-                        }
-                        
-                        move_value = Mathf.Abs(input_direction.x);
-                    }
-                    else    //上下移動
-                    {
-                        //右のほうにいる
-                        if (Camera.main.WorldToScreenPoint(this.transform.position).x >= Screen.width / 2)
-                        {
-                            //下の方にいる
-                            if (Camera.main.WorldToScreenPoint(this.transform.position).y <= Screen.height / 2)
-                            {
-                                if (norm_input.y > 0.0f)
-                                {
-                                    if (this.transform.up.y >= 0.0f)
-                                    {
-                                        temp_rot = 0.0f;
-                                    }
-                                    else
-                                    {
-                                        temp_rot = 180.0f;
-                                    }
-                                }
-                                else
-                                {
-                                    if (this.transform.up.y >= 0.0f)
-                                    {
-                                        temp_rot = 180.0f;
-                                    }
-                                    else
-                                    {
-                                        temp_rot = 0.0f;
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                if (norm_input.y > 0.0f)
-                                {
-                                    if (this.transform.up.y >= 0.0f)
-                                    {
-                                        temp_rot = 180.0f;
-                                    }
-                                    else
-                                    {
-                                        temp_rot = 0.0f;
-                                    }
-                                }
-                                else
-                                {
-                                    if (this.transform.up.y >= 0.0f)
-                                    {
-                                        temp_rot = 0.0f;
-                                    }
-                                    else
-                                    {
-                                        temp_rot = 180.0f;
-                                    }
-                                }
-                            }
-                        }
-                        else    //左のほうにいる
-                        {
-                            //下の方にいる
-                            if (Camera.main.WorldToScreenPoint(this.transform.position).y <= Screen.height / 2)
-                            {
-                                if (norm_input.y > 0.0f)
-                                {
-                                    if (this.transform.up.y >= 0.0f)
-                                    {
-                                        temp_rot = 180.0f;
-                                    }
-                                    else
-                                    {
-                                        temp_rot = 0.0f;
-                                    }
-                                }
-                                else
-                                {
-                                    if (this.transform.up.y >= 0.0f)
-                                    {
-                                        temp_rot = 0.0f;
-                                    }
-                                    else
-                                    {
-                                        temp_rot = 180.0f;
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                if (norm_input.y > 0.0f)
-                                {
-                                    if (this.transform.up.y >= 0.0f)
-                                    {
-                                        temp_rot = 0.0f;
-                                    }
-                                    else
-                                    {
-                                        temp_rot = 180.0f;
-                                    }
-                                }
-                                else
-                                {
-                                    if (this.transform.up.y >= 0.0f)
-                                    {
-                                        temp_rot = 180.0f;
-                                    }
-                                    else
-                                    {
-                                        temp_rot = 0.0f;
-                                    }
-                                }
-                            }
-                        }
-                        
-                        move_value = Mathf.Abs(input_direction.y);
-                    }
-                    
-                    if (temp_rot != target_rot)
-                    {
-                        transform.Rotate(new Vector3(0.0f, 180.0f, 0.0f), Space.Self);
-                        target_rot = temp_rot;
-                    }
-                    
-                    input_check_pos = false;
-                }
-                
-                speed /= 2.0f;
-                move_dir = norm_input;
-            }
-            
-            var locVel = transform.InverseTransformDirection(rb.velocity);
-            locVel.x = move_value * (speed / 20.0f);
             rb.velocity = transform.TransformDirection(locVel);
+        }
+        else
+        {
+            if (norm_input != prev_input)
+            {
+                recheck_input = false;
+            }
         }
     }
     

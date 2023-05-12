@@ -15,6 +15,16 @@ public class LightBulb : MonoBehaviour
     [SerializeField] private float m_destroy_time = 5.0f;
     private float m_destroy_timer;
 
+    public float GetDestroyTime()
+    {
+        return m_destroy_time;
+    }
+    
+    public float GetCurrentTimer()
+    {
+        return m_destroy_timer;
+    }
+
     private void Start()
     {
         changeMaterial = GetComponent<LightBulbChangeMaterial>();
@@ -62,6 +72,7 @@ public class LightBulb : MonoBehaviour
             Instantiate(Laser, gameObject.transform.position,LaserRotation);
             Instantiate(HitEffect, gameObject.transform.position,transform.rotation);
 
+            GameObject.FindObjectOfType<BulbStatusScript>().AddStatus(this);
         }
     }
     public Quaternion CalculateRotation(Vector3 startPos, Vector3 endPos)
