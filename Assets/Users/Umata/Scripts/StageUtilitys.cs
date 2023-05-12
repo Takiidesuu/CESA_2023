@@ -19,10 +19,14 @@ public class StageUtilitys : MonoBehaviour
             }
             else
             {
+                world = 9999;
+                stage = 9999;
             }
         }
         else
         {
+            world = 9999;
+            stage = 9999;
         }
     }
 }

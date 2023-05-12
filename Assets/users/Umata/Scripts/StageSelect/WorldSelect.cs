@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
-
+using UnityEngine.UI;
 
 public class WorldSelect : MonoBehaviour
 {
@@ -30,6 +30,10 @@ public class WorldSelect : MonoBehaviour
 
     public GameObject CameraObj;
     public GameObject PlayerObj;
+    public GameObject BlackPanelImage;//BlackPanel
+
+
+    [SerializeField] private AnimationCurve curve = AnimationCurve.Linear(0f, 0f, 1f, 1f); // イージングカーブ
 
     private Vector3 StartHammerPos;
     private Vector3 StartBackImagePos;
@@ -39,12 +43,15 @@ public class WorldSelect : MonoBehaviour
     private bool selectingStage = true; // ステージを選択中かどうか
     private bool isStart = true;
     private bool isTransitioning = false;
+    private Image BlackPanel;//BlackPanel
 
     // 変更後の強さ
     private float targetIntensity;
 
     // 変更にかかる時間
     public float duration;
+    public float BlackPanelDuration;
+    public float TransitionStartDelay;
 
     // 変更を開始した時刻
     private float startTime;
@@ -63,6 +70,9 @@ public class WorldSelect : MonoBehaviour
 
         // 初期値を設定
         targetIntensity = vignette.intensity.value;
+
+        //BlackPanelを取得
+        BlackPanel = BlackPanelImage.GetComponent<Image>();
     }
 
     void Update()
@@ -82,12 +92,11 @@ public class WorldSelect : MonoBehaviour
                     if (CameraObj.transform.position.x - stageSelectPos.position.x < 0.05)
                     {
                         isTransitioning = true;
-                        //Vignetイージングを開始
-                        SetVignetteIntensity(duration,20);
                         startTime = Time.time;
-                        postProcessVolume.SetActive(true);
-                        selectingStage = false;
-                        Invoke("LoadScene", time * 2);
+                        //Vignetイージングを開始
+                        PlayerObj.GetComponent<CellEffect>().ChangeMaterialsToInvisible();
+                        Invoke("LoadScene", time * 3);
+                        Invoke("TransitionInit", 1);
                     }
                 }
                 else
@@ -99,17 +108,29 @@ public class WorldSelect : MonoBehaviour
         //シーン遷移エフェクト中
         if(isTransitioning)
         {
-            // 変更する値をイージングで計算
-            float t = (Time.time - startTime) / duration;
-            float intensity = Mathf.Lerp(vignette.intensity.value, targetIntensity, t * t);
+            TransitionStartDelay += Time.deltaTime;
 
-            // 値を設定
-            vignette.intensity.value = intensity;
-        }
-        //デバッグ用エフェクト再生
-        if (Input.GetKeyDown(KeyCode.U))
-        {
-            PlayerObj.GetComponent<CellEffect>().ChangeMaterialsToInvisible();
+            if (TransitionStartDelay > 1.0f)
+            {
+                // 変更する値をイージングで計算
+                float t = (Time.time - startTime) / (duration / 12);
+                float intensity = Mathf.Lerp(vignette.intensity.value, targetIntensity, t * t);
+
+                // 値を設定
+                vignette.intensity.value = intensity;
+
+                // 現在の時間からフェードインの進行度合いを計算する
+                float elapsedTime = Time.time - startTime;
+                float progress = Mathf.Clamp01(elapsedTime / (BlackPanelDuration / 12));
+
+                // イージングカーブを適用したアルファ値を計算する
+                float alpha = curve.Evaluate(progress);
+
+                // Imageのカラーを更新する
+                Color color = BlackPanel.color;
+                BlackPanel.color = new Color(color.r, color.g, color.b, alpha);
+
+            }
         }
         if (selectingWorld)
         {
@@ -243,6 +264,15 @@ public class WorldSelect : MonoBehaviour
         // ワールドとステージに応じてシーンをロードする処理を書く
         string stage_name = "Stage" + (currentWorld+1) + "-" + (currentStage+1);
         SceneManager.LoadScene(stage_name);
+    }
+
+    private void TransitionInit()
+    {
+        SetVignetteIntensity(1, 100);
+        startTime = Time.time;
+        postProcessVolume.SetActive(true);
+        selectingStage = false;
+
     }
     public void SetVignetteIntensity(float intensity, float time)
     {

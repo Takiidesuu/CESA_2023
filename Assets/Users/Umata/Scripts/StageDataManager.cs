@@ -63,7 +63,10 @@ public class StageDataManager : MonoBehaviour
     {
         int world, stage;
         StageUtilitys.GetCurrentWorldAndStage(out world,out stage);
-        now_world = world;
-        now_stage = stage;
+        if (world != 9999 && stage != 9999)
+        {
+            now_world = world;
+            now_stage = stage;
+        }
     }
 }
