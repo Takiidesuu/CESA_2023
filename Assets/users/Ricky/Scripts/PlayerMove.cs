@@ -183,10 +183,9 @@ public class PlayerMove : MonoBehaviour
                 
                 speed = Mathf.MoveTowards(speed, input_direction.magnitude * max_speed, acceleration_speed);
                 
-                if ((rb.velocity.magnitude > 0.0f && is_grounded && input_direction == Vector2.zero) || recheck_input)
+                if ((rb.velocity.magnitude > 0.0f && is_grounded && input_direction == Vector2.zero))
                 {
-                    rb.velocity = Vector3.MoveTowards(rb.velocity, Vector3.zero, deceleration_speed * Time.deltaTime * 4.0f);
-                    speed = Mathf.MoveTowards(speed, 0.0f, deceleration_speed * 0.5f);
+                    DecelerateSpeed();
                 }
             }
             else
@@ -366,7 +365,15 @@ public class PlayerMove : MonoBehaviour
             {
                 recheck_input = false;
             }
+            
+            DecelerateSpeed();
         }
+    }
+    
+    private void DecelerateSpeed()
+    {
+        rb.velocity = Vector3.MoveTowards(rb.velocity, Vector3.zero, deceleration_speed * Time.deltaTime * 4.0f);
+        speed = Mathf.MoveTowards(speed, 0.0f, deceleration_speed * 0.5f);
     }
     
     private void CheckIsGrounded()
@@ -483,7 +490,7 @@ public class PlayerMove : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(transform.position, transform.up * -1.0f, out hit, 5.0f, LayerMask.GetMask("Ground")))
         {
-            Instantiate(spark_effect, hit.point, Quaternion.identity);
+            Instantiate(spark_effect, hit.point, this.transform.rotation);
         }
     }
     

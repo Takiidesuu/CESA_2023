@@ -16,6 +16,9 @@ public class ElectricBallMove : MonoBehaviour
     
     [Tooltip("スピード限界")]
     [SerializeField] private Vector2 speed_limit = new Vector2(2.0f, 50.0f);
+    
+    [Tooltip("スピードエフェクトプレハブ")]
+    [SerializeField] private GameObject speed_effect;
 
     private Rigidbody rb;                   //リギッドボディー
     private float m_destroy_timer;
@@ -79,6 +82,8 @@ public class ElectricBallMove : MonoBehaviour
     
     private void FixedUpdate() 
     {
+        bool is_speeding = false;
+        
         if (!is_on_boost)
         {
             if (elapsed_time >= time_to_normal_speed)
@@ -94,18 +99,22 @@ public class ElectricBallMove : MonoBehaviour
             }
             else
             {
+                is_speeding = true;
                 elapsed_time += Time.deltaTime;
             }
         }
         else
         {
+            is_speeding = true;
             elapsed_time = 0.0f;
         }
+        
+        speed_effect.SetActive(is_speeding);
     }
     
     private void LateUpdate() 
     {
-        //m_real_speed = Mathf.Clamp(m_real_speed, speed_limit.x, speed_limit.y);
+        
     }
     
     public void ChangeSpeed(float boostSpeed)

@@ -28,6 +28,8 @@ public class PauseManager : MonoBehaviour
     
     private bool switch_scene = false;
     
+    [SerializeField] private GameObject[] obj_to_disable;
+    
     private void Awake() 
     {
         if (instance != null && instance != this) 
