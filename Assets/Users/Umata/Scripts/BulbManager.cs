@@ -22,7 +22,6 @@ public class BulbManager : MonoBehaviour
 
         Text_Active = Text_Active_obj.GetComponent<TextMeshProUGUI>();
         Text_Num = Text_Num_obj.GetComponent<TextMeshProUGUI>();
-
     }
 
     void Update()
