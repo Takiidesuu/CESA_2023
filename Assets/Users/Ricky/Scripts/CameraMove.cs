@@ -4,22 +4,15 @@ using UnityEngine;
 
 public class CameraMove : MonoBehaviour 
 {
+    [Header("距離")]
     [Tooltip("プレイヤーからの距離")]
     [SerializeField] private float player_distance = 5.0f;
-    
     [Tooltip("ステージからの距離")]
     [SerializeField] private float distance_from_stage = 70.0f;
     
-    [Tooltip("プレイヤーに近づく速度")]
-    [SerializeField] private float time_to_player = 10.0f;
-    [Tooltip("元の位置に戻る速度")]
-    [SerializeField] private float return_speed = 5.0f;
-    [Tooltip("切り替わり待ち時間")]
-    [SerializeField] private int time_to_return = 60;
-    
+    [Header("設定")]
     [Tooltip("FOV")]
     [SerializeField] private float camera_fov = 15.0f;
-    
     [Tooltip("カメラ揺れ力")]
     [SerializeField] private float camera_shake_power = 5.0f;
     
@@ -70,14 +63,12 @@ public class CameraMove : MonoBehaviour
     
     private void LateUpdate() 
     {
-        is_zooming = true;
-        
         float distance_from_obj;
         GameObject target_obj = player_obj.GetComponent<PlayerMove>().GetCurrentGravObj();
         
         bool is_player_smashing = player_obj.GetComponent<PlayerMove>().GetSmashingState();
         
-        if (target_obj && !is_player_smashing && return_count <= 0)
+        if (target_obj)
         {
             distance_from_obj = distance_from_stage * 10.0f * distance_scalar;
         }
@@ -89,57 +80,25 @@ public class CameraMove : MonoBehaviour
         
         Vector3 targetLookAt;
         
-        if (is_player_smashing)
+        targetLookAt = target_obj.transform.position;
+        
+        if (distance_scalar < 1.0f)
         {
-            distance_scalar = 0.5f;
-            targetLookAt = player_obj.transform.position;
+            distance_scalar += Time.deltaTime * 8.0f;
         }
         else
         {
-            if (return_count <= 0)
-            {
-                targetLookAt = target_obj.transform.position;
-                
-                if (distance_scalar < 1.0f)
-                {
-                    distance_scalar += Time.deltaTime * 8.0f;
-                }
-                else
-                {
-                    distance_scalar = 1.0f;
-                }
-            }
-            else
-            {
-                targetLookAt = player_obj.transform.position;
-            }
+            distance_scalar = 1.0f;
         }
         
         Vector3 target_pos = new Vector3(target_obj.transform.position.x, target_obj.transform.position.y, target_obj.transform.position.z - Mathf.Abs(distance_from_obj));
         
-        if (is_player_smashing)
+        lookat_pos.transform.position = Vector3.MoveTowards(lookat_pos.transform.position, targetLookAt, Time.deltaTime * 300.0f);
+        transform.position = Vector3.MoveTowards(transform.position, target_pos, 300.0f * Time.deltaTime);
+        
+        if (transform.position == target_pos)
         {
-            float look_speed = 200.0f * time_to_player;
-            lookat_pos.transform.position = Vector3.MoveTowards(lookat_pos.transform.position, targetLookAt, Time.deltaTime * look_speed / 5.0f);
-            transform.position = Vector3.MoveTowards(transform.position, target_pos + player_obj.transform.up * 10.0f, Time.deltaTime * look_speed);
-            return_count = time_to_return;
-        }
-        else
-        {
-            if (return_count <= 0)
-            {
-                lookat_pos.transform.position = Vector3.MoveTowards(lookat_pos.transform.position, targetLookAt, Time.deltaTime * return_speed * 30.0f);
-                transform.position = Vector3.MoveTowards(transform.position, target_pos, 300.0f * return_speed * Time.deltaTime);
-                
-                if (transform.position == target_pos)
-                {
-                    is_zooming = false;
-                }
-            }
-            else
-            {
-                return_count--;
-            }
+            is_zooming = false;
         }
         
         transform.LookAt(lookat_pos.transform, Vector3.up);
