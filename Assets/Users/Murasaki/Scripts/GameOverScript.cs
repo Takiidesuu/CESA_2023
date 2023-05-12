@@ -81,16 +81,14 @@ public class GameOverScript : MonoBehaviour
 
     private void SceneChange(bool isRetry)
     {
-        if(isRetry)
-        {
-            // world_numとstage_numからStageをLoad
-            Debug.Log("Loading");
+        string stagename = "StageSelect";
+        
+        if (isRetry)
+        {// retryが選択されているなら
+            stagename = SceneManager.GetActiveScene().name;
         }
-        else
-        {
-            SceneManager.LoadScene("StageSelect");
-        }
-
+        // SceneLoading
+        FindObjectOfType<SceneController>().SceneChange(stagename);
         now_state = Status.Loading;
     }
 
