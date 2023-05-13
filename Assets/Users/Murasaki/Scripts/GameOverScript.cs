@@ -10,7 +10,7 @@ public class GameOverScript : MonoBehaviour
     //StageDataManager stageDataManagerScript:
     int load_world;
     int load_stage;
-    StageDataManager loadStageData;
+    //StageData loadStageData;
 
     // State管理変数
     enum Status
@@ -47,11 +47,10 @@ public class GameOverScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        loadStageData = GameObject.Find("StageData").GetComponent<StageDataManager>();
-        load_world = loadStageData.now_world +1;
-        load_stage = loadStageData.now_stage + 1;
-        Debug.Log(load_world);
-        Debug.Log(load_stage);
+        //load_world = worldSelectScript.currentWorld + 1;
+        //load_stage = worldSelectScript.currentStage + 1;
+        //Debug.Log(load_world);
+        //Debug.Log(load_stage);
     }
 
     // Update is called once per frame
@@ -86,8 +85,7 @@ public class GameOverScript : MonoBehaviour
         
         if (isRetry)
         {// retryが選択されているなら
-            //stagename = SceneManager.GetActiveScene().name;
-            stagename = "Stage" + load_world + "-" + load_stage;
+            stagename = SceneManager.GetActiveScene().name;
         }
         // SceneLoading
         FindObjectOfType<SceneController>().SceneChange(stagename);
@@ -96,21 +94,20 @@ public class GameOverScript : MonoBehaviour
 
     private void StatusSelect()
     {
-        InputManager.instance.GetMenuMoveFloat();
-        if (InputManager.instance.GetMenuMoveFloat() < 0)
+        if (Input.GetKey(KeyCode.UpArrow))
         {
             retry.rectTransform.localPosition = retry_defaultPos + selectPosOffset;
             stage_select.rectTransform.localPosition = stageselect_defaultPos;
             is_retry = true;
         }
-        if (InputManager.instance.GetMenuMoveFloat() > 0)
+        if (Input.GetKey(KeyCode.DownArrow))
         {
             retry.rectTransform.localPosition = retry_defaultPos;
             stage_select.rectTransform.localPosition = stageselect_defaultPos + selectPosOffset;
             is_retry = false;
         }
 
-        if (InputManager.instance.press_select)
+        if (Input.GetKey(KeyCode.Space))
         {
             now_state = Status.Load;
         }
