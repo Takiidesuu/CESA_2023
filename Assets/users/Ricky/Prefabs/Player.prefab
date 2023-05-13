@@ -130,15 +130,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f51b6f4218fd2f34f9ae49de74736b4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+<<<<<<< Updated upstream
   acceleration_speed: 10
-  max_speed: 500
+=======
+  acceleration_speed: 50
+>>>>>>> Stashed changes
+  max_speed: 600
   deceleration_speed: 20
   jump_power: 40
   smash_threshold: 1
-  smash_max_time: 5
+  smash_max_time: 3
   smash_power_scalar: 3
   spark_effect: {fileID: 8174230830716538481, guid: df1ee2f599b561d45b7e05d33960b3f1, type: 3}
-  is_dead: 0
 --- !u!114 &4527643178826435809
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -183,7 +186,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gravity_power: 5
   rotation_speed: 20
-  time_to_warp: 3
+  time_to_warp: 1
 --- !u!114 &5636969767050540685
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -197,6 +200,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   invincible_duration: 2
+  damage_stop_time: 0.1
   hp: 7
 --- !u!82 &4649183434478112378
 AudioSource:
@@ -339,15 +343,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0a6ce1b2d2414ce48a2c6d16ea56166c, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.03
+      value: 0.07
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0a6ce1b2d2414ce48a2c6d16ea56166c, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.03
+      value: 0.07
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0a6ce1b2d2414ce48a2c6d16ea56166c, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.03
+      value: 0.07
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0a6ce1b2d2414ce48a2c6d16ea56166c, type: 3}
       propertyPath: m_LocalPosition.x
