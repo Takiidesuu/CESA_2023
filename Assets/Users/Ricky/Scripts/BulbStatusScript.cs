@@ -38,7 +38,8 @@ public class BulbStatusScript : MonoBehaviour
     void Update()
     {
         float space = background_size.y / (float)num_of_bulbs;
-        float y_pos = background_size.y / 2.0f * -1.0f;
+        float y_pos = background_size.y / (float)num_of_bulbs * -1.0f;
+        
         if (num_of_bulbs % 2 == 0)
         {
             y_pos += space / 2.0f;

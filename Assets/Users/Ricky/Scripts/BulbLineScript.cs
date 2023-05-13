@@ -34,7 +34,7 @@ public class BulbLineScript : MonoBehaviour
         if (current_bulb.is_stage_hit)
         {
             Vector3 point_new_pos = new Vector3(0, 0, -0.1f);
-            point_new_pos.x = ((background_size.x / 2.0f - 40.0f) * -1.0f) + ((background_size.x / 2.0f - 40.0f) * (current_time / max_time));
+            point_new_pos.x = ((background_size.x / 2.0f - 40.0f) * -1.0f) + ((background_size.x - 40.0f * 2.0f) * (current_time / max_time));
             line_renderer.SetPosition(1, point_new_pos);
         }
         else
