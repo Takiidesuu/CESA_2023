@@ -45,6 +45,8 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private float smash_max_time = 5.0f;
     [Header("叩く力")]
     [SerializeField] private float smash_power_scalar = 3.0f;
+    [Header("叩く時の震度")]
+    [SerializeField] private float smash_vibration = 3.0f;
  
     [Header("プレハブ")]
     [Tooltip("火花")]
@@ -429,6 +431,23 @@ public class PlayerMove : MonoBehaviour
         }
     }
     
+    public void BeforeSmashFunc()
+    {
+        float hit_stop_delay = smash_power_num / smash_max_time;
+        
+        if (hit_stop_delay < 0.2f)
+        {
+            hit_stop_delay = 0.2f;
+        }
+        HitstopManager.instance.StartHitStop(hit_stop_delay);
+        
+        camera_obj.GetComponent<CameraMove>().ShakeCamera(smash_power_num / 2.0f, 0.2f);
+        
+        smash_vibration = Mathf.Clamp(smash_vibration, 0.1f, 5.0f);
+        
+        InputManager.instance.VibrateController(0.2f, (0.1f * smash_vibration) + (smash_power_num / smash_max_time * 0.5f));
+    }
+
     public void SmashFunc()
     {
         if (can_jump_status == SMASHJUMP.CAN_JUMP)
@@ -459,8 +478,6 @@ public class PlayerMove : MonoBehaviour
             {
                 deform_stage.AddDeformpointDown(transform.position, transform.eulerAngles.y, smash_power_num + 1 * smash_power_scalar, is_flip);
             }
-            
-            camera_obj.GetComponent<CameraMove>().ShakeCamera(smash_power_num / 2.0f, 0.2f);
         }
         else
         {
@@ -475,14 +492,14 @@ public class PlayerMove : MonoBehaviour
             anim.speed = 1.0f;
         }
         
-        float hit_stop_delay = smash_power_num / 10.0f;
-        HitstopManager.instance.StartHitStop(hit_stop_delay);
-        Invoke("SpawnSparks", hit_stop_delay);
-        
         smash_state = SMASHSTATE.NORMAL;
         anim.ResetTrigger("holdSmash");
+        anim.speed = 1.0f;
         
-        InputManager.instance.VibrateController(0.2f, smash_power_num / smash_max_time * 1.5f);
+        Invoke("SpawnSparks", 0.0f);
+        
+        camera_obj.GetComponent<CameraMove>().ShakeCamera(smash_power_num / 2.0f, smash_power_num / 4.0f);
+        InputManager.instance.VibrateController(0.4f, (0.1f * smash_vibration) * (smash_power_num / smash_max_time * 2.0f));
     }
     
     private void SpawnSparks()
