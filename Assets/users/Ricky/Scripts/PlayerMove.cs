@@ -19,15 +19,6 @@ public class PlayerMove : MonoBehaviour
         CAN_JUMP,       //ジャンプできる
     }
     
-    enum MOVEDIR
-    {
-        NONE,
-        UP,
-        RIGHT,
-        DOWN,
-        LEFT,
-    }
-    
     [Header("Player Param")]
     [Tooltip("加速度")]
     [SerializeField] private float acceleration_speed = 2.0f;
@@ -45,8 +36,14 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private float smash_max_time = 5.0f;
     [Header("叩く力")]
     [SerializeField] private float smash_power_scalar = 3.0f;
+    
+    [Header("震度")]
+    [Tooltip("溜めてる時の震度")]
+    [SerializeField] private float hold_smash_vibration = 1.0f;
     [Header("叩く時の震度")]
     [SerializeField] private float smash_vibration = 3.0f;
+    [Header("カメラの震度")]
+    [SerializeField] private float camera_vibration = 2.0f;
  
     [Header("プレハブ")]
     [Tooltip("火花")]
@@ -60,6 +57,7 @@ public class PlayerMove : MonoBehaviour
     private Animator anim;                  //アニメーター
 
     private float speed;
+    
     private bool recheck_input;
     private Vector2 prev_input;
     private bool is_dead;
@@ -67,6 +65,7 @@ public class PlayerMove : MonoBehaviour
     private bool is_grounded;       //地面についているか
     private GameObject ground_obj;  //ついてる地面
     private GameObject ground_obj_parent;   //ついてる地面の親（コンポネント取る用）
+    LayerMask ground_layer_mask;
     private bool is_holding_smash;  //叩く力を貯めているか
     
     private GameObject camera_obj;  //カメラオブジェクト
@@ -78,13 +77,13 @@ public class PlayerMove : MonoBehaviour
 
     private SoundManager soundmanager;
 
-    private ParticleSystem part_line_effect;
-    private ParticleSystem part_circle_effect;
+    private ParticleSystem part_line_sys;
+    private ParticleSystem part_circle_sys;
+    private ParticleSystem.EmissionModule part_line_effect;
+    private ParticleSystem.EmissionModule part_circle_effect;
     
     public bool in_grav_field {get; private set;}
     private GameObject grav_obj;
-    
-    private float target_rot;
     
     private LightBulbCollector check_is_cleared;
 
@@ -139,12 +138,16 @@ public class PlayerMove : MonoBehaviour
         col = GetComponent<CapsuleCollider>();          //コライダー取得
         anim = transform.GetChild(0).GetComponent<Animator>();                //アニメーター取得
         
-        part_line_effect = transform.GetChild(2).GetComponent<ParticleSystem>();
-        part_circle_effect = transform.GetChild(3).GetComponent<ParticleSystem>();
+        part_line_sys = transform.GetChild(2).GetComponent<ParticleSystem>();
+        part_circle_sys = transform.GetChild(3).GetComponent<ParticleSystem>();
+        part_line_effect = part_line_sys.emission;
+        part_circle_effect = part_circle_sys.emission;
         
         rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
 
         camera_obj = GameObject.FindGameObjectWithTag("MainCamera");    //カメラオブジェクト取得
+        
+        ground_layer_mask = LayerMask.GetMask("Ground");
         
         //変数を初期化する
         is_grounded = false;
@@ -155,10 +158,11 @@ public class PlayerMove : MonoBehaviour
         prev_input = Vector2.zero;
         is_dead = false;
         
+        smash_vibration = Mathf.Clamp(smash_vibration, 1.0f, 5.0f);
+        hold_smash_vibration = Mathf.Clamp(hold_smash_vibration, 0.1f, 10.0f);
+        
         blackPanel = GameObject.Find("BlackPanel");
         blackPanel.SetActive(false);
-        
-        target_rot = 0.0f;
         
         in_grav_field = false;
 
@@ -182,12 +186,16 @@ public class PlayerMove : MonoBehaviour
                 }
                 
                 CheckIsGrounded();
+                CheckSide();
                 
                 speed = Mathf.MoveTowards(speed, input_direction.magnitude * max_speed, acceleration_speed);
                 
-                if ((rb.velocity.magnitude > 0.0f && is_grounded && input_direction == Vector2.zero))
+                if (rb.velocity.magnitude > 0.0f && is_grounded)
                 {
-                    DecelerateSpeed();
+                    if (input_direction == Vector2.zero || recheck_input)
+                    {
+                        DecelerateSpeed();
+                    }
                 }
             }
             else
@@ -253,21 +261,17 @@ public class PlayerMove : MonoBehaviour
                             
                             smash_power_num = 0.0f;
                             
-                            var emis = part_line_effect.emission;
-                            emis.enabled = false;
-                            emis = part_circle_effect.emission;
-                            emis.enabled = false;
+                            part_line_effect.enabled = false;
+                            part_circle_effect.enabled = false;
                             
                             break;
                             case SMASHSTATE.HOLDING:    //力を溜めてる状態
                             
-                            var emisss = part_line_effect.emission;
-                            emisss.enabled = true;
-                            var emiss_circle = part_circle_effect.emission;
-                            emiss_circle.enabled = true;
+                            part_line_effect.enabled = true;
+                            part_circle_effect.enabled = true;
                             
-                            var line_color = part_line_effect.main;
-                            var circle_color = part_circle_effect.main;
+                            var line_color = part_line_sys.main;
+                            var circle_color = part_circle_sys.main;
                             
                             //溜めた力を加算する
                             if (smash_power_num >= smash_max_time)
@@ -301,16 +305,17 @@ public class PlayerMove : MonoBehaviour
                                 circle_color.startColor = new Color(0.0f, 0.0f, 1.0f);
                             }
                             
-                            emisss.rateOverTime = 90.0f * (smash_power_num / smash_threshold);
+                            part_line_effect.rateOverTime = 90.0f * (smash_power_num / smash_threshold);
                             circle_color.startSize = 8.0f * (smash_power_num / smash_threshold);
+                            
+                            InputManager.instance.VibrateController(Time.deltaTime, 0.1f);
+                            camera_obj.GetComponent<CameraMove>().ShakeCamera(0.1f, Time.deltaTime);
                             
                             break;
                             case SMASHSTATE.SMASHING:   //力を放ってる状態
                             
-                            var emissss = part_line_effect.emission;
-                            emissss.enabled = false;
-                            emissss = part_circle_effect.emission;
-                            emissss.enabled = false;
+                            part_line_effect.enabled = false;
+                            part_circle_effect.enabled = false;
                             
                             break;
                         }
@@ -329,8 +334,6 @@ public class PlayerMove : MonoBehaviour
         Debug.DrawRay(this.transform.position, transform.right * 10.0f, Color.green);
         
         float angle_difference = Mathf.Abs(Vector3.SignedAngle(transform.right, move_point.normalized, new Vector3(0, 0, 1)));
-        Debug.Log(angle_difference);
-        
         if (!recheck_input)
         {
             var locVel = transform.InverseTransformDirection(rb.velocity);
@@ -367,8 +370,6 @@ public class PlayerMove : MonoBehaviour
             {
                 recheck_input = false;
             }
-            
-            DecelerateSpeed();
         }
     }
     
@@ -380,10 +381,8 @@ public class PlayerMove : MonoBehaviour
     
     private void CheckIsGrounded()
     {
-        LayerMask ground_layer_mask = LayerMask.GetMask("Ground");
         RaycastHit hit;
-        
-        if (Physics.Raycast(this.transform.position + this.transform.up * 0.25f, this.transform.up * -1.0f, out hit, 2.0f, ground_layer_mask))
+        if (Physics.Raycast(this.transform.position + this.transform.up * 0.25f, this.transform.up * -1.0f, out hit, 1.5f, ground_layer_mask))
         {
             is_grounded = true;
             ground_obj = hit.transform.gameObject;
@@ -394,6 +393,25 @@ public class PlayerMove : MonoBehaviour
         else
         {
             is_grounded = false;
+        }
+    }
+    
+    private void CheckSide()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, this.transform.up * -1.0f, out hit, 2.0f, ground_layer_mask))
+        {
+            Vector3 center_vec = hit.point - hit.transform.root.gameObject.transform.position;
+            float dot_to_center = Vector3.Dot(center_vec.normalized, transform.up);
+            
+            if (dot_to_center > 0)
+            {
+                is_flip = false;
+            }
+            else
+            {
+                is_flip = true;
+            }
         }
     }
     
@@ -416,36 +434,48 @@ public class PlayerMove : MonoBehaviour
         {
             smash_state = SMASHSTATE.SMASHING;
             
-            if (smash_power_num >= smash_max_time)
+            bool isSmash = true;
+            if (is_flip)
             {
-                anim.SetTrigger("isSmashStrong");
+                if (!min_max_deform.GetMaxHit())
+                    isSmash = false;
             }
             else
             {
-                if (smash_power_num < smash_power_scalar)
+                if (min_max_deform.GetMinHit())
+                    isSmash = false;
+            }
+            
+            if (isSmash)
+            {
+                if (smash_power_num >= smash_max_time)
                 {
-                    anim.speed = 1.5f;
+                    anim.SetTrigger("isSmashStrong");
                 }
-                anim.SetTrigger("isSmash");
+                else
+                {
+                    if (smash_power_num < smash_power_scalar)
+                    {
+                        anim.speed = 1.5f;
+                    }
+                    anim.SetTrigger("isSmash");
+                }
+            }
+            else
+            {
+                anim.SetTrigger("failSmash");
             }
         }
     }
     
     public void BeforeSmashFunc()
     {
-        float hit_stop_delay = smash_power_num / smash_max_time;
+        float hit_stop_delay = 0.2f + (smash_power_num / smash_max_time) * 0.6f;
         
-        if (hit_stop_delay < 0.2f)
-        {
-            hit_stop_delay = 0.2f;
-        }
         HitstopManager.instance.StartHitStop(hit_stop_delay);
         
-        camera_obj.GetComponent<CameraMove>().ShakeCamera(smash_power_num / 2.0f, 0.2f);
-        
-        smash_vibration = Mathf.Clamp(smash_vibration, 0.1f, 5.0f);
-        
-        InputManager.instance.VibrateController(0.2f, (0.1f * smash_vibration) + (smash_power_num / smash_max_time * 0.5f));
+        camera_obj.GetComponent<CameraMove>().ShakeCamera(smash_power_num / 2.0f * camera_vibration, hit_stop_delay / 2.0f);
+        InputManager.instance.VibrateController(hit_stop_delay / 2.0f, (0.1f * smash_vibration) + (smash_power_num / smash_max_time * 0.5f));
     }
 
     public void SmashFunc()
@@ -487,25 +517,19 @@ public class PlayerMove : MonoBehaviour
             }
         }
         
-        if (smash_power_num < smash_power_scalar)
-        {
-            anim.speed = 1.0f;
-        }
-        
         smash_state = SMASHSTATE.NORMAL;
         anim.ResetTrigger("holdSmash");
-        anim.speed = 1.0f;
         
-        Invoke("SpawnSparks", 0.0f);
+        float vibration_dur = 0.2f + (smash_power_num / smash_max_time) * 0.6f;
         
-        camera_obj.GetComponent<CameraMove>().ShakeCamera(smash_power_num / 2.0f, smash_power_num / 4.0f);
-        InputManager.instance.VibrateController(0.4f, (0.1f * smash_vibration) * (smash_power_num / smash_max_time * 2.0f));
+        camera_obj.GetComponent<CameraMove>().ShakeCamera(smash_power_num / 2.0f * camera_vibration, vibration_dur);
+        InputManager.instance.VibrateController(vibration_dur, (0.1f * smash_vibration) + (smash_power_num / smash_max_time * 0.5f));
     }
     
-    private void SpawnSparks()
+    public void SpawnSparks()
     {
         RaycastHit hit;
-        if (Physics.Raycast(transform.position, transform.up * -1.0f, out hit, 5.0f, LayerMask.GetMask("Ground")))
+        if (Physics.Raycast(transform.position, transform.up * -1.0f, out hit, 5.0f, ground_layer_mask))
         {
             Instantiate(spark_effect, hit.point, this.transform.rotation);
         }
@@ -513,13 +537,13 @@ public class PlayerMove : MonoBehaviour
     
     private void FlipCharacter()
     {
-        FlipUpsideDown(false);
+        FlipUpsideDown();
     }
     
-    private void FlipUpsideDown(bool rotate_other_side)
+    private void FlipUpsideDown()
     {
         RaycastHit hit_info;
-        if (Physics.Raycast(this.transform.position + this.transform.up * 0.25f, this.transform.up * -1.0f, out hit_info, 5.0f, LayerMask.GetMask("Ground")))
+        if (Physics.Raycast(this.transform.position + this.transform.up * 0.25f, this.transform.up * -1.0f, out hit_info, 5.0f, ground_layer_mask))
         {
             float dis = Vector3.Distance(this.transform.position, hit_info.point);
             Vector3 new_pos;
@@ -527,7 +551,7 @@ public class PlayerMove : MonoBehaviour
             while (true)
             {
                 Vector3 check_pos = this.transform.position + -this.transform.up * dis;
-                Collider[] hit_col = Physics.OverlapSphere(check_pos, 2.0f, LayerMask.GetMask("Ground"));
+                Collider[] hit_col = Physics.OverlapSphere(check_pos, 2.0f, ground_layer_mask);
                 if (hit_col.Length == 0)
                 {
                     new_pos = check_pos;
@@ -541,17 +565,7 @@ public class PlayerMove : MonoBehaviour
             
             transform.Rotate(new Vector3(180.0f, 0.0f, 0.0f), Space.Self);
             
-            if (target_rot == 180.0f)
-            {
-                target_rot = 0.0f;
-            }
-            else
-            {
-                target_rot = 180.0f;
-            }
-            
             this.transform.position = new_pos;
-            if (is_flip) is_flip = false; else is_flip = true;
         }
     }
     
@@ -612,7 +626,7 @@ public class PlayerMove : MonoBehaviour
     {
         if (other.gameObject.tag == "FlipGate")
         {
-            FlipUpsideDown(true);
+            FlipUpsideDown();
         }
         
         if (other.gameObject.tag == "GravityField")

@@ -114,7 +114,7 @@ public class ElectricBallMove : MonoBehaviour
     
     private void LateUpdate() 
     {
-        
+        transform.eulerAngles = new Vector3(transform.eulerAngles.x, 0.0f, transform.eulerAngles.z);
     }
     
     public void ChangeSpeed(float boostSpeed)
