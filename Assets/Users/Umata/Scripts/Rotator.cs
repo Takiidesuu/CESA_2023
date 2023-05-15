@@ -12,11 +12,17 @@ public class Rotator : MonoBehaviour
     private Renderer object_renderer;
     Rotator_switch trigger_switch;    //スイッチオブジェクト
 
+    /// <summary>
+    /// 平田
+    /// </summary>
+    private Animator animator;
+
     void Start()
     {
         trigger_switch = transform.Find("Switch").gameObject.GetComponent<Rotator_switch>();
         modeldata = transform.Find("model").gameObject;
         object_renderer = modeldata.GetComponent<Renderer>();
+        animator = GetComponent<Animator>();
         UpdateMaterial();
     }
 
@@ -44,10 +50,12 @@ public class Rotator : MonoBehaviour
             if (is_rotate)
             {
                 object_renderer.material = active_material;
+                animator.SetBool("Rotate", true);
             }
             else
             {
                 object_renderer.material = inactive_material;
+                animator.SetBool("Rotate", false);
             }
         }
     }
