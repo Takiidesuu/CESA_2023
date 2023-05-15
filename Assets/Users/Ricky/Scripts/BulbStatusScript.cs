@@ -15,13 +15,21 @@ public class BulbStatusScript : MonoBehaviour
     
     private int num_of_bulbs;
     
-    public void AddStatus(LightBulb bulb)
+    public GameObject AddStatus(LightBulb bulb)
     {
         GameObject new_line_obj = Instantiate(bulb_line_obj_template, Vector3.zero, Quaternion.identity);
         new_line_obj.transform.SetParent(this.transform);
         new_line_obj.GetComponent<BulbLineScript>().current_bulb = bulb;
         
         progress_bar.Add(new_line_obj.GetComponent<BulbLineScript>());
+        
+        return new_line_obj;
+    }
+    
+    public void ResetStatus(LightBulb bulb)
+    {
+        progress_bar.Remove(bulb.line_status_obj.GetComponent<BulbLineScript>());
+        progress_bar.Add(bulb.line_status_obj.GetComponent<BulbLineScript>());
     }
     
     // Start is called before the first frame update
@@ -38,20 +46,30 @@ public class BulbStatusScript : MonoBehaviour
     void Update()
     {
         float space = background_size.y / (float)num_of_bulbs;
-        float y_pos = background_size.y / (float)num_of_bulbs * -1.0f;
+        float y_pos = space * -1.0f;
         
         if (num_of_bulbs % 2 == 0)
         {
-            y_pos += space / 2.0f;
+            y_pos = space / 2.0f + (space * (num_of_bulbs / 2 - 1));
         }
+        else
+        {
+            y_pos = space / 2.0f * (space * ((num_of_bulbs - 1) / 2));
+        }
+        
+        y_pos *= -1.0f;
         
         if (progress_bar.Count > 0)
         {
             for (int i = progress_bar.Count - 1; i >= 0; i--)
             {
                 RectTransform rect_transform = progress_bar[i].gameObject.GetComponent<RectTransform>();
-                rect_transform.localPosition = new Vector3(0.0f, y_pos, -0.1f);
-                rect_transform.localScale = new Vector3(1, 1, 1);
+                float new_x_pos = background_size.x / 2.0f - (y_pos / 2.5f);
+                if (y_pos < 0.0f)
+                {
+                    new_x_pos -= Mathf.Abs(y_pos) / 2.0f;
+                }
+                rect_transform.anchoredPosition3D = new Vector3(new_x_pos, y_pos, -0.1f);
                 
                 y_pos += space;
             }

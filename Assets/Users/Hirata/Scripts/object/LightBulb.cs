@@ -14,6 +14,8 @@ public class LightBulb : MonoBehaviour
     [Tooltip("è¡ñ≈éûä‘")]
     [SerializeField] private float m_destroy_time = 5.0f;
     private float m_destroy_timer;
+    
+    public GameObject line_status_obj {get;set;}
 
     public float GetDestroyTime()
     {
@@ -26,30 +28,38 @@ public class LightBulb : MonoBehaviour
     }
 
     private void Start()
-    {
+    {   
         changeMaterial = GetComponent<LightBulbChangeMaterial>();
         soundManager = GetComponent<SoundManager>();    
+        
+        line_status_obj = null;
     }
 
     private void Update()
     {
-
-        if(is_stage_hit)
+        if (!GameObject.FindObjectOfType<LightBulbCollector>().IsCleared())
         {
-            changeMaterial.OnPower = true;
-            m_destroy_timer += Time.deltaTime;
+            if(is_stage_hit)
+            {
+                changeMaterial.OnPower = true;
+                m_destroy_timer += Time.deltaTime;
+            }
+            else
+            {
+                changeMaterial.OnPower = false;
+
+            }
+
+            //éûä‘åoâﬂå„çÌèú
+            if (m_destroy_timer > m_destroy_time)
+            {
+                is_stage_hit = false;
+                m_destroy_timer = 0;
+            }
         }
         else
         {
-            changeMaterial.OnPower = false;
-
-        }
-
-        //éûä‘åoâﬂå„çÌèú
-        if (m_destroy_timer > m_destroy_time)
-        {
-            is_stage_hit = false;
-            m_destroy_timer = 0;
+            m_destroy_timer = 0.0f;
         }
     }
 
@@ -72,7 +82,14 @@ public class LightBulb : MonoBehaviour
             Instantiate(Laser, gameObject.transform.position,LaserRotation);
             Instantiate(HitEffect, gameObject.transform.position,transform.rotation);
 
-            GameObject.FindObjectOfType<BulbStatusScript>().AddStatus(this);
+            if (line_status_obj == null)
+            {
+                line_status_obj = GameObject.FindObjectOfType<BulbStatusScript>().AddStatus(this);
+            }
+            else
+            {
+                GameObject.FindObjectOfType<BulbStatusScript>().ResetStatus(this);
+            }
         }
     }
     public Quaternion CalculateRotation(Vector3 startPos, Vector3 endPos)
