@@ -25,4 +25,9 @@ public class SmashCallScript : MonoBehaviour
     {
         player_script.SpawnSparks();
     }
+
+    public void ResetAnim()
+    {
+        player_script.ResetAnim();
+    }
 }

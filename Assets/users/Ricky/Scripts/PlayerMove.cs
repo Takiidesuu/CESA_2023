@@ -464,6 +464,7 @@ public class PlayerMove : MonoBehaviour
             else
             {
                 anim.SetTrigger("failSmash");
+                anim.ResetTrigger("holdSmash");
             }
         }
     }
@@ -524,6 +525,11 @@ public class PlayerMove : MonoBehaviour
         
         camera_obj.GetComponent<CameraMove>().ShakeCamera(smash_power_num / 2.0f * camera_vibration, vibration_dur);
         InputManager.instance.VibrateController(vibration_dur, (0.1f * smash_vibration) + (smash_power_num / smash_max_time * 0.5f));
+    }
+
+    public void ResetAnim()
+    {
+        smash_state = SMASHSTATE.NORMAL;
     }
     
     public void SpawnSparks()
