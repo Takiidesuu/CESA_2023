@@ -24,7 +24,6 @@ public class CameraMove : MonoBehaviour
     Vector3 origin_pos;
     
     private float distance_scalar;
-    private int return_count;
     
     private bool shake_camera;
     private float shake_power;
@@ -49,10 +48,8 @@ public class CameraMove : MonoBehaviour
         lookat_pos = new GameObject("CameraLookAtObj");
         
         distance_scalar = 1.0f;
-        return_count = 0;
         
         shake_camera = false;
-        
         is_zooming = false;
     }
     

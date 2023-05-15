@@ -20,4 +20,9 @@ public class SmashCallScript : MonoBehaviour
     {
         player_script.SmashFunc();
     }
+    
+    public void SpawnSparkEffect()
+    {
+        player_script.SpawnSparks();
+    }
 }
