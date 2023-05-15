@@ -76,7 +76,7 @@ public class ElectricBallMove : MonoBehaviour
         }
         else
         {
-            rb.velocity = Vector3.zero;
+            rb.velocity = Vector3.MoveTowards(rb.velocity, Vector3.zero, Time.deltaTime * 30.0f);
         }
     }
     
