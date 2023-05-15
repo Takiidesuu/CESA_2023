@@ -9,7 +9,8 @@ public class RotateGear : MonoBehaviour
     public float RotateAngle = 90.0f; // 回転角度
     public float ToggleInterval = 1.0f; // トグルの間隔
     public float ToggleDuration = 1.0f; // トグルの回転時間
-
+    public GameObject SabiEffect;    //錆落下エフェクト
+    public Material CleanMaterial;
     //初期パラメータを参照した実際の変数
 
     private float m_RotateSpeed = 10.0f; // 回転スピード
@@ -103,6 +104,12 @@ public class RotateGear : MonoBehaviour
         //m_RotateAngle = 10 + (RotateAngle * ComplateRate);
         //m_ToggleDuration = 1 +(ToggleDuration * ComplateRate);
         //m_ToggleInterval = 1 +(ToggleInterval * (1 -ComplateRate));
+    }
+
+    public void ChangeGearMaterial()
+    {
+        transform.GetComponent<MeshRenderer>().material = CleanMaterial;
+        SabiEffect.active = true;
     }
 
 }
