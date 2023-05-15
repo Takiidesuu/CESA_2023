@@ -48,6 +48,10 @@ public class StageBackgroundManager : MonoBehaviour
         //ƒNƒŠƒA‚É–¶‚ğ°‚ç‚·
         if (ComplateRate == 1)
         {
+            for (int i = 0; i < GearObjects.Length; i++)
+            {
+                GearObjects[i].ChangeGearMaterial();
+            }
             fogtimer += Time.deltaTime;
             float lerp = Mathf.Clamp01(fogtimer / duration);
             float currentDensity = Mathf.Lerp(startDensity, endDensity, lerp);

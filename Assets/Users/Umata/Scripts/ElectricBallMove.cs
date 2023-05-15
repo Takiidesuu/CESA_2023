@@ -182,4 +182,9 @@ public class ElectricBallMove : MonoBehaviour
             is_on_boost = false;
         }
     }
+
+    public void ChangeRealSpeed(float speed)
+    {
+        m_speed = speed;
+    }
 }
