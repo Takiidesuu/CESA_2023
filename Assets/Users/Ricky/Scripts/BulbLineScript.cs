@@ -18,26 +18,28 @@ public class BulbLineScript : MonoBehaviour
     void Start()
     {
         line_renderer = GetComponent<LineRenderer>();
+        collector = GameObject.FindObjectOfType<LightBulbCollector>();
         
-        line_renderer.startWidth = background_size.y / 2.0f / collector.LightBulb_num;
-        line_renderer.endWidth = background_size.y / 2.0f / collector.LightBulb_num;
+        line_renderer.startWidth = background_size.y / collector.LightBulb_num;
+        line_renderer.endWidth = background_size.y / collector.LightBulb_num;
         
         max_time = current_bulb.GetDestroyTime();
-        current_time = current_bulb.GetCurrentTimer();
     }
 
     // Update is called once per frame
     void Update()
     {
+        current_time = current_bulb.GetCurrentTimer();
+        
         if (current_bulb.is_stage_hit)
         {
-            Vector3[] points = new Vector3[2];
-            line_renderer.GetPositions(points);
-            
-            points[points.Length - 1].x = (background_size.x / 2.0f * -1.0f) + (background_size.x / 2.0f * (current_time / max_time));
+            Vector3 point_new_pos = new Vector3(0, 0, -0.1f);
+            point_new_pos.x = ((background_size.x / 2.0f - 40.0f) * -1.0f) + ((background_size.x - 40.0f * 2.0f) * (current_time / max_time));
+            line_renderer.SetPosition(1, point_new_pos);
         }
         else
         {
+            GameObject.FindObjectOfType<BulbStatusScript>().progress_bar.Remove(this);
             Destroy(this.gameObject);
         }
     }

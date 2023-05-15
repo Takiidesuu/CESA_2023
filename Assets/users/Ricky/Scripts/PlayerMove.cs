@@ -45,6 +45,8 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private float smash_max_time = 5.0f;
     [Header("叩く力")]
     [SerializeField] private float smash_power_scalar = 3.0f;
+    [Header("叩く時の震度")]
+    [SerializeField] private float smash_vibration = 3.0f;
  
     [Header("プレハブ")]
     [Tooltip("火花")]
@@ -183,10 +185,9 @@ public class PlayerMove : MonoBehaviour
                 
                 speed = Mathf.MoveTowards(speed, input_direction.magnitude * max_speed, acceleration_speed);
                 
-                if ((rb.velocity.magnitude > 0.0f && is_grounded && input_direction == Vector2.zero) || recheck_input)
+                if ((rb.velocity.magnitude > 0.0f && is_grounded && input_direction == Vector2.zero))
                 {
-                    rb.velocity = Vector3.MoveTowards(rb.velocity, Vector3.zero, deceleration_speed * Time.deltaTime * 4.0f);
-                    speed = Mathf.MoveTowards(speed, 0.0f, deceleration_speed * 0.5f);
+                    DecelerateSpeed();
                 }
             }
             else
@@ -366,7 +367,15 @@ public class PlayerMove : MonoBehaviour
             {
                 recheck_input = false;
             }
+            
+            DecelerateSpeed();
         }
+    }
+    
+    private void DecelerateSpeed()
+    {
+        rb.velocity = Vector3.MoveTowards(rb.velocity, Vector3.zero, deceleration_speed * Time.deltaTime * 4.0f);
+        speed = Mathf.MoveTowards(speed, 0.0f, deceleration_speed * 0.5f);
     }
     
     private void CheckIsGrounded()
@@ -422,6 +431,23 @@ public class PlayerMove : MonoBehaviour
         }
     }
     
+    public void BeforeSmashFunc()
+    {
+        float hit_stop_delay = smash_power_num / smash_max_time;
+        
+        if (hit_stop_delay < 0.2f)
+        {
+            hit_stop_delay = 0.2f;
+        }
+        HitstopManager.instance.StartHitStop(hit_stop_delay);
+        
+        camera_obj.GetComponent<CameraMove>().ShakeCamera(smash_power_num / 2.0f, 0.2f);
+        
+        smash_vibration = Mathf.Clamp(smash_vibration, 0.1f, 5.0f);
+        
+        InputManager.instance.VibrateController(0.2f, (0.1f * smash_vibration) + (smash_power_num / smash_max_time * 0.5f));
+    }
+
     public void SmashFunc()
     {
         if (can_jump_status == SMASHJUMP.CAN_JUMP)
@@ -452,8 +478,6 @@ public class PlayerMove : MonoBehaviour
             {
                 deform_stage.AddDeformpointDown(transform.position, transform.eulerAngles.y, smash_power_num + 1 * smash_power_scalar, is_flip);
             }
-            
-            camera_obj.GetComponent<CameraMove>().ShakeCamera(smash_power_num / 2.0f, 0.2f);
         }
         else
         {
@@ -468,14 +492,14 @@ public class PlayerMove : MonoBehaviour
             anim.speed = 1.0f;
         }
         
-        float hit_stop_delay = smash_power_num / 10.0f;
-        HitstopManager.instance.StartHitStop(hit_stop_delay);
-        Invoke("SpawnSparks", hit_stop_delay);
-        
         smash_state = SMASHSTATE.NORMAL;
         anim.ResetTrigger("holdSmash");
+        anim.speed = 1.0f;
         
-        InputManager.instance.VibrateController(0.2f, smash_power_num / smash_max_time * 1.5f);
+        Invoke("SpawnSparks", 0.0f);
+        
+        camera_obj.GetComponent<CameraMove>().ShakeCamera(smash_power_num / 2.0f, smash_power_num / 4.0f);
+        InputManager.instance.VibrateController(0.4f, (0.1f * smash_vibration) * (smash_power_num / smash_max_time * 2.0f));
     }
     
     private void SpawnSparks()
@@ -483,7 +507,7 @@ public class PlayerMove : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(transform.position, transform.up * -1.0f, out hit, 5.0f, LayerMask.GetMask("Ground")))
         {
-            Instantiate(spark_effect, hit.point, Quaternion.identity);
+            Instantiate(spark_effect, hit.point, this.transform.rotation);
         }
     }
     

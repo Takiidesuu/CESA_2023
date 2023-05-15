@@ -12,6 +12,7 @@ public class InputManager : MonoBehaviour
     private Gamepad gamepad;
     
     private string current_scene;
+    private bool is_game_scene;
     
     public Vector2 player_move_float {get; private set;}
     private int menu_move_input;
@@ -23,6 +24,9 @@ public class InputManager : MonoBehaviour
     public bool press_select {get; private set;}
     public bool press_cancel {get; private set;}
     public bool press_start {get; private set;}
+    
+    public bool press_menu_left {get; private set;}
+    public bool press_menu_right {get; private set;}
     
     private float input_delay;
     
@@ -70,17 +74,21 @@ public class InputManager : MonoBehaviour
         
         gamepad = Gamepad.current;
         
-        if (current_scene.Contains("Stage"))
+        if (current_scene.Contains("Stage") && !current_scene.Contains("Select"))
         {
             input_system.Player.Enable();
             input_system.Menu.Disable();
             
             check_is_cleared = GameObject.FindObjectOfType<LightBulbCollector>();
+            
+            is_game_scene = true;
         }
         else
         {
             input_system.Player.Disable();
             input_system.Menu.Enable();
+            
+            is_game_scene = false;
         }
         
         ResetAllParams();
@@ -91,7 +99,7 @@ public class InputManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (current_scene.Contains("Stage"))
+        if (is_game_scene)
         {
             if (PauseManager.instance.pause_flg || check_is_cleared.IsCleared())
             {
@@ -101,7 +109,7 @@ public class InputManager : MonoBehaviour
                     input_system.Menu.Enable();
                 }
                 
-                if (menu_move_input != 0)
+                if (menu_move_input != 0 || press_menu_left || press_menu_right)
                 {
                     if (input_delay < 0.6f)
                     {
@@ -167,6 +175,9 @@ public class InputManager : MonoBehaviour
         press_select = false;
         press_cancel = false;
         press_start = false;
+        
+        press_menu_right = false;
+        press_menu_left = false;
     }
     
     private void SmashInput(InputAction.CallbackContext obj)
@@ -209,6 +220,15 @@ public class InputManager : MonoBehaviour
         press_start = true;
     }
     
+    private void MenuRightInput(InputAction.CallbackContext obj)
+    {
+        press_menu_right = true;
+    }
+    
+    private void MenuLeftInput(InputAction.CallbackContext obj)
+    {
+        press_menu_left = true;
+    }
     
     private void ProtoReloadScene(InputAction.CallbackContext obj)
     {
@@ -258,6 +278,12 @@ public class InputManager : MonoBehaviour
         
         input_system.Menu.StartButton.performed += StartButtonInput;
         input_system.Menu.StartButton.Enable();
+        
+        input_system.Menu.Right.performed += MenuRightInput;
+        input_system.Menu.Right.Enable();
+        
+        input_system.Menu.Left.performed += MenuLeftInput;
+        input_system.Menu.Left.Enable();
         
         input_system.Prototype.ReloadScene.performed += ProtoReloadScene;
         input_system.Prototype.ReloadScene.Enable();

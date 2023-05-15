@@ -10,7 +10,7 @@ public class BulbStatusScript : MonoBehaviour
     
     private Vector2 background_size = new Vector2(500.0f, 250.0f);
     
-    private List<BulbLineScript> progress_bar;
+    public List<BulbLineScript> progress_bar {get;set;}
     private LightBulbCollector collector;
     
     private int num_of_bulbs;
@@ -18,8 +18,7 @@ public class BulbStatusScript : MonoBehaviour
     public void AddStatus(LightBulb bulb)
     {
         GameObject new_line_obj = Instantiate(bulb_line_obj_template, Vector3.zero, Quaternion.identity);
-        new_line_obj.transform.parent = this.transform;
-        
+        new_line_obj.transform.SetParent(this.transform);
         new_line_obj.GetComponent<BulbLineScript>().current_bulb = bulb;
         
         progress_bar.Add(new_line_obj.GetComponent<BulbLineScript>());
@@ -39,7 +38,8 @@ public class BulbStatusScript : MonoBehaviour
     void Update()
     {
         float space = background_size.y / (float)num_of_bulbs;
-        float y_pos = background_size.y / 2.0f * -1.0f;
+        float y_pos = background_size.y / (float)num_of_bulbs * -1.0f;
+        
         if (num_of_bulbs % 2 == 0)
         {
             y_pos += space / 2.0f;
@@ -47,10 +47,11 @@ public class BulbStatusScript : MonoBehaviour
         
         if (progress_bar.Count > 0)
         {
-            for (int i = progress_bar.Count; i >= 0; i--)
+            for (int i = progress_bar.Count - 1; i >= 0; i--)
             {
                 RectTransform rect_transform = progress_bar[i].gameObject.GetComponent<RectTransform>();
-                rect_transform.localPosition = new Vector3(rect_transform.localPosition.x, y_pos, rect_transform.localPosition.z);
+                rect_transform.localPosition = new Vector3(0.0f, y_pos, -0.1f);
+                rect_transform.localScale = new Vector3(1, 1, 1);
                 
                 y_pos += space;
             }
