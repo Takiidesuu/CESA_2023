@@ -11,6 +11,7 @@ public class ElectricalPower : MonoBehaviour
     public float electricball_instan_time = 5;//電球を繰り返し生成する時間
     public int electricball_max = 3;    //発射数の最大
     public float start_time;    //開始ラグ
+    public float ElectricBallSpeed = 25;
     public GameObject ElectricBall;    //電球
     public List<GameObject> InstantElectricBall; //生成した電球配列
     private float hit_elapsed_time;    //継続ヒット時間
@@ -19,6 +20,8 @@ public class ElectricalPower : MonoBehaviour
     private Vector3 electricball_position;//電球を生成する位置
     private ParticleSystem ChargeEffect;
     private GameObject ElectricBallEffect;
+
+    private ElectricBallCounter ElectricBallCounter;
 
     private float RateOverTime;
     private float SimurationSpeed;
@@ -34,6 +37,7 @@ public class ElectricalPower : MonoBehaviour
         ElectricBallScale = ElectricBallEffect.transform.localScale;
         //配列の初期化
         InstantElectricBall = new List<GameObject>();
+        ElectricBallCounter = GameObject.Find("Canvas").GetComponent<ElectricBallCounter>();
     }
 
     private void Update()
@@ -100,12 +104,14 @@ public class ElectricalPower : MonoBehaviour
                 GameObject ElectricBall_Instant = Instantiate(ElectricBall, transform.position, Quaternion.identity);
                 ElectricBall_Instant.GetComponent<ElectricBallMove>().ParentGenerator = this.gameObject;
                 ElectricBall_Instant.transform.GetComponent<Rigidbody>().AddForce(new Vector3(0, 10, 0));
+                ElectricBall_Instant.GetComponent<ElectricBallMove>().ChangeRealSpeed(ElectricBallSpeed);
                 //配列に生成した雷球を格納
                 InstantElectricBall.Add(ElectricBall_Instant);
                 old_time = Time.time;
                 ChargeEffect.Clear();
                 ChargeEffect.Play();
                 is_init = false;
+                ElectricBallCounter.CountUpBulb();
             }
         }
         else

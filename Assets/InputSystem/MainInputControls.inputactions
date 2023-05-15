@@ -367,6 +367,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "Left",
+                    "type": "Button",
+                    "id": "55821740-db38-4954-9b59-0987003931b2",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Select",
                     "type": "Button",
                     "id": "b813664e-341a-48cf-bf27-de4ca46098ae",
@@ -388,6 +397,15 @@
                     "name": "StartButton",
                     "type": "Button",
                     "id": "c9fb1a8e-8cf7-42a9-9eaa-0f980feb1b1a",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Right",
+                    "type": "Button",
+                    "id": "e1ea2f3e-f89a-4ffe-ad61-05292400557d",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -518,6 +536,17 @@
                 },
                 {
                     "name": "",
+                    "id": "c521b3b8-c82b-4af9-a73c-8f7387b131f6",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Select",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "01109803-3cf5-477c-9654-b8d84511e3ff",
                     "path": "<Gamepad>/buttonSouth",
                     "interactions": "",
@@ -557,6 +586,94 @@
                     "processors": "",
                     "groups": "Controller",
                     "action": "StartButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8ff114f5-17cc-4f51-be90-191c9aec8e2d",
+                    "path": "<Gamepad>/dpad/left",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Left",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "acbe3eae-acda-4c2b-8138-a93abb111368",
+                    "path": "<Gamepad>/leftStick/left",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Left",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "751cb45e-25d3-4a5b-8c9f-006a9b11c54a",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Left",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e93d389e-d7a7-42c2-b559-ff157ad3175b",
+                    "path": "<Keyboard>/leftArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Left",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "26550c81-1759-45d0-ac8c-c14ff3a601ff",
+                    "path": "<Gamepad>/leftStick/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Right",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3ab8fc7c-b809-4758-bc0e-5c723ef1f585",
+                    "path": "<Gamepad>/dpad/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Right",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2412ce3f-5c95-4b03-932d-ff7a4b395e41",
+                    "path": "<Keyboard>/rightArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Right",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2cbfbc8a-3459-48bf-9fce-e729840f23d1",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Right",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -11,8 +11,18 @@ public class SmashCallScript : MonoBehaviour
         player_script = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMove>();
     }
 
+    public void CallBeforeSmash()
+    {
+        player_script.BeforeSmashFunc();
+    }
+
     public void CallSmash()
     {
         player_script.SmashFunc();
+    }
+    
+    public void SpawnSparkEffect()
+    {
+        player_script.SpawnSparks();
     }
 }

@@ -85,7 +85,7 @@ public class WorldSelect : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (InputManager.instance.press_select)
         {
             if (selectingWorld)
             {
@@ -148,7 +148,7 @@ public class WorldSelect : MonoBehaviour
         {
             transform.GetComponent<StageSelectManager>().IsWorldSelect = true;
         }
-        if (Input.GetKeyDown(KeyCode.RightArrow))
+        if (InputManager.instance.press_menu_right)
         {
             // 右キーでワールドまたはステージを1つ進める
             if (selectingWorld)
@@ -161,7 +161,7 @@ public class WorldSelect : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        if (InputManager.instance.press_menu_left)
         {
             // 左キーでワールドまたはステージを1つ戻す
             if (selectingWorld)
@@ -174,7 +174,7 @@ public class WorldSelect : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (InputManager.instance.press_cancel)
         {
             // Escキーで選択中のステップを1つ戻す
             if (!selectingWorld)
@@ -184,7 +184,7 @@ public class WorldSelect : MonoBehaviour
         }
         if (!selectingWorld)
         {
-            if (Input.GetKeyDown(KeyCode.UpArrow))
+            if (InputManager.instance.GetMenuMoveFloat() < 0.0f)
             {
                 Vector3 startpos;
                 startpos.x = StartHammerPos.x;
@@ -207,7 +207,7 @@ public class WorldSelect : MonoBehaviour
                 isStart = true;
             }
 
-            if (Input.GetKeyDown(KeyCode.DownArrow))
+            if (InputManager.instance.GetMenuMoveFloat() > 0.0f)
             {
                 Vector3 startpos;
                 startpos.x = StartHammerPos.x;
