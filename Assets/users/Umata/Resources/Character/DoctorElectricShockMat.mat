@@ -20,13 +20,13 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: DoctorMat
-  m_Shader: {fileID: -6465566751694194690, guid: da0cb9ead95000540bf711121dcb48aa, type: 3}
+  m_Name: DoctorElectricShockMat
+  m_Shader: {fileID: -6465566751694194690, guid: 72420f84746f4ca4f80e74bde75b3222, type: 3}
   m_ShaderKeywords: _EMISSION _NORMALMAP
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3000
+  m_CustomRenderQueue: 2999
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
@@ -102,8 +102,11 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - Vector1_4c2483570ab64769b1efb6451d180f94: 5
+    - Vector1_5bc0423ae9b641f8ac7fd988c023a053: 1
     - Vector1_970b626ea42c4e52b414319167037d27: 0.52
+    - Vector1_a00937912b2947f9910153b176041b2c: 1.2
     - Vector1_afea5f575b4a45c2bb165d54b249d140: 0.37
+    - Vector1_e6faa24ea8c04cd1b717137f34b7d7f0: 1
     - Vector1_f615e1c225df40a886bbbd3697edbc83: 0
     - _AlphaClip: 0
     - _Blend: 0
@@ -136,8 +139,13 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - Color_c1863b8b78064e65b9009ef3beb10582: {r: 2.4340231, g: 1.7177062, b: 2.6619422, a: 0}
-    - Color_c7e3d016121d48dc8ed23591e980b40e: {r: 1, g: 1, b: 1, a: 0}
+    - Color_378625d5b44e47c59fe243bf33e6744a: {r: 0, g: 0, b: 0, a: 1}
+    - Color_5de1feede5654cb1ac35460086eaac1d: {r: 1.621692, g: 1.7207954, b: 0, a: 1}
+    - Color_c1863b8b78064e65b9009ef3beb10582: {r: 0.8396226, g: 0.43090063, b: 0.76548576, a: 1}
+    - Color_c7e3d016121d48dc8ed23591e980b40e: {r: 1, g: 1, b: 1, a: 1}
+    - Vector3_78f81ee4ff9c4c53a260d7f831d4e684: {r: 1, g: 1, b: 0, a: 0}
+    - Vector3_a3c6bdec78d14d9db91bfe23099c8c0a: {r: 1, g: 1, b: 1, a: 0}
+    - Vector3_f2d241ed78344477af6e112b9deda917: {r: 0, g: 0.02, b: 0, a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
