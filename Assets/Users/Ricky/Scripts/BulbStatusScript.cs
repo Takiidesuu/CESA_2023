@@ -37,26 +37,26 @@ public class BulbStatusScript : MonoBehaviour
     {
         collector = GameObject.FindObjectOfType<LightBulbCollector>();
         
-        num_of_bulbs = collector.LightBulb_num;
-        
         progress_bar = new List<BulbLineScript>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        num_of_bulbs = collector.LightBulb_num;
+
         float space = background_size.y / (float)num_of_bulbs;
         float y_pos = space * -1.0f;
-        
+
         if (num_of_bulbs % 2 == 0)
         {
             y_pos = space / 2.0f + (space * (num_of_bulbs / 2 - 1));
         }
         else
         {
-            y_pos = space / 2.0f * (space * ((num_of_bulbs - 1) / 2));
+            y_pos = space * ((num_of_bulbs - 1) / 2);
         }
-        
+
         y_pos *= -1.0f;
         
         if (progress_bar.Count > 0)
@@ -69,6 +69,7 @@ public class BulbStatusScript : MonoBehaviour
                 {
                     new_x_pos -= Mathf.Abs(y_pos) / 2.0f;
                 }
+
                 rect_transform.anchoredPosition3D = new Vector3(new_x_pos, y_pos, -0.1f);
                 
                 y_pos += space;
