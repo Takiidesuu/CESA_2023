@@ -56,8 +56,16 @@ public class WorldSelect : MonoBehaviour
     // 変更を開始した時刻
     private float startTime;
 
+    /// <summary>
+    /// 平田
+    /// </summary>
+    LoadSceneFade LoadSceneFade;//スクリプト
+    bool isSceneChange = false; //シーン移行のフラグ
+    AsyncOperation asyncOperation;//進捗チェック
+
     void Start()
     {
+        LoadSceneFade = GameObject.Find("LoadSceneFade").GetComponent<LoadSceneFade>();
         postProcessVolume.transform.GetComponent<Volume>().profile.TryGet(out vignette);
 
         StartHammerPos = HammerPos.position;
@@ -239,7 +247,14 @@ public class WorldSelect : MonoBehaviour
                 MoveCamera(stageSelectPos);
             }
         }
-        
+
+        //ロード開始したら画面をフェードする
+        if (asyncOperation != null)
+        {
+            //9割ロードし終われば移行
+            if (LoadSceneFade.SpliteOnceMove(asyncOperation.progress) > 0.9f)
+                asyncOperation.allowSceneActivation = true;
+        }
     }
 
     // カメラを移動する
@@ -263,7 +278,11 @@ public class WorldSelect : MonoBehaviour
     {
         // ワールドとステージに応じてシーンをロードする処理を書く
         string stage_name = "Stage" + (currentWorld+1) + "-" + (currentStage+1);
-        SceneManager.LoadScene(stage_name);
+        //fadeのテクスチャセットロード開始
+        LoadSceneFade.SetTexture(currentWorld, currentStage);
+        if (asyncOperation == null) 
+            asyncOperation = SceneManager.LoadSceneAsync(stage_name);
+        asyncOperation.allowSceneActivation = false;
     }
 
     private void TransitionInit()
