@@ -20,6 +20,8 @@ public class DamageScript : MonoBehaviour
     
     private LightBulbCollector check_is_cleared;
     
+    private ElectricShockDamage hiteffect;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -29,6 +31,8 @@ public class DamageScript : MonoBehaviour
         }
         
         check_is_cleared = GameObject.FindObjectOfType<LightBulbCollector>();
+        
+        hiteffect = GetComponent<ElectricShockDamage>();
     }
 
     // Update is called once per frame
@@ -52,7 +56,7 @@ public class DamageScript : MonoBehaviour
                     {
                         if (this.gameObject.tag == "Player")
                         {
-                            this.GetComponent<PlayerMove>().GameOver();
+                            GameObject.FindObjectOfType<GameOverManager>().SwitchToGameOver();
                         }
                     }
                     else
@@ -61,6 +65,9 @@ public class DamageScript : MonoBehaviour
                         {
                             this.GetComponent<PlayerMove>().TookDamage();
                             HitstopManager.instance.StartHitStop(damage_stop_time);
+                            
+                            hiteffect.is_damage = true;
+                            hiteffect.UpdateMaterial();
                         }
                     }
                     
@@ -88,6 +95,9 @@ public class DamageScript : MonoBehaviour
         {
             renderer_component.enabled = true;
         }
+        
+        hiteffect.is_damage = false;
+        hiteffect.UpdateMaterial();
         
         if (this.gameObject.tag == "Player" || this.gameObject.tag == "PlayerNPC")
         {

@@ -101,7 +101,7 @@ public class InputManager : MonoBehaviour
     {
         if (is_game_scene)
         {
-            if (PauseManager.instance.pause_flg || check_is_cleared.IsCleared())
+            if (PauseManager.instance.pause_flg || check_is_cleared.IsCleared() || GameOverManager.instance.game_over_state)
             {
                 if (!input_system.Menu.enabled)
                 {
