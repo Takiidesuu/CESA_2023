@@ -16,10 +16,15 @@ public class LoadSceneFade : MonoBehaviour
         MOVEING,
         COMPLETION,
     }
-
+    public Material material;           //linePointシェーダー
     public Canvas canvas;           //表示するキャンバス
     [SerializeField] public List<Textures> WorldTextures = new List<Textures>();       //表示する画像
 
+    public enum DISPLAY {
+        ON,
+        OFF,
+    }
+    public DISPLAY display;            //どちらに動かすか
     public int rows = 9;              //縦分割
     public int columns = 16;           //横分割
     public float MoveTime = 1;             //移動速度
@@ -173,11 +178,23 @@ public class LoadSceneFade : MonoBehaviour
                 gameObject.transform.parent = canvas.transform;
                 Image image = gameObject.AddComponent<Image>();
                 image.sprite = load_split[y, x];
+                image.material = material;
 
                 image.GetComponent<RectTransform>().sizeDelta = new Vector2(1920 / columns, 1080 / rows);
-                split_position[y, x] = new Vector2(x * (1920 / columns) + (1920 / columns) / 2, y * (1080 / rows) + (1080 / rows) / 2);
-                gameObject.transform.position = new Vector2(x * (1920 / columns) + (1920 / columns) / 2, 1080/rows+1080);
-                StartPos[y, x] = new Vector2(x * (1920 / columns) + (1920 / columns) / 2, 1080 / rows + 1080);
+                switch (display) {
+
+                    case DISPLAY.ON:
+                    split_position[y, x] = new Vector2(x * (1920 / columns) + (1920 / columns) / 2, y * (1080 / rows) + (1080 / rows) / 2);
+                    gameObject.transform.position = new Vector2(x * (1920 / columns) + (1920 / columns) / 2, 1080 / rows + 1080);
+                    StartPos[y, x] = new Vector2(x * (1920 / columns) + (1920 / columns) / 2, 1080 / rows + 1080);
+                        break;
+
+                    case DISPLAY.OFF:
+                    split_position[y, x] = new Vector2(x * (1920 / columns) + (1920 / columns) / 2, 1080 / rows + 1080);
+                    gameObject.transform.position = new Vector2(x * (1920 / columns) + (1920 / columns) / 2, y * (1080 / rows) + (1080 / rows) / 2);
+                    StartPos[y, x] = new Vector2(x * (1920 / columns) + (1920 / columns) / 2, y * (1080 / rows) + (1080 / rows) / 2);
+                        break;
+                }
                 gameObjects[y, x] = gameObject;
             }
         }
