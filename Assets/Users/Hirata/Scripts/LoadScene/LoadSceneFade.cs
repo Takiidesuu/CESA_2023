@@ -28,6 +28,7 @@ public class LoadSceneFade : MonoBehaviour
     public int columns = 16;           //横分割
     public float MoveTime = 1;             //移動速度
     public float CreatTime = 0.5f;      //生成スピード
+    public Material GlowMat;
 
     private Vector2[,] StartPos;        //始まった場所
     private Vector2[,] split_position;  //分割の場所
@@ -180,7 +181,10 @@ public class LoadSceneFade : MonoBehaviour
                 gameObject.transform.parent = canvas.transform;
                 Image image = gameObject.AddComponent<Image>();
                 image.sprite = load_split[y, x];
-
+                Material newMaterial = new Material(GlowMat);
+                //Instantiate(newMaterial);
+                newMaterial.SetTexture("_Texture", image.sprite.texture);
+                image.material = newMaterial;
                 image.GetComponent<RectTransform>().sizeDelta = new Vector2(1920 / columns, 1080 / rows);
                 switch (display) {
 

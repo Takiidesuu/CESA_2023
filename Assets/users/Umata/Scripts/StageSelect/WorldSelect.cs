@@ -12,6 +12,8 @@ public class WorldSelect : MonoBehaviour
 
     //PostProcess
     public GameObject postProcessVolume;
+    public GameObject NoVignetteVolume;
+
     private Vignette vignette;
     // カメラの移動に使用する時間
     public float time = 1f;
@@ -138,6 +140,13 @@ public class WorldSelect : MonoBehaviour
                 Color color = BlackPanel.color;
                 BlackPanel.color = new Color(color.r, color.g, color.b, alpha);
 
+            }
+
+            //背景が真っ暗になったらPostProcessを変更
+            if (BlackPanel.color.a >= 1)
+            {
+                postProcessVolume.SetActive(false);
+                NoVignetteVolume.SetActive(true);
             }
         }
         if (selectingWorld)
