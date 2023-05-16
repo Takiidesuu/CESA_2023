@@ -70,7 +70,13 @@ public class ElectricBallMove : MonoBehaviour
             playerpos.x = transform.position.x;
             playerpos.y = transform.position.y;
             playerpos.z = 0;
-            
+
+            Vector3 playerRot;
+            playerRot.x = 0;
+            playerRot.y = 0;
+            playerRot.z = transform.rotation.z;
+
+
             //Z軸を強制的にPlayer座標に設定
             transform.position = playerpos;
         }
