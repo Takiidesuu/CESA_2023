@@ -16,7 +16,6 @@ public class LoadSceneFade : MonoBehaviour
         MOVEING,
         COMPLETION,
     }
-    public Material material;           //linePointシェーダー
     public Canvas canvas;           //表示するキャンバス
     [SerializeField] public List<Textures> WorldTextures = new List<Textures>();       //表示する画像
 
@@ -103,14 +102,17 @@ public class LoadSceneFade : MonoBehaviour
                     if (split_is_move[y, x] == MOVE.MOVEING)
                     {
                         float t = Mathf.Clamp01((Time.time - StartTime[y, x]) / MoveTime);
-                        gameObjects[y, x].transform.position = Vector3.Lerp(StartPos[y, x], split_position[y, x], t);
-
+                        gameObjects[y, x].GetComponent<RectTransform>().localPosition = Vector3.Lerp(StartPos[y, x], split_position[y, x], t);
+                        gameObjects[y, x].GetComponent<RectTransform>().localRotation = Quaternion.identity;
+                        gameObjects[y, x].GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
                         if (t >= 1)
                         {
                             EndCount++;
                             split_is_move[y, x] = MOVE.COMPLETION;
                         }
                     }
+                    gameObjects[y, x].GetComponent<RectTransform>().localRotation = Quaternion.identity;
+                    gameObjects[y, x].GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
                 }
             }
         }
@@ -178,21 +180,20 @@ public class LoadSceneFade : MonoBehaviour
                 gameObject.transform.parent = canvas.transform;
                 Image image = gameObject.AddComponent<Image>();
                 image.sprite = load_split[y, x];
-                image.material = material;
 
                 image.GetComponent<RectTransform>().sizeDelta = new Vector2(1920 / columns, 1080 / rows);
                 switch (display) {
 
                     case DISPLAY.ON:
-                    split_position[y, x] = new Vector2(x * (1920 / columns) + (1920 / columns) / 2, y * (1080 / rows) + (1080 / rows) / 2);
-                    gameObject.transform.position = new Vector2(x * (1920 / columns) + (1920 / columns) / 2, 1080 / rows + 1080);
-                    StartPos[y, x] = new Vector2(x * (1920 / columns) + (1920 / columns) / 2, 1080 / rows + 1080);
+                    split_position[y, x] = new Vector2(x * (1920 / columns) - (1920 / 2 - 1920 / columns / 2), y * (1080 / rows) - (1080 / 2 - 1080 / rows / 2));
+                    gameObject.transform.localPosition = new Vector2(x * (1920 / columns) - (1920 / 2 - 1920 / columns / 2), 1080 / rows + 1080);
+                    StartPos[y, x] = new Vector2(x * (1920 / columns) - (1920 / 2 - 1920 / columns / 2), 1080 / rows + 1080);
                         break;
 
                     case DISPLAY.OFF:
-                    split_position[y, x] = new Vector2(x * (1920 / columns) + (1920 / columns) / 2, 1080 / rows + 1080);
-                    gameObject.transform.position = new Vector2(x * (1920 / columns) + (1920 / columns) / 2, y * (1080 / rows) + (1080 / rows) / 2);
-                    StartPos[y, x] = new Vector2(x * (1920 / columns) + (1920 / columns) / 2, y * (1080 / rows) + (1080 / rows) / 2);
+                    split_position[y, x] = new Vector2(x * (1920 / columns) - (1920 / 2 - 1920 / columns / 2), 1080 / rows + 1080);
+                    gameObject.transform.localPosition = new Vector2(x * (1920 / columns) - (1920 / 2 - 1920 / columns / 2), y * (1080 / rows) - (1080 / 2 - 1080 / rows / 2));
+                    StartPos[y, x] = new Vector2(x * (1920 / columns) - (1920 / 2 - 1920 / columns / 2), y * (1080 / rows) - (1080 / 2 - 1080 / rows / 2));
                         break;
                 }
                 gameObjects[y, x] = gameObject;
