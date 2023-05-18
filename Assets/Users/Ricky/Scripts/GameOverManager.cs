@@ -4,16 +4,26 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class GameOverManager : MonoBehaviour
-{
+{   
     public static GameOverManager instance {get; private set;}
     
-    [Header("画像ファイル")]
+    enum MENU
+    {
+        RETRY,
+        SELECT
+    }
+    
+    [Header("画像オブジェクト")]
     [Tooltip("黒いパネル")]
     [SerializeField] private GameObject black_panel;
     [Tooltip("治療失敗")]
     [SerializeField] private GameObject failed_pic;
-    [Tooltip("戻る")]
-    [SerializeField] private GameObject back_pic;
+    [Tooltip("リトライ")]
+    [SerializeField] private GameObject retry_button;
+    [Tooltip("セレクトに戻る")]
+    [SerializeField] private GameObject select_button;
+    [Tooltip("日差し？")]
+    [SerializeField] private GameObject light_obj;
     
     private RectTransform black_panel_rect;
     private float elapsed_time;
@@ -21,6 +31,13 @@ public class GameOverManager : MonoBehaviour
     public bool game_over_state {get; private set;}
     
     public bool test_state;
+    
+    private float button_x_target;
+    
+    private bool move_button;
+    private bool accept_button_input;
+    
+    private MENU current_menu = MENU.RETRY;
     
     public void SwitchToGameOver()
     {
@@ -47,6 +64,13 @@ public class GameOverManager : MonoBehaviour
         game_over_state = false;
         
         elapsed_time = -0.5f;
+        
+        button_x_target = -430.0f;
+        
+        move_button = true;
+        accept_button_input = false;
+        
+        light_obj.SetActive(false);
     }
 
     // Update is called once per frame
@@ -59,45 +83,90 @@ public class GameOverManager : MonoBehaviour
         
         if (game_over_state)
         {
-            if (MoveBlackPanel())
-            {
-                if (elapsed_time < 4.0f)
+            if (accept_button_input)
+            {                
+                if (MoveBlackPanel())
                 {
-                    elapsed_time += Time.unscaledDeltaTime;
-                }
-                
-                RectTransform failed_rect = failed_pic.GetComponent<RectTransform>();
-                
-                if (failed_rect.localScale != Vector3.one)
-                {
-                    failed_rect.localScale = Vector3.MoveTowards(failed_rect.localScale, Vector3.one, Time.unscaledDeltaTime);
+                    if (elapsed_time < 4.0f)
+                    {
+                        elapsed_time += Time.unscaledDeltaTime;
+                    }
                     
-                    var failed_image = failed_pic.GetComponent<Image>();
-                    var failed_img_color = failed_image.color;
-                    failed_img_color.a = Mathf.MoveTowards(failed_img_color.a, 255.0f, Time.unscaledDeltaTime * 10.0f);
-                    failed_image.color = failed_img_color;
+                    RectTransform failed_rect = failed_pic.GetComponent<RectTransform>();
+                    
+                    if (failed_rect.localScale != Vector3.one)
+                    {
+                        failed_rect.localScale = Vector3.MoveTowards(failed_rect.localScale, new Vector3(1.5f, 1.3f, 1), Time.unscaledDeltaTime);
+                        
+                        ChangeAlphaState(failed_pic);
+                    }
+                    else
+                    {
+                        //failed_rect.pivot = new Vector2(0.4f, 1.0f);
+                        //failed_rect.localEulerAngles = Vector3.MoveTowards(failed_rect.localEulerAngles, new Vector3(failed_rect.localEulerAngles.x, failed_rect.localEulerAngles.y, -5.0f), Time.unscaledDeltaTime * 3.0f);
+                    }
+                    
+                    if (elapsed_time > 1.0f)
+                    {
+                        if(move_button)
+                        {
+                            if (select_button.GetComponent<RectTransform>().localPosition != new Vector3(button_x_target, select_button.GetComponent<RectTransform>().localPosition.y, 0.0f))
+                            {
+                                if (retry_button.GetComponent<RectTransform>().localPosition != new Vector3(button_x_target, retry_button.GetComponent<RectTransform>().localPosition.y, 0.0f))
+                                {
+                                    StartCoroutine(ChangeButtonAlphaState(retry_button));
+                                }
+                                else
+                                {
+                                    StartCoroutine(ChangeButtonAlphaState(select_button));
+                                }
+                            }
+                            else
+                            {
+                                accept_button_input = true;
+                            }
+                            
+                            move_button = false;
+                        }
+                    }
                 }
-                else
+            }
+            else
+            {
+                if (InputManager.instance.GetMenuMoveFloat() < 0)
                 {
-                    //failed_rect.pivot = new Vector2(0.4f, 1.0f);
-                    //failed_rect.localEulerAngles = Vector3.MoveTowards(failed_rect.localEulerAngles, new Vector3(failed_rect.localEulerAngles.x, failed_rect.localEulerAngles.y, -5.0f), Time.unscaledDeltaTime * 3.0f);
+                    current_menu = MENU.RETRY;
                 }
-                
-                if (elapsed_time > 3.0f)
+                else if (InputManager.instance.GetMenuMoveFloat() > 0)
                 {
-                    back_pic.SetActive(true);
+                    current_menu = MENU.SELECT;
                 }
             }
             
             if (InputManager.instance.press_select)
             {
-                if (elapsed_time < 0.0f)
+                if (!accept_button_input)
                 {
-                    elapsed_time = 0.0f;
+                    if (elapsed_time < 0.0f)
+                    {
+                        elapsed_time = 0.0f;
+                    }
+                    else if (elapsed_time >= 0.0f && elapsed_time < 3.0f)
+                    {
+                        elapsed_time = 1.0f;
+                    }
                 }
-                else if (elapsed_time >= 0.0f && elapsed_time < 3.0f)
+                else
                 {
-                    elapsed_time = 3.0f;
+                    switch (current_menu)
+                    {
+                        case MENU.RETRY:
+                        
+                        break;
+                        case MENU.SELECT:
+                        
+                        break;
+                    }
                 }
             }
         }
@@ -118,5 +187,44 @@ public class GameOverManager : MonoBehaviour
         }
         
         return result;
+    }
+    
+    private void ChangeAlphaState(GameObject obj_to_change)
+    {
+        var img = obj_to_change.GetComponent<Image>();
+        var img_color = img.color;
+        img_color.a = Mathf.MoveTowards(img_color.a, 255.0f, Time.unscaledDeltaTime * 10.0f);
+        img.color = img_color;
+    }
+    
+    IEnumerator ChangeButtonAlphaState(GameObject button_to_change)
+    {
+        float button_t = 0.0f;
+        
+        while (button_t <= 1.0f)
+        {
+            if (InputManager.instance.press_select)
+            {
+                button_t = 1.0f;
+            }
+            
+            button_t += Time.unscaledDeltaTime * 2.0f;
+            
+            var img = button_to_change.GetComponent<Image>();
+            var img_color = img.color;
+            img_color.a = Mathf.Lerp(0.0f, 255.0f, button_t);
+            img.color = img_color;
+            
+            var text_img = button_to_change.transform.GetChild(0).GetComponent<Image>();
+            var text_img_color = text_img.color;
+            text_img_color.a = Mathf.Lerp(0.0f, 255.0f, button_t);
+            text_img.color = text_img_color;
+            
+            RectTransform button_rect = button_to_change.GetComponent<RectTransform>();
+            button_rect.localPosition = Vector3.Lerp(new Vector3(-750.0f, button_rect.localPosition.y, 0.0f), new Vector3(button_x_target, button_rect.localPosition.y, 0.0f), button_t);
+            yield return null;
+        }
+        
+        move_button = true;
     }
 }

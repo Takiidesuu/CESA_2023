@@ -93,8 +93,9 @@ public class PlayerMove : MonoBehaviour
     private MinMaxDeform min_max_deform;
     private bool is_flip;
     
-    public void TookDamage()
+    public void TookDamage(float damage_time)
     {
+        anim.speed = 1.0f / damage_time;
         anim.SetTrigger("takeDamage");
         
         if (smash_state == SMASHSTATE.HOLDING)
@@ -510,6 +511,7 @@ public class PlayerMove : MonoBehaviour
     public void ResetAnim()
     {
         smash_state = SMASHSTATE.NORMAL;
+        anim.speed = 1.0f;
     }
     
     public void SpawnSparks()

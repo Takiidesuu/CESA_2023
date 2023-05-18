@@ -4,11 +4,10 @@ using UnityEngine;
 
 public class DamageScript : MonoBehaviour
 {
-    [Tooltip("無敵時間")]
+    [Tooltip("関電される時間")]
     [SerializeField] private float invincible_duration = 2.0f;
     [Tooltip("ダメージ受けた時のヒットストップ時間")]
     [SerializeField] private float damage_stop_time = 0.1f;
-    
     [Tooltip("体力")]
     [SerializeField] private int hp = 3;
     
@@ -21,6 +20,8 @@ public class DamageScript : MonoBehaviour
     private LightBulbCollector check_is_cleared;
     
     private ElectricShockDamage hiteffect;
+    
+    private float prev_angle;
     
     // Start is called before the first frame update
     void Start()
@@ -63,15 +64,17 @@ public class DamageScript : MonoBehaviour
                     {
                         if (this.gameObject.tag == "Player")
                         {
-                            this.GetComponent<PlayerMove>().TookDamage();
+                            this.GetComponent<PlayerMove>().TookDamage(invincible_duration * 1.2f);
                             HitstopManager.instance.StartHitStop(damage_stop_time);
+                            
+                            prev_angle = this.transform.eulerAngles.y;
+                            this.transform.eulerAngles = new Vector3(this.transform.eulerAngles.x, 90.0f, this.transform.eulerAngles.z);
                             
                             hiteffect.is_damage = true;
                             hiteffect.UpdateMaterial();
                         }
                     }
                     
-                    InvokeRepeating("InvincibleFlicker", 0.0f, invincible_flicker_time);
                     is_invincible = true;
                 }
             }
@@ -87,8 +90,6 @@ public class DamageScript : MonoBehaviour
     {
         yield return new WaitForSeconds(invincible_duration);
         
-        CancelInvoke();
-        
         is_invincible = false;
         
         if (renderer_component != null)
@@ -99,28 +100,6 @@ public class DamageScript : MonoBehaviour
         hiteffect.is_damage = false;
         hiteffect.UpdateMaterial();
         
-        if (this.gameObject.tag == "Player" || this.gameObject.tag == "PlayerNPC")
-        {
-            foreach (Transform child in this.transform.GetChild(0))
-            {
-                child.gameObject.SetActive(true);
-            }
-        }
-    }
-    
-    private void InvincibleFlicker()
-    {
-        if (renderer_component != null)
-        {
-            renderer_component.enabled = !renderer_component.enabled;
-        }
-        
-        if (this.gameObject.tag == "Player" || this.gameObject.tag == "PlayerNPC")
-        {
-            foreach (Transform child in this.transform.GetChild(0))
-            {
-                child.gameObject.SetActive(!child.gameObject.activeSelf);
-            }
-        }
+        this.transform.eulerAngles = new Vector3(this.transform.eulerAngles.x, prev_angle, this.transform.eulerAngles.z);
     }
 }
