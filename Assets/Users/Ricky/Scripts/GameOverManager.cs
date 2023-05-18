@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameOverManager : MonoBehaviour
 {   
@@ -16,16 +17,20 @@ public class GameOverManager : MonoBehaviour
     [Header("画像オブジェクト")]
     [Tooltip("黒いパネル")]
     [SerializeField] private GameObject black_panel;
+    private RectTransform black_panel_rect;
     [Tooltip("治療失敗")]
     [SerializeField] private GameObject failed_pic;
+    private RectTransform failed_pic_rect;
     [Tooltip("リトライ")]
     [SerializeField] private GameObject retry_button;
+    private RectTransform retry_button_rect;
     [Tooltip("セレクトに戻る")]
     [SerializeField] private GameObject select_button;
+    private RectTransform select_button_rect;
     [Tooltip("日差し？")]
     [SerializeField] private GameObject light_obj;
+    private RectTransform light_obj_rect;
     
-    private RectTransform black_panel_rect;
     private float elapsed_time;
     
     public bool game_over_state {get; private set;}
@@ -61,16 +66,19 @@ public class GameOverManager : MonoBehaviour
     void Start()
     {
         black_panel_rect = black_panel.GetComponent<RectTransform>();
+        failed_pic_rect = failed_pic.GetComponent<RectTransform>();
+        retry_button_rect = retry_button.GetComponent<RectTransform>();
+        select_button_rect = select_button.GetComponent<RectTransform>();
+        light_obj_rect = light_obj.GetComponent<RectTransform>();
+        
         game_over_state = false;
         
-        elapsed_time = -0.5f;
+        elapsed_time = -1.0f;
         
         button_x_target = -430.0f;
         
         move_button = true;
         accept_button_input = false;
-        
-        light_obj.SetActive(false);
     }
 
     // Update is called once per frame
@@ -83,7 +91,7 @@ public class GameOverManager : MonoBehaviour
         
         if (game_over_state)
         {
-            if (accept_button_input)
+            if (!accept_button_input)
             {                
                 if (MoveBlackPanel())
                 {
@@ -92,27 +100,33 @@ public class GameOverManager : MonoBehaviour
                         elapsed_time += Time.unscaledDeltaTime;
                     }
                     
-                    RectTransform failed_rect = failed_pic.GetComponent<RectTransform>();
-                    
-                    if (failed_rect.localScale != Vector3.one)
+                    if (elapsed_time < 0.0f)
                     {
-                        failed_rect.localScale = Vector3.MoveTowards(failed_rect.localScale, new Vector3(1.5f, 1.3f, 1), Time.unscaledDeltaTime);
-                        
-                        ChangeAlphaState(failed_pic);
+                        light_obj_rect.localScale = Vector3.MoveTowards(light_obj_rect.localScale, new Vector3(7, 16, 1), Time.unscaledDeltaTime * 10.0f);
                     }
-                    else
+                    
+                    if (elapsed_time >= 0.0f)
                     {
-                        //failed_rect.pivot = new Vector2(0.4f, 1.0f);
-                        //failed_rect.localEulerAngles = Vector3.MoveTowards(failed_rect.localEulerAngles, new Vector3(failed_rect.localEulerAngles.x, failed_rect.localEulerAngles.y, -5.0f), Time.unscaledDeltaTime * 3.0f);
+                        if (failed_pic_rect.localScale != Vector3.one)
+                        {
+                            failed_pic_rect.localScale = Vector3.MoveTowards(failed_pic_rect.localScale, new Vector3(1.5f, 1.3f, 1), Time.unscaledDeltaTime);
+                            
+                            ChangeAlphaState(failed_pic);
+                        }
+                        else
+                        {
+                            //failed_rect.pivot = new Vector2(0.4f, 1.0f);
+                            //failed_rect.localEulerAngles = Vector3.MoveTowards(failed_rect.localEulerAngles, new Vector3(failed_rect.localEulerAngles.x, failed_rect.localEulerAngles.y, -5.0f), Time.unscaledDeltaTime * 3.0f);
+                        }
                     }
                     
                     if (elapsed_time > 1.0f)
                     {
                         if(move_button)
                         {
-                            if (select_button.GetComponent<RectTransform>().localPosition != new Vector3(button_x_target, select_button.GetComponent<RectTransform>().localPosition.y, 0.0f))
+                            if (select_button_rect.localPosition != new Vector3(button_x_target, select_button_rect.localPosition.y, 0.0f))
                             {
-                                if (retry_button.GetComponent<RectTransform>().localPosition != new Vector3(button_x_target, retry_button.GetComponent<RectTransform>().localPosition.y, 0.0f))
+                                if (retry_button_rect.localPosition != new Vector3(button_x_target, retry_button_rect.localPosition.y, 0.0f))
                                 {
                                     StartCoroutine(ChangeButtonAlphaState(retry_button));
                                 }
@@ -141,6 +155,18 @@ public class GameOverManager : MonoBehaviour
                 {
                     current_menu = MENU.SELECT;
                 }
+
+                switch (current_menu)
+                {
+                    case MENU.RETRY:
+                    retry_button_rect.localPosition = new Vector3(button_x_target + 150.0f, retry_button_rect.localPosition.y, 1);
+                    select_button_rect.localPosition = new Vector3(button_x_target, select_button_rect.localPosition.y, 1);
+                    break;
+                    case MENU.SELECT:
+                    retry_button_rect.localPosition = new Vector3(button_x_target, retry_button_rect.localPosition.y, 1);
+                    select_button_rect.localPosition = new Vector3(button_x_target + 150.0f, select_button_rect.localPosition.y, 1);
+                    break;
+                }
             }
             
             if (InputManager.instance.press_select)
@@ -161,10 +187,10 @@ public class GameOverManager : MonoBehaviour
                     switch (current_menu)
                     {
                         case MENU.RETRY:
-                        
+                        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
                         break;
                         case MENU.SELECT:
-                        
+                        SceneManager.LoadScene("StageSelect");
                         break;
                     }
                 }

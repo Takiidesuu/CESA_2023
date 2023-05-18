@@ -52,7 +52,7 @@ public class ElectricBallMove : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!check_is_cleared.IsCleared())
+        if (!check_is_cleared.IsCleared() || !GameOverManager.instance.game_over_state)
         {
             var locVel = transform.InverseTransformDirection(rb.velocity);
             locVel.x = m_real_speed;
@@ -75,7 +75,6 @@ public class ElectricBallMove : MonoBehaviour
             playerRot.x = 0;
             playerRot.y = 0;
             playerRot.z = transform.rotation.z;
-
 
             //Z軸を強制的にPlayer座標に設定
             transform.position = playerpos;
@@ -119,8 +118,22 @@ public class ElectricBallMove : MonoBehaviour
     }
     
     private void LateUpdate() 
-    {
-        transform.eulerAngles = new Vector3(transform.eulerAngles.x, 0.0f, transform.eulerAngles.z);
+    {   
+        RaycastHit hit;
+        if (Physics.Raycast(this.transform.position, this.transform.up * -1, out hit, 2.0f, LayerMask.GetMask("Ground")))
+        {
+            Vector3 center_vec = hit.point - hit.transform.root.gameObject.transform.position;
+            float dot_to_center = Vector3.Dot(center_vec.normalized, transform.up);
+            
+            if (dot_to_center < 0)
+            {
+                transform.eulerAngles = new Vector3(transform.eulerAngles.x, 180.0f, transform.eulerAngles.z);
+            }
+            else
+            {
+                transform.eulerAngles = new Vector3(transform.eulerAngles.x, 0.0f, transform.eulerAngles.z);
+            }
+        }
     }
     
     public void ChangeSpeed(float boostSpeed)

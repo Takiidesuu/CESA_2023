@@ -6,10 +6,13 @@ public class HitstopManager : MonoBehaviour
 {
     public static HitstopManager instance {get; private set;}
     
-    ParticleSystem[] scene_particles;
+    private Animator player_anim;
+    private float anim_speed_record;
     
     private float elapsed_time;
     private float stop_time;
+    
+    private bool stop_flg;
     
     public bool is_stopped {get; private set;}
     
@@ -17,6 +20,9 @@ public class HitstopManager : MonoBehaviour
     {
         stop_time = duration;
         elapsed_time = 0.0f;
+        anim_speed_record = player_anim.speed;
+        
+        stop_flg = true;
     }
     
     private void Awake() 
@@ -34,30 +40,35 @@ public class HitstopManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        scene_particles = GameObject.FindObjectsOfType<ParticleSystem>();
+        player_anim = GameObject.FindGameObjectWithTag("Player").transform.GetChild(0).GetComponent<Animator>();
         elapsed_time = 10.0f;
         stop_time = 0.0f;
         
         is_stopped = false;
+        stop_flg = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (elapsed_time < stop_time)
+        if (stop_flg)
         {
-            Time.timeScale = 0.0f;
-            elapsed_time += Time.unscaledDeltaTime;
+            if (elapsed_time < stop_time)
+            {
+                player_anim.speed = anim_speed_record / 1000.0f;
+                elapsed_time += Time.unscaledDeltaTime;
+            }
+            else
+            {
+                stop_flg = false;
+                player_anim.speed = anim_speed_record;
+            }
+            
             is_stopped = true;
         }
         else
         {
             is_stopped = false;
-            
-            if (!PauseManager.instance.pause_flg)
-            {
-                Time.timeScale = 1.0f;
-            }
         }
     }
 }

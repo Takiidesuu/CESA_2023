@@ -456,8 +456,8 @@ public class PlayerMove : MonoBehaviour
         
         HitstopManager.instance.StartHitStop(hit_stop_delay);
         
-        camera_obj.GetComponent<CameraMove>().ShakeCamera(smash_power_num / 2.0f * camera_vibration, hit_stop_delay / 2.0f);
-        InputManager.instance.VibrateController(hit_stop_delay / 2.0f, (0.1f * smash_vibration) + (smash_power_num / smash_max_time * 0.5f));
+        camera_obj.GetComponent<CameraMove>().ShakeCamera(0.5f, 0.2f);
+        InputManager.instance.VibrateController(0.2f, 0.3f);
     }
 
     public void SmashFunc()
