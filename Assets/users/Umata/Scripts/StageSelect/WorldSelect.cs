@@ -3,9 +3,18 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
+using System.Collections;
+using System.Collections.Generic;
 
 public class WorldSelect : MonoBehaviour
 {
+    [System.Serializable]
+    public class Textures
+    {
+        public List<Texture2D> StageTextures = new List<Texture2D>();
+    }
+    [SerializeField] public List<Textures> WorldTextures = new List<Textures>();       //表示する画像
+
     // ワールドとステージの数
     public int numWorlds = 4;
     public int numStages = 6;
@@ -33,7 +42,9 @@ public class WorldSelect : MonoBehaviour
     public GameObject CameraObj;
     public GameObject PlayerObj;
     public GameObject BlackPanelImage;//BlackPanel
-
+    public GameObject MainPreviewObj; // メインプレビューオブジェクト
+    public GameObject[] SubPreviewObj;  // サブプレビューオブジェクト
+    public GameObject[] SubPreviewHorogram;  // サブプレビューホロオブジェクト
 
     [SerializeField] private AnimationCurve curve = AnimationCurve.Linear(0f, 0f, 1f, 1f); // イージングカーブ
 
@@ -57,6 +68,10 @@ public class WorldSelect : MonoBehaviour
 
     // 変更を開始した時刻
     private float startTime;
+    private Material MainPreviewMaterial; // Unlitマテリアルへの参照
+    public Material[] SubPreviewMaterial;  // サブプレビューオブジェクト
+    public Material[] SubPreviewHorogramMaterial;  // サブプレビューホロオブジェクト
+    public Material[] HorogramMaterial;
 
     /// <summary>
     /// 平田
@@ -83,8 +98,19 @@ public class WorldSelect : MonoBehaviour
 
         //BlackPanelを取得
         BlackPanel = BlackPanelImage.GetComponent<Image>();
-    }
 
+        Renderer renderer = MainPreviewObj.GetComponent<Renderer>();
+        MainPreviewMaterial = renderer.material;
+        for (int i = 0;i < SubPreviewObj.Length;i++)
+        {
+            SubPreviewMaterial[i] = SubPreviewObj[i].GetComponent<Renderer>().material;
+        }
+        for (int i = 0; i < SubPreviewHorogram.Length; i++)
+        {
+            SubPreviewHorogramMaterial[i] = SubPreviewHorogram[i].GetComponent<Renderer>().material;
+        }
+
+    }
     void Update()
     {
         if (InputManager.instance.press_select)
@@ -263,6 +289,28 @@ public class WorldSelect : MonoBehaviour
             //9割ロードし終われば移行
             if (LoadSceneFade.SpliteOnceMove(asyncOperation.progress) > 0.9f)
                 asyncOperation.allowSceneActivation = true;
+        }
+
+        //メインプレビューの画像を設定
+        MainPreviewMaterial.SetTexture("_BaseMap",WorldTextures[currentWorld].StageTextures[currentStage]);
+        for (int i = 0; i < SubPreviewObj.Length; i++)
+        {
+            if (WorldTextures[currentWorld].StageTextures[i] != null)
+            {
+                SubPreviewMaterial[i].SetTexture("_BaseMap", WorldTextures[currentWorld].StageTextures[i]);
+            }
+        }
+        for (int i = 0; i < SubPreviewHorogramMaterial.Length; i++)
+        {
+            //選択シーンが現在の画像である場合
+            if (i == currentStage)
+            {
+                SubPreviewHorogram[i].GetComponent<Renderer>().material = HorogramMaterial[1];
+            }
+            else
+            {
+                SubPreviewHorogram[i].GetComponent<Renderer>().material = HorogramMaterial[0];
+            }
         }
     }
 
