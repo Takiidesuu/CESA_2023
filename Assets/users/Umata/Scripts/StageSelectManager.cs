@@ -16,6 +16,7 @@ public class StageSelectManager : MonoBehaviour
     private bool[] isMoving;
     private bool isFading = false;
 
+
     private void Start()
     {
         intensityReferenceValue = LightBulb[0].GetComponent<Light>().intensity;
