@@ -60,6 +60,12 @@ public class GravityControl : MonoBehaviour
         }
         else
         {
+            if (this.gameObject.tag == "Player")
+            {
+                this.transform.GetChild(0).gameObject.SetActive(true);
+                this.transform.GetChild(2).gameObject.SetActive(false);
+            }
+            
             time_in_air = 0.0f;
         }
     }
@@ -265,11 +271,17 @@ public class GravityControl : MonoBehaviour
         real_gravity_power = 0.0f;
         rb.velocity = Vector3.zero;
         
-        yield return new WaitForSeconds(1.0f);
+        if (this.gameObject.tag == "Player")
+        {
+            this.transform.GetChild(0).gameObject.SetActive(false);
+            this.transform.GetChild(2).gameObject.SetActive(true);
+        }
+        
+        yield return new WaitForSeconds(0.5f);
         
         increase_gravity_scalar = 1.0f;
         
-        real_gravity_power = gravity_power;
+        real_gravity_power = gravity_power * 3.0f;
         gravity_dir = last_ground_obj.transform.position - this.transform.position;
         gravity_dir.Normalize();
         transform.Rotate(0.0f, 180.0f, 0.0f);
