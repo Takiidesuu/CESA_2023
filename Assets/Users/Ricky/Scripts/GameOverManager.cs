@@ -39,6 +39,9 @@ public class GameOverManager : MonoBehaviour
     [Tooltip("プレイヤーテクスチャ")]
     [SerializeField] private GameObject player_obj_tex;
     private RectTransform player_obj_tex_rect;
+    [Tooltip("プレイヤー影テクスチャ")]
+    [SerializeField] private GameObject player_shadow_tex;
+    private RectTransform player_shadow_tex_rect;
     
     private float elapsed_time;
     
@@ -81,6 +84,7 @@ public class GameOverManager : MonoBehaviour
         select_button_rect = select_button.GetComponent<RectTransform>();
         light_obj_rect = light_obj.GetComponent<RectTransform>();
         player_obj_tex_rect = player_obj_tex.GetComponent<RectTransform>();
+        player_shadow_tex_rect = player_shadow_tex.GetComponent<RectTransform>();
         
         hammer_pic.SetActive(false);
         
@@ -118,6 +122,7 @@ public class GameOverManager : MonoBehaviour
                     if (elapsed_time < -1.0f)
                     {
                         player_obj_tex_rect.localPosition = Vector3.MoveTowards(player_obj_tex_rect.localPosition, new Vector3(515, player_obj_tex_rect.localPosition.y, player_obj_tex_rect.localPosition.z), Time.unscaledDeltaTime * 310.0f);
+                        player_shadow_tex_rect.localPosition = player_obj_tex_rect.localPosition + new Vector3(50, -109, 365);
                     }
                     
                     if (elapsed_time >= -1.0f && elapsed_time < 0.0f)
