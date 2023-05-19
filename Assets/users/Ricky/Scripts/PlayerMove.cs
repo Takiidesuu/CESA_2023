@@ -95,8 +95,10 @@ public class PlayerMove : MonoBehaviour
     
     public void TookDamage(float damage_time)
     {
-        anim.speed = 1.0f / damage_time;
+        anim.speed = 0.0f;
         anim.SetTrigger("takeDamage");
+        
+        StartCoroutine(StartDamageTimer(damage_time / 1.4f));
         
         if (smash_state == SMASHSTATE.HOLDING)
         {
@@ -290,7 +292,7 @@ public class PlayerMove : MonoBehaviour
                             circle_color.startSize = 8.0f * (smash_power_num / smash_threshold);
                             
                             InputManager.instance.VibrateController(Time.deltaTime, 0.1f);
-                            camera_obj.GetComponent<CameraMove>().ShakeCamera(0.1f, Time.deltaTime);
+                            camera_obj.GetComponent<CameraMove>().ShakeCamera(0.1f, Time.deltaTime, this.transform.up);
                             
                             break;
                             case SMASHSTATE.SMASHING:   //力を放ってる状態
@@ -452,12 +454,14 @@ public class PlayerMove : MonoBehaviour
     
     public void BeforeSmashFunc()
     {
-        float hit_stop_delay = 0.2f + (smash_power_num / smash_max_time) * 0.6f;
+        float hit_stop_delay = 0.1f + (smash_power_num / smash_max_time) * 0.5f;
         
         HitstopManager.instance.StartHitStop(hit_stop_delay);
         
-        camera_obj.GetComponent<CameraMove>().ShakeCamera(0.5f, 0.2f);
-        InputManager.instance.VibrateController(0.2f, 0.3f);
+        float hit_stop_time = 0.15f * (smash_power_num / smash_max_time);
+        
+        camera_obj.GetComponent<CameraMove>().ShakeCamera(0.5f, hit_stop_time, this.transform.up);
+        InputManager.instance.VibrateController(hit_stop_time, 0.3f);
     }
 
     public void SmashFunc()
@@ -502,9 +506,9 @@ public class PlayerMove : MonoBehaviour
         smash_state = SMASHSTATE.NORMAL;
         anim.ResetTrigger("holdSmash");
         
-        float vibration_dur = 0.2f + (smash_power_num / smash_max_time) * 0.6f;
+        float vibration_dur = 0.05f + (smash_power_num / smash_max_time) * 0.2f;
         
-        camera_obj.GetComponent<CameraMove>().ShakeCamera(smash_power_num / 2.0f * camera_vibration, vibration_dur);
+        camera_obj.GetComponent<CameraMove>().ShakeCamera(smash_power_num / 2.0f * camera_vibration, vibration_dur, this.transform.up);
         InputManager.instance.VibrateController(vibration_dur, (0.1f * smash_vibration) + (smash_power_num / smash_max_time * 0.5f));
     }
 
@@ -567,6 +571,13 @@ public class PlayerMove : MonoBehaviour
         }
         
         return result;
+    }
+    
+    IEnumerator StartDamageTimer(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        
+        anim.speed = 1.0f;
     }
     
     private void RotateGround()

@@ -30,6 +30,8 @@ public class GameOverManager : MonoBehaviour
     [Tooltip("日差し？")]
     [SerializeField] private GameObject light_obj;
     private RectTransform light_obj_rect;
+    [Tooltip("プレイヤー")]
+    [SerializeField] private GameObject player_obj;
     
     private float elapsed_time;
     
@@ -71,6 +73,8 @@ public class GameOverManager : MonoBehaviour
         select_button_rect = select_button.GetComponent<RectTransform>();
         light_obj_rect = light_obj.GetComponent<RectTransform>();
         
+        player_obj.SetActive(false);
+        
         game_over_state = false;
         
         elapsed_time = -1.0f;
@@ -107,6 +111,8 @@ public class GameOverManager : MonoBehaviour
                     
                     if (elapsed_time >= 0.0f)
                     {
+                        player_obj.SetActive(true);
+                        
                         if (failed_pic_rect.localScale != Vector3.one)
                         {
                             failed_pic_rect.localScale = Vector3.MoveTowards(failed_pic_rect.localScale, new Vector3(1.5f, 1.3f, 1), Time.unscaledDeltaTime);
