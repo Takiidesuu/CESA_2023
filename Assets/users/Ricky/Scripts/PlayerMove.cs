@@ -527,7 +527,7 @@ public class PlayerMove : MonoBehaviour
         }
     }
     
-    private void FlipCharacter()
+    public void FlipCharacter()
     {
         FlipUpsideDown();
     }
@@ -625,9 +625,9 @@ public class PlayerMove : MonoBehaviour
     {
         if (other.gameObject.tag == "FlipGate")
         {
-            FlipUpsideDown();
+            other.GetComponent<FlipGate>().Flip(this.gameObject);
         }
-        
+
         if (other.gameObject.tag == "GravityField")
         {
             in_grav_field = true;
