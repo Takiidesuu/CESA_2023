@@ -101,6 +101,8 @@ public class ElectricalPower : MonoBehaviour
             }
             if (time > electricball_instan_time && hit_elapsed_time > start_time)
             {
+                //SEÇÃçƒê∂
+                transform.GetComponent<SoundManager>().PlaySoundEffect("Create");
                 GameObject ElectricBall_Instant = Instantiate(ElectricBall, transform.position, Quaternion.identity);
                 ElectricBall_Instant.GetComponent<ElectricBallMove>().ParentGenerator = this.gameObject;
                 ElectricBall_Instant.transform.GetComponent<Rigidbody>().AddForce(new Vector3(0, 10, 0));
