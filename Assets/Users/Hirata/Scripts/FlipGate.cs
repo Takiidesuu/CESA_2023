@@ -6,7 +6,7 @@ public class FlipGate : MonoBehaviour
 {
     private BoxCollider boxCollider;
     public GameObject Barrier;
-    private GameObject Player;
+    private GameObject FlipObj;
 
     private Vector3 targetpos = new Vector3(0, -2.25f, 0);
     private float StartTime;
@@ -47,9 +47,9 @@ public class FlipGate : MonoBehaviour
         }
     }
 
-    public void Flip(GameObject player)
+    public void Flip(GameObject obj)
     {
-        Player = player;
+        FlipObj = obj;
         IsFlip = true;
         StartTime = Time.time;
         boxCollider.enabled = false;
@@ -65,7 +65,7 @@ public class FlipGate : MonoBehaviour
 
     IEnumerator MoveWait(float value) {
         Barrier.SetActive(false);
-        Player.GetComponent<Rigidbody>().velocity = Vector3.zero;
+        FlipObj.GetComponent<Rigidbody>().velocity = Vector3.zero;
 
         yield return new WaitForSeconds(value);
 
@@ -75,6 +75,9 @@ public class FlipGate : MonoBehaviour
     IEnumerator PlayerFlip(float value)
     {
         yield return new WaitForSeconds(value);
-        Player.GetComponent<PlayerMove>().FlipCharacter();
+        if (FlipObj.CompareTag("Player"))
+            FlipObj.GetComponent<PlayerMove>().FlipCharacter();
+        else if (FlipObj.CompareTag("ElectricalBall"))
+            FlipObj.GetComponent<ElectricBallMove>().FlipUpsideDown();
     }
 }

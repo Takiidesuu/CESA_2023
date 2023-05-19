@@ -59,6 +59,7 @@ public class LightBulb : MonoBehaviour
         }
         else
         {
+            changeMaterial.OnPower = true;
             m_destroy_timer = 0.0f;
         }
     }

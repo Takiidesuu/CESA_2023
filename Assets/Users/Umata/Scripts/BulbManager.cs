@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 using TMPro;
 
 public class BulbManager : MonoBehaviour
@@ -8,6 +9,8 @@ public class BulbManager : MonoBehaviour
 
     public GameObject Text_Active_obj;
     public GameObject Text_Num_obj;
+
+    public float WaitTime = 0.5f;
 
     private LightBulbCollector collector;
 
@@ -26,7 +29,13 @@ public class BulbManager : MonoBehaviour
         //ÉäÉUÉãÉgèàóù
         if(GameObject.FindObjectOfType<LightBulbCollector>().IsCleared())
         {
-            ResultWindow.SetActive(true);
+            StartCoroutine(ActiveResultWindow(WaitTime));
         }
+    }
+
+    IEnumerator ActiveResultWindow(float time)
+    {
+        yield return new WaitForSeconds(time);
+        ResultWindow.SetActive(true);
     }
 }
