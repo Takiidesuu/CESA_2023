@@ -5,14 +5,14 @@ using UnityEngine.UI;
 
 public class HitPointRender : MonoBehaviour
 {
-    public int hitpoint = 10;  // •\¦‚·‚éhitpoint‚Ì”
-    public int width_num = 3;  // ‰¡‚Ì•\¦”
-    public int height_num = 4;  // c‚Ì•\¦”
-    public float Image_width = 50f;  // RowImage‚Ì‰¡•
-    public float Image_height = 50f;  // RowImage‚Ìc•
-    public GameObject RowImagePrefab;  // RowImage‚ÌPrefab
-    public Vector2 ParentPos = new Vector2(0, 0);  // RowImageParent‚Ì¶¬À•W
-    DamageScript damageScript;    //HPæ“¾—p
+    public int hitpoint = 10;  // ï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½hitpointï¿½Ìï¿½
+    public int width_num = 3;  // ï¿½ï¿½ï¿½Ì•\ï¿½ï¿½ï¿½ï¿½
+    public int height_num = 4;  // ï¿½cï¿½Ì•\ï¿½ï¿½ï¿½ï¿½
+    public float Image_width = 50f;  // RowImageï¿½Ì‰ï¿½ï¿½ï¿½
+    public float Image_height = 50f;  // RowImageï¿½Ìcï¿½ï¿½
+    public GameObject RowImagePrefab;  // RowImageï¿½ï¿½Prefab
+    public Vector2 ParentPos = new Vector2(0, 0);  // RowImageParentï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½ï¿½W
+    DamageScript damageScript;    //HPï¿½æ“¾ï¿½p
     private int prev_hitpoint = 0;
 
     void Start()
@@ -26,7 +26,7 @@ public class HitPointRender : MonoBehaviour
         hitpoint = damageScript.GetHitPoint();
         if (hitpoint != prev_hitpoint)
         {
-            // ‹ŒRowImageParent‚ğ”jŠü
+            // ï¿½ï¿½RowImageParentï¿½ï¿½jï¿½ï¿½
             Destroy(transform.Find("RowImageParent").gameObject);
             CreateRowImage();
             prev_hitpoint = hitpoint;
@@ -37,26 +37,27 @@ public class HitPointRender : MonoBehaviour
     {
 
         prev_hitpoint = hitpoint;
-        // 1s‚É•\¦‚Å‚«‚éÅ‘å”
+        // 1ï¿½sï¿½É•\ï¿½ï¿½ï¿½Å‚ï¿½ï¿½ï¿½Å‘å”
         int max_num_per_row = width_num;
 
-        // 1s‚É•\¦‚Å‚«‚éÅ‘å”‚ğ’´‚¦‚½ê‡‚Ì‰üs
+        // 1ï¿½sï¿½É•\ï¿½ï¿½ï¿½Å‚ï¿½ï¿½ï¿½Å‘å”ï¿½ğ’´‚ï¿½ï¿½ï¿½ï¿½ê‡ï¿½Ì‰ï¿½ï¿½s
         int row_count = Mathf.CeilToInt((float)hitpoint / max_num_per_row);
 
-        // RowImageParentƒIƒuƒWƒFƒNƒg‚Ì¶¬
+        // RowImageParentï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½Ìï¿½ï¿½ï¿½
         GameObject RowImageParent = new GameObject("RowImageParent");
         RowImageParent.AddComponent<RectTransform>();
         RowImageParent.transform.SetParent(transform);
         RowImageParent.transform.localPosition = ParentPos;
+        RowImageParent.transform.SetSiblingIndex(5);
 
-        // RowImage‚ğ¶¬
+        // RowImageï¿½ğ¶ï¿½
         for (int i = 0; i < hitpoint; i++)
         {
-            // RowImage‚ÌÀ•W‚ğŒvZ
+            // RowImageï¿½Ìï¿½ï¿½Wï¿½ï¿½ï¿½vï¿½Z
             int x = i % max_num_per_row;
             int y = Mathf.FloorToInt((float)i / max_num_per_row);
 
-            // RowImage‚ğ¶¬
+            // RowImageï¿½ğ¶ï¿½
             GameObject RowImageObj = Instantiate(RowImagePrefab);
             RowImageObj.transform.SetParent(RowImageParent.transform);
             RowImageObj.transform.localPosition = new Vector3(x * Image_width, -y * Image_height, 0f);
@@ -64,7 +65,7 @@ public class HitPointRender : MonoBehaviour
 
         }
 
-        // RowImageParent‚ÌˆÊ’u‚ğ’²®
+        // RowImageParentï¿½ÌˆÊ’uï¿½ğ’²ï¿½
         RowImageParent.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 0.5f);
         RowImageParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(ParentPos.x,ParentPos.y);
 
