@@ -494,7 +494,8 @@ public class PlayerMove : MonoBehaviour
 
             if (isSmash)
             {
-                deform_stage.AddDeformpointDown(transform.position, transform.eulerAngles.y, smash_power_num + 1 * smash_power_scalar, is_flip);
+                Vector3 spawn_point = deform_stage.AddDeformpointDown(transform.position, transform.eulerAngles.y, smash_power_num + 1 * smash_power_scalar, is_flip);
+                Instantiate(spark_effect, spawn_point, this.transform.rotation);
             }
         }
         else
@@ -518,15 +519,6 @@ public class PlayerMove : MonoBehaviour
     {
         smash_state = SMASHSTATE.NORMAL;
         anim.speed = 1.0f;
-    }
-    
-    public void SpawnSparks()
-    {
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, transform.up * -1.0f, out hit, 5.0f, ground_layer_mask))
-        {
-            Instantiate(spark_effect, hit.point, this.transform.rotation);
-        }
     }
     
     public void FlipCharacter()
