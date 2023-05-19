@@ -422,13 +422,15 @@ public class PlayerMove : MonoBehaviour
             bool isSmash = true;
             if (is_flip)
             {
-                if (!min_max_deform.GetMaxHit())
+                if (min_max_deform != null) 
+                  if (!min_max_deform.GetMaxHit())
                     isSmash = false;
             }
             else
             {
-                if (min_max_deform.GetMinHit())
-                    isSmash = false;
+                if (min_max_deform != null)
+                    if (min_max_deform.GetMinHit())
+                     isSmash = false;
             }
             
             if (isSmash)
@@ -483,13 +485,15 @@ public class PlayerMove : MonoBehaviour
             bool isSmash = true;
             if (is_flip)
             {
-                if (!min_max_deform.GetMaxHit())
-                    isSmash = false;
+                if (min_max_deform != null)
+                    if (!min_max_deform.GetMaxHit())
+                        isSmash = false;
             }
             else
             {
-                if (min_max_deform.GetMinHit())
-                    isSmash = false;
+                if (min_max_deform != null)
+                    if (min_max_deform.GetMinHit())
+                        isSmash = false;
             }
 
             if (isSmash)
