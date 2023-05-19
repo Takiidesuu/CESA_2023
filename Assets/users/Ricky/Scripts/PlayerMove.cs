@@ -75,8 +75,10 @@ public class PlayerMove : MonoBehaviour
 
     private SoundManager soundmanager;
 
-    private ParticleSystem part_line_sys;
-    private ParticleSystem part_circle_sys;
+    [Tooltip("線のパーティクル")]
+    [SerializeField] private ParticleSystem part_line_sys;
+    [Tooltip("丸いのパーティクル")]
+    [SerializeField] private ParticleSystem part_circle_sys;
     private ParticleSystem.EmissionModule part_line_effect;
     private ParticleSystem.EmissionModule part_circle_effect;
     
@@ -98,7 +100,9 @@ public class PlayerMove : MonoBehaviour
         anim.speed = 0.0f;
         anim.SetTrigger("takeDamage");
         
-        StartCoroutine(StartDamageTimer(damage_time / 1.4f));
+        float damage_time_scaled = damage_time / 1.4f;
+        StartCoroutine(StartDamageTimer(damage_time_scaled));
+        InputManager.instance.VibrateController(damage_time_scaled, 0.1f);
         
         if (smash_state == SMASHSTATE.HOLDING)
         {
@@ -132,9 +136,7 @@ public class PlayerMove : MonoBehaviour
         rb = GetComponent<Rigidbody>();                 //リギッドボディー取得
         col = GetComponent<CapsuleCollider>();          //コライダー取得
         anim = transform.GetChild(0).GetComponent<Animator>();                //アニメーター取得
-        
-        part_line_sys = transform.GetChild(2).GetComponent<ParticleSystem>();
-        part_circle_sys = transform.GetChild(3).GetComponent<ParticleSystem>();
+
         part_line_effect = part_line_sys.emission;
         part_circle_effect = part_circle_sys.emission;
         
@@ -469,7 +471,7 @@ public class PlayerMove : MonoBehaviour
         if (can_jump_status == SMASHJUMP.CAN_JUMP)
         {
             var locVel = transform.InverseTransformDirection(rb.velocity);
-            locVel.y = jump_power * smash_power_num / smash_threshold * 0.5f;
+            locVel.y = jump_power * (smash_power_num / smash_threshold);
             rb.velocity = transform.TransformDirection(locVel);
         }
         
