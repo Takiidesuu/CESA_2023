@@ -49,8 +49,6 @@ public class PlayerMove : MonoBehaviour
     [Tooltip("火花")]
     [SerializeField] private GameObject spark_effect;
     
-    private GameObject blackPanel;
-    
     //コンポネント
     private Rigidbody rb;                   //リギッドボディー
     private CapsuleCollider col;            //コライダー
@@ -95,20 +93,15 @@ public class PlayerMove : MonoBehaviour
     private MinMaxDeform min_max_deform;
     private bool is_flip;
     
-    public void TookDamage()
+    public void TookDamage(float damage_time)
     {
+        anim.speed = 1.0f / damage_time;
         anim.SetTrigger("takeDamage");
         
         if (smash_state == SMASHSTATE.HOLDING)
         {
             smash_state = SMASHSTATE.NORMAL;
         }
-    }
-    
-    public void GameOver()
-    {
-        is_dead = true;
-        blackPanel.SetActive(true);
     }
     
     public bool GetSmashingState()
@@ -161,9 +154,6 @@ public class PlayerMove : MonoBehaviour
         smash_vibration = Mathf.Clamp(smash_vibration, 1.0f, 5.0f);
         hold_smash_vibration = Mathf.Clamp(hold_smash_vibration, 0.1f, 10.0f);
         
-        blackPanel = GameObject.Find("BlackPanel");
-        blackPanel.SetActive(false);
-        
         in_grav_field = false;
 
         //soundmannagerを取得
@@ -174,9 +164,12 @@ public class PlayerMove : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {
+    {   
         if (!check_is_cleared.IsCleared())
         {
+            is_dead = GameOverManager.instance.game_over_state;
+            
+            // 生きている場合
             if (!is_dead)
             {
                 if (!TakingDamage())
@@ -197,37 +190,25 @@ public class PlayerMove : MonoBehaviour
                         DecelerateSpeed();
                     }
                 }
-            }
-            else
-            {
-                RectTransform rTrans = blackPanel.GetComponent<RectTransform>();
-                if (rTrans.localPosition != Vector3.zero)
+                
+                if (InputManager.instance.press_smash)
                 {
-                    rTrans.localPosition = new Vector3(rTrans.localPosition.x + 10.0f, rTrans.localPosition.y, 0.0f);
+                    HoldSmash();
                 }
                 else
                 {
-                    SceneManager.LoadScene("GameOverScene");
+                    ReleaseSmash();
                 }
-            }
-            
-            if (InputManager.instance.press_smash)
-            {
-                HoldSmash();
-            }
-            else
-            {
-                ReleaseSmash();
-            }
-            
-            if (InputManager.instance.press_flip)
-            {
-                FlipCharacter();
-            }
-            
-            if (InputManager.instance.press_rotate)
-            {
-                RotateGround();
+                
+                if (InputManager.instance.press_flip)
+                {
+                    FlipCharacter();
+                }
+                
+                if (InputManager.instance.press_rotate)
+                {
+                    RotateGround();
+                }
             }
 
             transform.position = new Vector3(transform.position.x, transform.position.y, 0);
@@ -475,8 +456,8 @@ public class PlayerMove : MonoBehaviour
         
         HitstopManager.instance.StartHitStop(hit_stop_delay);
         
-        camera_obj.GetComponent<CameraMove>().ShakeCamera(smash_power_num / 2.0f * camera_vibration, hit_stop_delay / 2.0f);
-        InputManager.instance.VibrateController(hit_stop_delay / 2.0f, (0.1f * smash_vibration) + (smash_power_num / smash_max_time * 0.5f));
+        camera_obj.GetComponent<CameraMove>().ShakeCamera(0.5f, 0.2f);
+        InputManager.instance.VibrateController(0.2f, 0.3f);
     }
 
     public void SmashFunc()
@@ -530,6 +511,7 @@ public class PlayerMove : MonoBehaviour
     public void ResetAnim()
     {
         smash_state = SMASHSTATE.NORMAL;
+        anim.speed = 1.0f;
     }
     
     public void SpawnSparks()

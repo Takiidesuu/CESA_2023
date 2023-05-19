@@ -8,7 +8,7 @@ public class BulbStatusScript : MonoBehaviour
     [Tooltip("BulbLineプレハブ")]
     [SerializeField] private GameObject bulb_line_obj_template;
     
-    private Vector2 background_size = new Vector2(500.0f, 250.0f);
+    private Vector2 background_size = new Vector2(500.0f, 215.0f);
     
     public List<BulbLineScript> progress_bar {get;set;}
     private LightBulbCollector collector;

@@ -14,14 +14,12 @@ public class ElectricBallCounter : MonoBehaviour
     private TextMeshProUGUI Text_Active;
     private TextMeshProUGUI Text_Num;
 
-
-
-    PlayerMove player;
+    GameOverManager game_over_manager;
 
     // Start is called before the first frame update
     void Start()
     {
-        player = GameObject.Find("Player").GetComponent<PlayerMove>();
+        game_over_manager = GameObject.FindObjectOfType<GameOverManager>();
 
         Text_Active = Text_Active_obj.GetComponent<TextMeshProUGUI>();
         Text_Num = Text_Num_obj.GetComponent<TextMeshProUGUI>();
@@ -33,7 +31,7 @@ void Update()
     {
         if(ElectricBallbnum >= MaxElectricBall)
         {
-            player.GameOver();
+            game_over_manager.SwitchToGameOver();
         }
         //テキストの更新
         Text_Active.text = "" +ElectricBallbnum.ToString();

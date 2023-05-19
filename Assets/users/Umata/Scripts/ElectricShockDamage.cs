@@ -9,7 +9,7 @@ public class ElectricShockDamage : MonoBehaviour
     public bool is_damage = false; // ダメージフラグ
 
     // マテリアルを更新する関数
-    private void UpdateMaterial()
+    public void UpdateMaterial()
     {
         foreach (GameObject model in m_models)
         {
