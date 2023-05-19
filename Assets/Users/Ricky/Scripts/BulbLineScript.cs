@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class BulbLineScript : MonoBehaviour
 {
-    private Vector2 background_size = new Vector2(500.0f, 250.0f);
+    private Vector2 background_size = new Vector2(500.0f, 215.0f);
     
     public LightBulb current_bulb {private get; set;}
     

@@ -30,7 +30,7 @@ public class CameraMove : MonoBehaviour
     
     public bool is_zooming {get; private set;}
     
-    public void ShakeCamera(float fpower, float fduration)
+    public void ShakeCamera(float fpower, float fduration, Vector3 player_up_vec)
     {
         shake_power = fpower * camera_shake_power;
         shake_camera = true;

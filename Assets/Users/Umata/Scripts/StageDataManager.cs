@@ -25,7 +25,7 @@ public class StageDataManager : MonoBehaviour
     public int now_world;
     public int now_stage;
 
-    static StageDataManager instance;
+    public static StageDataManager instance;
 
     void Awake()
     {

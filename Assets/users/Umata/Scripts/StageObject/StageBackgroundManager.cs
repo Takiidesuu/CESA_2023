@@ -18,9 +18,16 @@ public class StageBackgroundManager : MonoBehaviour
     private float ComplateRate = 0;
     private SoundManager SoundManager;
 
+    //FOGÉJÉâÅ[
+    public Color StartFogColor;
+    public Color ClearFogColor;
+
     // Start is called before the first frame update
     void Start()
     {
+        //FogColorÇïœçX
+        RenderSettings.fogColor = StartFogColor;
+
         GearObjects = GetComponentsInChildren<RotateGear>(true);
         SmokeObjects = GameObject.FindGameObjectsWithTag("SmokeEffect");
 
@@ -55,7 +62,13 @@ public class StageBackgroundManager : MonoBehaviour
             fogtimer += Time.deltaTime;
             float lerp = Mathf.Clamp01(fogtimer / duration);
             float currentDensity = Mathf.Lerp(startDensity, endDensity, lerp);
+            Color currentFogColor;
+            currentFogColor.r = Mathf.Lerp(StartFogColor.r, ClearFogColor.r, lerp);
+            currentFogColor.g = Mathf.Lerp(StartFogColor.g, ClearFogColor.g, lerp);
+            currentFogColor.b = Mathf.Lerp(StartFogColor.b, ClearFogColor.b, lerp);
+            currentFogColor.a = 1.0f;
 
+            RenderSettings.fogColor = currentFogColor;
             RenderSettings.fogDensity = currentDensity;
         }
 

@@ -15,6 +15,7 @@ public class LoadSceneFade : MonoBehaviour
         NOT,
         MOVEING,
         COMPLETION,
+        END,
     }
     public Canvas canvas;           //表示するキャンバス
     [SerializeField] public List<Textures> WorldTextures = new List<Textures>();       //表示する画像
@@ -28,6 +29,11 @@ public class LoadSceneFade : MonoBehaviour
     public int columns = 16;           //横分割
     public float MoveTime = 1;             //移動速度
     public float CreatTime = 0.5f;      //生成スピード
+
+    public float ShinePower = 0.1f;    //光る強さ
+    public float DarkTime = 2.0f;       //暗くなる時間
+
+    public Material GlowMat;
 
     private Vector2[,] StartPos;        //始まった場所
     private Vector2[,] split_position;  //分割の場所
@@ -107,8 +113,17 @@ public class LoadSceneFade : MonoBehaviour
                         gameObjects[y, x].GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
                         if (t >= 1)
                         {
-                            EndCount++;
+                            StartTime[y, x] = Time.time;
                             split_is_move[y, x] = MOVE.COMPLETION;
+                        }
+                    }else if(split_is_move[y, x] == MOVE.COMPLETION)
+                    {
+                        gameObjects[y, x].GetComponent<Image>().material.SetFloat("_Intensity", Mathf.Abs(Mathf.Sin((Time.time - StartTime[y, x]) * DarkTime) * ShinePower));
+                        if ((Time.time - StartTime[y, x]) * DarkTime > Mathf.PI)
+                        {
+                            gameObjects[y,x].GetComponent<Image>().material.SetFloat("_Intensity", 0);
+                            split_is_move[y, x] = MOVE.END;
+                            EndCount++;
                         }
                     }
                     gameObjects[y, x].GetComponent<RectTransform>().localRotation = Quaternion.identity;
@@ -180,7 +195,11 @@ public class LoadSceneFade : MonoBehaviour
                 gameObject.transform.parent = canvas.transform;
                 Image image = gameObject.AddComponent<Image>();
                 image.sprite = load_split[y, x];
-
+                Material newMaterial = new Material(GlowMat);
+                Instantiate(newMaterial);
+                newMaterial.SetTexture("_Texture", image.sprite.texture);
+                newMaterial.SetFloat("_Intensity", 0.0f);
+                image.material = newMaterial;
                 image.GetComponent<RectTransform>().sizeDelta = new Vector2(1920 / columns, 1080 / rows);
                 switch (display) {
 

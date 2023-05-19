@@ -62,83 +62,86 @@ public class PauseManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (pause_flg)
+        if (!GameOverManager.instance.game_over_state)
         {
-            if (switch_scene)
+            if (pause_flg)
             {
-                if (curtain_transform.localPosition != Vector3.zero)
+                if (switch_scene)
                 {
-                    curtain_transform.localPosition = Vector3.MoveTowards(curtain_transform.localPosition, Vector3.zero, Time.unscaledDeltaTime * 20.0f);
-                }
-                else
-                {
-                    // Switch scene
-                }
-            }
-            else
-            {
-                foreach (Transform child in transform)
-                {
-                    child.gameObject.SetActive(true);
-                }
-                
-                if (InputManager.instance.press_start || InputManager.instance.press_cancel)
-                {
-                    pause_flg = false;
-                }
-                
-                selected_option = GetNextMenu(InputManager.instance.GetMenuMoveFloat());
-                
-                for (int i = 0; i < (int)MENU_OPTION.MAX; i++)
-                {
-                    if (i == (int)selected_option)
+                    if (curtain_transform.localPosition != Vector3.zero)
                     {
-                        pause_menu[(int)selected_option].SetSelectedState(true, (int)selected_option);
+                        curtain_transform.localPosition = Vector3.MoveTowards(curtain_transform.localPosition, Vector3.zero, Time.unscaledDeltaTime * 20.0f);
                     }
                     else
                     {
-                        pause_menu[i].SetSelectedState(false, (int)selected_option);
+                        // Switch scene
+                    }
+                }
+                else
+                {
+                    foreach (Transform child in transform)
+                    {
+                        child.gameObject.SetActive(true);
+                    }
+                    
+                    if (InputManager.instance.press_start || InputManager.instance.press_cancel)
+                    {
+                        pause_flg = false;
+                    }
+                    
+                    selected_option = GetNextMenu(InputManager.instance.GetMenuMoveFloat());
+                    
+                    for (int i = 0; i < (int)MENU_OPTION.MAX; i++)
+                    {
+                        if (i == (int)selected_option)
+                        {
+                            pause_menu[(int)selected_option].SetSelectedState(true, (int)selected_option);
+                        }
+                        else
+                        {
+                            pause_menu[i].SetSelectedState(false, (int)selected_option);
+                        }
+                    }
+                    
+                    if (InputManager.instance.press_select)
+                    {
+                        switch (selected_option)
+                        {
+                            case MENU_OPTION.RESUME:
+                            pause_flg = false;
+                            break;
+                            case MENU_OPTION.RETRY:
+                            
+                            break;
+                            case MENU_OPTION.OPTION:
+                            
+                            break;
+                            case MENU_OPTION.STAGESELECT:
+                            break;
+                            case MENU_OPTION.TITLE:
+                            break;
+                        }
                     }
                 }
                 
-                if (InputManager.instance.press_select)
+                Time.timeScale = 0.0f;
+            }
+            else
+            {   
+                foreach (Transform child in transform)
                 {
-                    switch (selected_option)
-                    {
-                        case MENU_OPTION.RESUME:
-                        pause_flg = false;
-                        break;
-                        case MENU_OPTION.RETRY:
-                        
-                        break;
-                        case MENU_OPTION.OPTION:
-                        
-                        break;
-                        case MENU_OPTION.STAGESELECT:
-                        break;
-                        case MENU_OPTION.TITLE:
-                        break;
-                    }
+                    child.gameObject.SetActive(false);
                 }
-            }
-            
-            Time.timeScale = 0.0f;
-        }
-        else
-        {   
-            foreach (Transform child in transform)
-            {
-                child.gameObject.SetActive(false);
-            }
-            
-            if (InputManager.instance.press_pause)
-            {
-                pause_flg = true;
-            }
-            
-            if (!HitstopManager.instance.is_stopped)
-            {
-                Time.timeScale = 1.0f;
+                
+                if (InputManager.instance.press_pause)
+                {
+                    pause_flg = true;
+                }
+                
+                if (!HitstopManager.instance.is_stopped)
+                {
+                    Time.timeScale = 1.0f;
+                }
             }
         }
     }

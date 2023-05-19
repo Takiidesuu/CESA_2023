@@ -8,6 +8,8 @@ public class GravityControl : MonoBehaviour
     
     [Tooltip("重力")]
     [SerializeField] private float gravity_power = 5.0f;
+    [Tooltip("重力の加算")]
+    [SerializeField] private float gravity_increase_power = 2.0f;
     [Tooltip("回転速度")]
     [SerializeField] private float rotation_speed = 20.0f;
     [Tooltip("戻るまでの時間")]
@@ -58,6 +60,12 @@ public class GravityControl : MonoBehaviour
         }
         else
         {
+            if (this.gameObject.tag == "Player")
+            {
+                this.transform.GetChild(0).gameObject.SetActive(true);
+                this.transform.GetChild(2).gameObject.SetActive(false);
+            }
+            
             time_in_air = 0.0f;
         }
     }
@@ -97,8 +105,8 @@ public class GravityControl : MonoBehaviour
         }
         else
         {
-            float gravity_speed_scalar = 20.0f;
-            increase_gravity_scalar += Time.deltaTime / gravity_speed_scalar;
+            float gravity_speed_scalar = 15.0f;
+            increase_gravity_scalar += Time.deltaTime / gravity_speed_scalar * gravity_increase_power;
         }
 
         Vector3 real_grav_dir = gravity_dir * gravity_number * real_gravity_power * increase_gravity_scalar;
@@ -263,11 +271,17 @@ public class GravityControl : MonoBehaviour
         real_gravity_power = 0.0f;
         rb.velocity = Vector3.zero;
         
-        yield return new WaitForSeconds(1.0f);
+        if (this.gameObject.tag == "Player")
+        {
+            this.transform.GetChild(0).gameObject.SetActive(false);
+            this.transform.GetChild(2).gameObject.SetActive(true);
+        }
+        
+        yield return new WaitForSeconds(0.5f);
         
         increase_gravity_scalar = 1.0f;
         
-        real_gravity_power = gravity_power;
+        real_gravity_power = gravity_power * 3.0f;
         gravity_dir = last_ground_obj.transform.position - this.transform.position;
         gravity_dir.Normalize();
         transform.Rotate(0.0f, 180.0f, 0.0f);

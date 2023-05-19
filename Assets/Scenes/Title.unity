@@ -273,6 +273,63 @@ RectTransform:
   m_AnchoredPosition: {x: 723, y: -300}
   m_SizeDelta: {x: 700, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1001 &188893816
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 5656514965517395293, guid: 6cd47115cab32c14da9042a1345cf519, type: 3}
+      propertyPath: m_Name
+      value: InputManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 5910264051942537046, guid: 6cd47115cab32c14da9042a1345cf519, type: 3}
+      propertyPath: m_RootOrder
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5910264051942537046, guid: 6cd47115cab32c14da9042a1345cf519, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1652.584
+      objectReference: {fileID: 0}
+    - target: {fileID: 5910264051942537046, guid: 6cd47115cab32c14da9042a1345cf519, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 676.9698
+      objectReference: {fileID: 0}
+    - target: {fileID: 5910264051942537046, guid: 6cd47115cab32c14da9042a1345cf519, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -59.13217
+      objectReference: {fileID: 0}
+    - target: {fileID: 5910264051942537046, guid: 6cd47115cab32c14da9042a1345cf519, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5910264051942537046, guid: 6cd47115cab32c14da9042a1345cf519, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5910264051942537046, guid: 6cd47115cab32c14da9042a1345cf519, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5910264051942537046, guid: 6cd47115cab32c14da9042a1345cf519, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5910264051942537046, guid: 6cd47115cab32c14da9042a1345cf519, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5910264051942537046, guid: 6cd47115cab32c14da9042a1345cf519, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5910264051942537046, guid: 6cd47115cab32c14da9042a1345cf519, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6cd47115cab32c14da9042a1345cf519, type: 3}
 --- !u!1 &420286550
 GameObject:
   m_ObjectHideFlags: 0
@@ -354,19 +411,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bgmDataList:
   - sceneName: Stage1-1
-    bgm: {fileID: 8300000, guid: 590fb543fa3302d438ba4708a984f4a2, type: 3}
+    bgm: {fileID: 8300000, guid: d24528dc07d0e284997b391b3b0882bb, type: 3}
     volume: 0.3
   - sceneName: Stage1-2
-    bgm: {fileID: 8300000, guid: 590fb543fa3302d438ba4708a984f4a2, type: 3}
+    bgm: {fileID: 8300000, guid: d24528dc07d0e284997b391b3b0882bb, type: 3}
     volume: 0.3
   - sceneName: Stage1-3
-    bgm: {fileID: 8300000, guid: 590fb543fa3302d438ba4708a984f4a2, type: 3}
+    bgm: {fileID: 8300000, guid: d24528dc07d0e284997b391b3b0882bb, type: 3}
     volume: 0.3
   - sceneName: Stage1-4
-    bgm: {fileID: 8300000, guid: 590fb543fa3302d438ba4708a984f4a2, type: 3}
+    bgm: {fileID: 8300000, guid: d24528dc07d0e284997b391b3b0882bb, type: 3}
     volume: 0.3
   - sceneName: Stage1-5
-    bgm: {fileID: 8300000, guid: 590fb543fa3302d438ba4708a984f4a2, type: 3}
+    bgm: {fileID: 8300000, guid: d24528dc07d0e284997b391b3b0882bb, type: 3}
     volume: 0.3
 --- !u!1 &721924921
 GameObject:
@@ -918,9 +975,9 @@ MonoBehaviour:
   select_distance: 50
   select_delay: 0.3
   is_firsttime: 1
-  scene_start_name: Stage1-1
-  scene_continue_name: Stage1-4
-  scene_option_name: 
+  scene_start_name: StageSelect
+  scene_continue_name: Stage1-1
+  scene_option_name: Stage1-1
   image_hammer: {fileID: 1484320789}
   image_banner: {fileID: 1923194734}
   hammer_image_distance: 300

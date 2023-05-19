@@ -49,8 +49,6 @@ public class PlayerMove : MonoBehaviour
     [Tooltip("火花")]
     [SerializeField] private GameObject spark_effect;
     
-    private GameObject blackPanel;
-    
     //コンポネント
     private Rigidbody rb;                   //リギッドボディー
     private CapsuleCollider col;            //コライダー
@@ -77,8 +75,10 @@ public class PlayerMove : MonoBehaviour
 
     private SoundManager soundmanager;
 
-    private ParticleSystem part_line_sys;
-    private ParticleSystem part_circle_sys;
+    [Tooltip("線のパーティクル")]
+    [SerializeField] private ParticleSystem part_line_sys;
+    [Tooltip("丸いのパーティクル")]
+    [SerializeField] private ParticleSystem part_circle_sys;
     private ParticleSystem.EmissionModule part_line_effect;
     private ParticleSystem.EmissionModule part_circle_effect;
     
@@ -95,20 +95,19 @@ public class PlayerMove : MonoBehaviour
     private MinMaxDeform min_max_deform;
     private bool is_flip;
     
-    public void TookDamage()
+    public void TookDamage(float damage_time)
     {
+        anim.speed = 0.0f;
         anim.SetTrigger("takeDamage");
+        
+        float damage_time_scaled = damage_time / 1.4f;
+        StartCoroutine(StartDamageTimer(damage_time_scaled));
+        InputManager.instance.VibrateController(damage_time_scaled, 0.1f);
         
         if (smash_state == SMASHSTATE.HOLDING)
         {
             smash_state = SMASHSTATE.NORMAL;
         }
-    }
-    
-    public void GameOver()
-    {
-        is_dead = true;
-        blackPanel.SetActive(true);
     }
     
     public bool GetSmashingState()
@@ -137,9 +136,7 @@ public class PlayerMove : MonoBehaviour
         rb = GetComponent<Rigidbody>();                 //リギッドボディー取得
         col = GetComponent<CapsuleCollider>();          //コライダー取得
         anim = transform.GetChild(0).GetComponent<Animator>();                //アニメーター取得
-        
-        part_line_sys = transform.GetChild(2).GetComponent<ParticleSystem>();
-        part_circle_sys = transform.GetChild(3).GetComponent<ParticleSystem>();
+
         part_line_effect = part_line_sys.emission;
         part_circle_effect = part_circle_sys.emission;
         
@@ -161,9 +158,6 @@ public class PlayerMove : MonoBehaviour
         smash_vibration = Mathf.Clamp(smash_vibration, 1.0f, 5.0f);
         hold_smash_vibration = Mathf.Clamp(hold_smash_vibration, 0.1f, 10.0f);
         
-        blackPanel = GameObject.Find("BlackPanel");
-        blackPanel.SetActive(false);
-        
         in_grav_field = false;
 
         //soundmannagerを取得
@@ -174,9 +168,12 @@ public class PlayerMove : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {
+    {   
         if (!check_is_cleared.IsCleared())
         {
+            is_dead = GameOverManager.instance.game_over_state;
+            
+            // 生きている場合
             if (!is_dead)
             {
                 if (!TakingDamage())
@@ -197,37 +194,25 @@ public class PlayerMove : MonoBehaviour
                         DecelerateSpeed();
                     }
                 }
-            }
-            else
-            {
-                RectTransform rTrans = blackPanel.GetComponent<RectTransform>();
-                if (rTrans.localPosition != Vector3.zero)
+                
+                if (InputManager.instance.press_smash)
                 {
-                    rTrans.localPosition = new Vector3(rTrans.localPosition.x + 10.0f, rTrans.localPosition.y, 0.0f);
+                    HoldSmash();
                 }
                 else
                 {
-                    SceneManager.LoadScene("GameOverScene");
+                    ReleaseSmash();
                 }
-            }
-            
-            if (InputManager.instance.press_smash)
-            {
-                HoldSmash();
-            }
-            else
-            {
-                ReleaseSmash();
-            }
-            
-            if (InputManager.instance.press_flip)
-            {
-                FlipCharacter();
-            }
-            
-            if (InputManager.instance.press_rotate)
-            {
-                RotateGround();
+                
+                if (InputManager.instance.press_flip)
+                {
+                    FlipCharacter();
+                }
+                
+                if (InputManager.instance.press_rotate)
+                {
+                    RotateGround();
+                }
             }
 
             transform.position = new Vector3(transform.position.x, transform.position.y, 0);
@@ -309,7 +294,7 @@ public class PlayerMove : MonoBehaviour
                             circle_color.startSize = 8.0f * (smash_power_num / smash_threshold);
                             
                             InputManager.instance.VibrateController(Time.deltaTime, 0.1f);
-                            camera_obj.GetComponent<CameraMove>().ShakeCamera(0.1f, Time.deltaTime);
+                            camera_obj.GetComponent<CameraMove>().ShakeCamera(0.1f, Time.deltaTime, this.transform.up);
                             
                             break;
                             case SMASHSTATE.SMASHING:   //力を放ってる状態
@@ -437,13 +422,15 @@ public class PlayerMove : MonoBehaviour
             bool isSmash = true;
             if (is_flip)
             {
-                if (!min_max_deform.GetMaxHit())
+                if (min_max_deform != null) 
+                  if (!min_max_deform.GetMaxHit())
                     isSmash = false;
             }
             else
             {
-                if (min_max_deform.GetMinHit())
-                    isSmash = false;
+                if (min_max_deform != null)
+                    if (min_max_deform.GetMinHit())
+                     isSmash = false;
             }
             
             if (isSmash)
@@ -471,12 +458,14 @@ public class PlayerMove : MonoBehaviour
     
     public void BeforeSmashFunc()
     {
-        float hit_stop_delay = 0.2f + (smash_power_num / smash_max_time) * 0.6f;
+        float hit_stop_delay = 0.1f + (smash_power_num / smash_max_time) * 0.5f;
         
         HitstopManager.instance.StartHitStop(hit_stop_delay);
         
-        camera_obj.GetComponent<CameraMove>().ShakeCamera(smash_power_num / 2.0f * camera_vibration, hit_stop_delay / 2.0f);
-        InputManager.instance.VibrateController(hit_stop_delay / 2.0f, (0.1f * smash_vibration) + (smash_power_num / smash_max_time * 0.5f));
+        float hit_stop_time = 0.15f * (smash_power_num / smash_max_time);
+        
+        camera_obj.GetComponent<CameraMove>().ShakeCamera(0.5f, hit_stop_time, this.transform.up);
+        InputManager.instance.VibrateController(hit_stop_time, 0.3f);
     }
 
     public void SmashFunc()
@@ -484,7 +473,7 @@ public class PlayerMove : MonoBehaviour
         if (can_jump_status == SMASHJUMP.CAN_JUMP)
         {
             var locVel = transform.InverseTransformDirection(rb.velocity);
-            locVel.y = jump_power * smash_power_num / smash_threshold * 0.5f;
+            locVel.y = jump_power * (smash_power_num / smash_threshold);
             rb.velocity = transform.TransformDirection(locVel);
         }
         
@@ -496,18 +485,22 @@ public class PlayerMove : MonoBehaviour
             bool isSmash = true;
             if (is_flip)
             {
-                if (!min_max_deform.GetMaxHit())
-                    isSmash = false;
+                if (min_max_deform != null)
+                    if (!min_max_deform.GetMaxHit())
+                        isSmash = false;
             }
             else
             {
-                if (min_max_deform.GetMinHit())
-                    isSmash = false;
+                if (min_max_deform != null)
+                    if (min_max_deform.GetMinHit())
+                        isSmash = false;
             }
 
             if (isSmash)
             {
-                deform_stage.AddDeformpointDown(transform.position, transform.eulerAngles.y, smash_power_num + 1 * smash_power_scalar, is_flip);
+                Vector3 spawn_point = deform_stage.AddDeformpointDown(transform.position, transform.eulerAngles.y, smash_power_num + 1 * smash_power_scalar, is_flip);
+                spawn_point -= this.transform.up;
+                Instantiate(spark_effect, spawn_point, this.transform.rotation);
             }
         }
         else
@@ -521,27 +514,19 @@ public class PlayerMove : MonoBehaviour
         smash_state = SMASHSTATE.NORMAL;
         anim.ResetTrigger("holdSmash");
         
-        float vibration_dur = 0.2f + (smash_power_num / smash_max_time) * 0.6f;
+        float vibration_dur = 0.05f + (smash_power_num / smash_max_time) * 0.2f;
         
-        camera_obj.GetComponent<CameraMove>().ShakeCamera(smash_power_num / 2.0f * camera_vibration, vibration_dur);
+        camera_obj.GetComponent<CameraMove>().ShakeCamera(smash_power_num / 2.0f * camera_vibration, vibration_dur, this.transform.up);
         InputManager.instance.VibrateController(vibration_dur, (0.1f * smash_vibration) + (smash_power_num / smash_max_time * 0.5f));
     }
 
     public void ResetAnim()
     {
         smash_state = SMASHSTATE.NORMAL;
+        anim.speed = 1.0f;
     }
     
-    public void SpawnSparks()
-    {
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, transform.up * -1.0f, out hit, 5.0f, ground_layer_mask))
-        {
-            Instantiate(spark_effect, hit.point, this.transform.rotation);
-        }
-    }
-    
-    private void FlipCharacter()
+    public void FlipCharacter()
     {
         FlipUpsideDown();
     }
@@ -585,6 +570,13 @@ public class PlayerMove : MonoBehaviour
         }
         
         return result;
+    }
+    
+    IEnumerator StartDamageTimer(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        
+        anim.speed = 1.0f;
     }
     
     private void RotateGround()
@@ -632,9 +624,9 @@ public class PlayerMove : MonoBehaviour
     {
         if (other.gameObject.tag == "FlipGate")
         {
-            FlipUpsideDown();
+            other.GetComponent<FlipGate>().Flip(this.gameObject);
         }
-        
+
         if (other.gameObject.tag == "GravityField")
         {
             in_grav_field = true;

@@ -123,6 +123,49 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &35920208
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 35920210}
+  - component: {fileID: 35920209}
+  m_Layer: 0
+  m_Name: OniCollisionWorld
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &35920209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 35920208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d02d25c24c8574316883c920912e4fdb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &35920210
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 35920208}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 24
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &97467380
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1041,7 +1084,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7076129661271777894, guid: 6d9cc64253f7b1f4b8d9bbc31fa15ec0, type: 3}
       propertyPath: m_RootOrder
-      value: 16
+      value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 7076129661271777894, guid: 6d9cc64253f7b1f4b8d9bbc31fa15ec0, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1130,7 +1173,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2211649535494340620, guid: 60b31945a372e72438ba0f7e5022d9e0, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 2211649535494340620, guid: 60b31945a372e72438ba0f7e5022d9e0, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1177,82 +1220,29 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 9073984952805419816, guid: 1839f456c064b004d8578b2fde5663a8, type: 3}
-      propertyPath: m_Name
-      value: Directional Light
-      objectReference: {fileID: 0}
-    - target: {fileID: 9073984952805419830, guid: 1839f456c064b004d8578b2fde5663a8, type: 3}
-      propertyPath: m_RootOrder
+    - target: {fileID: 1303720945, guid: 60b31945a372e72438ba0f7e5022d9e0, type: 3}
+      propertyPath: FlipSpeed
       value: 5
       objectReference: {fileID: 0}
-    - target: {fileID: 9073984952805419830, guid: 1839f456c064b004d8578b2fde5663a8, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9073984952805419830, guid: 1839f456c064b004d8578b2fde5663a8, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 9073984952805419830, guid: 1839f456c064b004d8578b2fde5663a8, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9073984952805419830, guid: 1839f456c064b004d8578b2fde5663a8, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.8754261
-      objectReference: {fileID: 0}
-    - target: {fileID: 9073984952805419830, guid: 1839f456c064b004d8578b2fde5663a8, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0.40821788
-      objectReference: {fileID: 0}
-    - target: {fileID: 9073984952805419830, guid: 1839f456c064b004d8578b2fde5663a8, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0.23456968
-      objectReference: {fileID: 0}
-    - target: {fileID: 9073984952805419830, guid: 1839f456c064b004d8578b2fde5663a8, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0.10938163
-      objectReference: {fileID: 0}
-    - target: {fileID: 9073984952805419830, guid: 1839f456c064b004d8578b2fde5663a8, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 50
-      objectReference: {fileID: 0}
-    - target: {fileID: 9073984952805419830, guid: 1839f456c064b004d8578b2fde5663a8, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: -30
-      objectReference: {fileID: 0}
-    - target: {fileID: 9073984952805419830, guid: 1839f456c064b004d8578b2fde5663a8, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 1839f456c064b004d8578b2fde5663a8, type: 3}
---- !u!1001 &1251461353
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
     - target: {fileID: 1667423601786065992, guid: 60b31945a372e72438ba0f7e5022d9e0, type: 3}
       propertyPath: m_Name
       value: FlipGate (4)
       objectReference: {fileID: 0}
     - target: {fileID: 2211649535494340620, guid: 60b31945a372e72438ba0f7e5022d9e0, type: 3}
       propertyPath: m_RootOrder
-      value: 18
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 2211649535494340620, guid: 60b31945a372e72438ba0f7e5022d9e0, type: 3}
       propertyPath: m_LocalScale.x
-      value: 15
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 2211649535494340620, guid: 60b31945a372e72438ba0f7e5022d9e0, type: 3}
       propertyPath: m_LocalScale.y
-      value: 15
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 2211649535494340620, guid: 60b31945a372e72438ba0f7e5022d9e0, type: 3}
       propertyPath: m_LocalScale.z
-      value: 15
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 2211649535494340620, guid: 60b31945a372e72438ba0f7e5022d9e0, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1304,6 +1294,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8090406716482712936, guid: 60b31945a372e72438ba0f7e5022d9e0, type: 3}
       propertyPath: m_Center.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2351958893213418426, guid: 60b31945a372e72438ba0f7e5022d9e0, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
