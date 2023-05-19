@@ -279,7 +279,7 @@ public class DeformStage : MonoBehaviour
 
         //‚Ö‚±‚Ý‚ð‘S‚Ä•ÛŠÇ‚·‚é
         ////all_point_down.Add(pointdown[0].GetComponent<RadialCurveDeformer>());
-        return new Vector3(x, y, 0);
+        return new Vector3(position.x, position.y, 0);
     }
 
     //“dŒ¹‚É“–‚½‚Á‚½‚©

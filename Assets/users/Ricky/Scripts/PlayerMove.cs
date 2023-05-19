@@ -495,6 +495,7 @@ public class PlayerMove : MonoBehaviour
             if (isSmash)
             {
                 Vector3 spawn_point = deform_stage.AddDeformpointDown(transform.position, transform.eulerAngles.y, smash_power_num + 1 * smash_power_scalar, is_flip);
+                spawn_point -= this.transform.up;
                 Instantiate(spark_effect, spawn_point, this.transform.rotation);
             }
         }
