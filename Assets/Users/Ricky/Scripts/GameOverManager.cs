@@ -21,6 +21,9 @@ public class GameOverManager : MonoBehaviour
     [Tooltip("治療失敗")]
     [SerializeField] private GameObject failed_pic;
     private RectTransform failed_pic_rect;
+    [Tooltip("ハンマー")]
+    [SerializeField] private GameObject hammer_pic;
+    private RectTransform hammer_pic_rect;
     [Tooltip("リトライ")]
     [SerializeField] private GameObject retry_button;
     private RectTransform retry_button_rect;
@@ -32,6 +35,7 @@ public class GameOverManager : MonoBehaviour
     private RectTransform light_obj_rect;
     [Tooltip("プレイヤー")]
     [SerializeField] private GameObject player_obj;
+    private Animator player_anim;
     
     private float elapsed_time;
     
@@ -69,15 +73,18 @@ public class GameOverManager : MonoBehaviour
     {
         black_panel_rect = black_panel.GetComponent<RectTransform>();
         failed_pic_rect = failed_pic.GetComponent<RectTransform>();
+        hammer_pic_rect = hammer_pic.GetComponent<RectTransform>();
         retry_button_rect = retry_button.GetComponent<RectTransform>();
         select_button_rect = select_button.GetComponent<RectTransform>();
         light_obj_rect = light_obj.GetComponent<RectTransform>();
         
-        player_obj.SetActive(false);
+        hammer_pic.SetActive(false);
+        
+        player_anim = player_obj.transform.GetChild(0).GetComponent<Animator>();
         
         game_over_state = false;
         
-        elapsed_time = -1.0f;
+        elapsed_time = -3.0f;
         
         button_x_target = -430.0f;
         
@@ -104,15 +111,20 @@ public class GameOverManager : MonoBehaviour
                         elapsed_time += Time.unscaledDeltaTime;
                     }
                     
-                    if (elapsed_time < 0.0f)
+                    if (elapsed_time < -1.0f)
                     {
-                        light_obj_rect.localScale = Vector3.MoveTowards(light_obj_rect.localScale, new Vector3(7, 16, 1), Time.unscaledDeltaTime * 10.0f);
+                        player_obj.transform.localPosition = Vector3.MoveTowards(player_obj.transform.localPosition, new Vector3(475, player_obj.transform.localPosition.y, player_obj.transform.localPosition.z), Time.unscaledDeltaTime * 330.0f);
+                    }
+                    
+                    if (elapsed_time >= -1.0f && elapsed_time < 0.0f)
+                    {
+                        player_anim.SetTrigger("failAnim");
+                        player_obj.transform.localEulerAngles = new Vector3(0, 90, 0);
+                        light_obj_rect.localScale = Vector3.MoveTowards(light_obj_rect.localScale, new Vector3(7, 16, 1), Time.unscaledDeltaTime * 30.0f);
                     }
                     
                     if (elapsed_time >= 0.0f)
                     {
-                        player_obj.SetActive(true);
-                        
                         if (failed_pic_rect.localScale != Vector3.one)
                         {
                             failed_pic_rect.localScale = Vector3.MoveTowards(failed_pic_rect.localScale, new Vector3(1.5f, 1.3f, 1), Time.unscaledDeltaTime);
@@ -144,6 +156,7 @@ public class GameOverManager : MonoBehaviour
                             else
                             {
                                 accept_button_input = true;
+                                hammer_pic.SetActive(true);
                             }
                             
                             move_button = false;
@@ -165,10 +178,12 @@ public class GameOverManager : MonoBehaviour
                 switch (current_menu)
                 {
                     case MENU.RETRY:
+                    hammer_pic_rect.localPosition = new Vector3(-700.0f, retry_button_rect.localPosition.y, 1);
                     retry_button_rect.localPosition = new Vector3(button_x_target + 150.0f, retry_button_rect.localPosition.y, 1);
                     select_button_rect.localPosition = new Vector3(button_x_target, select_button_rect.localPosition.y, 1);
                     break;
                     case MENU.SELECT:
+                    hammer_pic_rect.localPosition = new Vector3(-700.0f, select_button_rect.localPosition.y, 1);
                     retry_button_rect.localPosition = new Vector3(button_x_target, retry_button_rect.localPosition.y, 1);
                     select_button_rect.localPosition = new Vector3(button_x_target + 150.0f, select_button_rect.localPosition.y, 1);
                     break;
@@ -216,6 +231,8 @@ public class GameOverManager : MonoBehaviour
         {
             result = true;
             failed_pic.SetActive(true);
+            player_obj.SetActive(true);
+            player_anim.SetBool("isWalking", true);
         }
         
         return result;

@@ -6,8 +6,6 @@ public class DamageScript : MonoBehaviour
 {
     [Tooltip("関電される時間")]
     [SerializeField] private float invincible_duration = 2.0f;
-    [Tooltip("ダメージ受けた時のヒットストップ時間")]
-    [SerializeField] private float damage_stop_time = 0.1f;
     [Tooltip("体力")]
     [SerializeField] private int hp = 3;
     
