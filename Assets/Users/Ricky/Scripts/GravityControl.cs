@@ -8,6 +8,8 @@ public class GravityControl : MonoBehaviour
     
     [Tooltip("重力")]
     [SerializeField] private float gravity_power = 5.0f;
+    [Tooltip("重力の加算")]
+    [SerializeField] private float gravity_increase_power = 2.0f;
     [Tooltip("回転速度")]
     [SerializeField] private float rotation_speed = 20.0f;
     [Tooltip("戻るまでの時間")]
@@ -97,8 +99,8 @@ public class GravityControl : MonoBehaviour
         }
         else
         {
-            float gravity_speed_scalar = 20.0f;
-            increase_gravity_scalar += Time.deltaTime / gravity_speed_scalar;
+            float gravity_speed_scalar = 15.0f;
+            increase_gravity_scalar += Time.deltaTime / gravity_speed_scalar * gravity_increase_power;
         }
 
         Vector3 real_grav_dir = gravity_dir * gravity_number * real_gravity_power * increase_gravity_scalar;
