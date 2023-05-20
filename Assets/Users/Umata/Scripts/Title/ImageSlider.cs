@@ -4,49 +4,53 @@ using UnityEngine.SceneManagement;
 
 public class ImageSlider : MonoBehaviour
 {
-    public Image[] images;  // ‚R‚Â‚ÌImage‚ğŠi”[‚·‚é”z—ñ
-    public int select_button = 0;  // ‘I‘ğ’†‚Ìƒ{ƒ^ƒ“‚ÌƒCƒ“ƒfƒbƒNƒX
-    public int select_distance = 50;  // ƒ{ƒ^ƒ“‚ğ‚¸‚ç‚·‹——£
-    public float select_delay = 0.3f; // ƒ{ƒ^ƒ“‘I‘ğ‚ÌXV‚ğ§ŒÀ‚·‚éŠÔ
+    public Image[] images;  // ï¿½Rï¿½Â‚ï¿½Imageï¿½ï¿½ï¿½iï¿½[ï¿½ï¿½ï¿½ï¿½zï¿½ï¿½
+    public int select_button = 0;  // ï¿½Iï¿½ğ’†‚Ìƒ{ï¿½^ï¿½ï¿½ï¿½ÌƒCï¿½ï¿½ï¿½fï¿½bï¿½Nï¿½X
+    public int select_distance = 50;  // ï¿½{ï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ç‚·ï¿½ï¿½ï¿½ï¿½
+    public float select_delay = 0.3f; // ï¿½{ï¿½^ï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½ÌXï¿½Vï¿½ğ§Œï¿½ï¿½ï¿½ï¿½éï¿½ï¿½
 
-    public bool is_firsttime = true; // ‰‰ñ‹N“®‚©‚Ç‚¤‚©‚Ìƒtƒ‰ƒO
+    public bool is_firsttime = true; // ï¿½ï¿½ï¿½ï¿½Nï¿½ï¿½ï¿½ï¿½ï¿½Ç‚ï¿½ï¿½ï¿½ï¿½Ìƒtï¿½ï¿½ï¿½O
 
-    public string scene_start_name; //Å‰‚ÌƒV[ƒ“–¼
-    public string scene_continue_name; //‘±‚«‚ÌƒV[ƒ“–¼
-    public string scene_option_name; //ƒIƒvƒVƒ‡ƒ“‚ÌƒV[ƒ“–¼
-
-
-    public Image image_hammer; // ’Ç‰Á‚ÌImage Hammer
-    public Image image_banner; // ’Ç‰Á‚ÌImage Banner
+    public string scene_start_name; //ï¿½Åï¿½ï¿½ÌƒVï¿½[ï¿½ï¿½ï¿½ï¿½
+    public string scene_continue_name; //ï¿½ï¿½ï¿½ï¿½ï¿½ÌƒVï¿½[ï¿½ï¿½ï¿½ï¿½
+    public string scene_option_name; //ï¿½Iï¿½vï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½ÌƒVï¿½[ï¿½ï¿½ï¿½ï¿½
 
 
-    public float hammer_image_distance;  // ‰ŠúÀ•W‚ğ•Û‘¶‚·‚é”z—ñ
+    public Image image_hammer; // ï¿½Ç‰ï¿½ï¿½ï¿½Image Hammer
+    public Image image_banner; // ï¿½Ç‰ï¿½ï¿½ï¿½Image Banner
 
-    private float[] init_positions;  // ‰ŠúÀ•W‚ğ•Û‘¶‚·‚é”z—ñ
-    private float timeSinceSelect = 0f; // ‘O‰ñ‚Ìƒ{ƒ^ƒ“‘I‘ğ‚©‚ç‚ÌŠÔ
-    private bool canSelect = true; // ƒ{ƒ^ƒ“‘I‘ğ‚ª‰Â”\‚©‚Ç‚¤‚©‚Ìƒtƒ‰ƒO
 
+    public float hammer_image_distance;  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½ï¿½Û‘ï¿½ï¿½ï¿½ï¿½ï¿½zï¿½ï¿½
+
+    private float[] init_positions;  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½ï¿½Û‘ï¿½ï¿½ï¿½ï¿½ï¿½zï¿½ï¿½
+    private float timeSinceSelect = 0f; // ï¿½Oï¿½ï¿½Ìƒ{ï¿½^ï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ìï¿½ï¿½ï¿½
+    private bool canSelect = true; // ï¿½{ï¿½^ï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½Â”\ï¿½ï¿½ï¿½Ç‚ï¿½ï¿½ï¿½ï¿½Ìƒtï¿½ï¿½ï¿½O
+
+    private SoundManager soundManager;
+    
     void Start()
     {
-        // ‰ŠúÀ•W‚ğ”z—ñ‚É•Û‘¶
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½ï¿½zï¿½ï¿½É•Û‘ï¿½
         init_positions = new float[images.Length];
         for (int i = 0; i < images.Length; i++)
         {
             init_positions[i] = images[i].rectTransform.anchoredPosition.x;
         }
 
-        // ‰Šúó‘Ô‚Ìƒ{ƒ^ƒ“‚ğ‘I‘ğ
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô‚Ìƒ{ï¿½^ï¿½ï¿½ï¿½ï¿½Iï¿½ï¿½
         SetSelectedButton(select_button);
 
-        
+        soundManager = GetComponent<SoundManager>();
     }
 
     void Update()
     {
-        //ƒV[ƒ“Ø‘Ö
+        //ï¿½Vï¿½[ï¿½ï¿½ï¿½Ø‘ï¿½
         if (InputManager.instance.press_select)
         {
-            // ƒXƒy[ƒXƒL[‚Ü‚½‚ÍƒWƒƒƒ“ƒvƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚Æ‚«‚Ìˆ—
+            soundManager.PlaySoundEffect("OK");
+            
+            // ï¿½Xï¿½yï¿½[ï¿½Xï¿½Lï¿½[ï¿½Ü‚ï¿½ï¿½ÍƒWï¿½ï¿½ï¿½ï¿½ï¿½vï¿½{ï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ï¿½Æ‚ï¿½ï¿½Ìï¿½ï¿½ï¿½
             switch (select_button){
                 case 0:
                     SceneManager.LoadScene(scene_start_name);
@@ -60,7 +64,7 @@ public class ImageSlider : MonoBehaviour
                     break;
             }
         }
-        // ‰‰ñ‹N“®‚Ìê‡AadditionalImage‚ÌƒAƒ‹ƒtƒ@’l‚ğ255‚Éİ’è
+        // ï¿½ï¿½ï¿½ï¿½Nï¿½ï¿½ï¿½Ìê‡ï¿½AadditionalImageï¿½ÌƒAï¿½ï¿½ï¿½tï¿½@ï¿½lï¿½ï¿½255ï¿½Éİ’ï¿½
         if (!is_firsttime)
         {
             Color color = images[1].color;
@@ -76,9 +80,10 @@ public class ImageSlider : MonoBehaviour
 
         timeSinceSelect += Time.deltaTime;
 
-        // ƒL[ƒ{[ƒh‘€ì‚Å‘I‘ğ’†‚Ìƒ{ƒ^ƒ“‚ğ•ÏX
+        // ï¿½Lï¿½[ï¿½{ï¿½[ï¿½hï¿½ï¿½ï¿½ï¿½Å‘Iï¿½ğ’†‚Ìƒ{ï¿½^ï¿½ï¿½ï¿½ï¿½ÏX
         if (canSelect && InputManager.instance.GetMenuMoveFloat() < 0)
         {
+            soundManager.PlaySoundEffect("Cursor");
             timeSinceSelect = 0f;
             canSelect = false;
             select_button--;
@@ -89,6 +94,7 @@ public class ImageSlider : MonoBehaviour
         }
         else if (canSelect && InputManager.instance.GetMenuMoveFloat() > 0)
         {
+            soundManager.PlaySoundEffect("Cursor");
             timeSinceSelect = 0f;
             canSelect = false;
             select_button++;
@@ -98,22 +104,22 @@ public class ImageSlider : MonoBehaviour
             }
         }
 
-        // ƒ{ƒ^ƒ“‘I‘ğ‚ÌXV‚ª§ŒÀŠÔ‚ğ’´‚¦‚½‚çƒtƒ‰ƒO‚ğ—§‚Ä‚é
+        // ï¿½{ï¿½^ï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½ÌXï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô‚ğ’´‚ï¿½ï¿½ï¿½ï¿½ï¿½tï¿½ï¿½ï¿½Oï¿½ğ—§‚Ä‚ï¿½
         if (timeSinceSelect >= select_delay)
         {
             canSelect = true;
         }
 
-        // ‘I‘ğ’†‚Ìƒ{ƒ^ƒ“‚ğˆÚ“®
+        // ï¿½Iï¿½ğ’†‚Ìƒ{ï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½Ú“ï¿½
         SetSelectedButton(select_button);
     }
 
-    // ‘I‘ğ’†‚Ìƒ{ƒ^ƒ“‚ğˆÚ“®‚·‚éŠÖ”
+    // ï¿½Iï¿½ğ’†‚Ìƒ{ï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½Ú“ï¿½ï¿½ï¿½ï¿½ï¿½Öï¿½
     void SetSelectedButton(int index)
     {
         for (int i = 0; i < images.Length; i++)
         {
-            // ‰ŠúÀ•W‚©‚ç‘I‘ğ’†‚Ìƒ{ƒ^ƒ“‚Ì‹——£‚É‰‚¶‚ÄAXÀ•W‚ğ‚¸‚ç‚·
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½ï¿½ï¿½ï¿½Iï¿½ğ’†‚Ìƒ{ï¿½^ï¿½ï¿½ï¿½Ì‹ï¿½ï¿½ï¿½ï¿½É‰ï¿½ï¿½ï¿½ï¿½ÄAXï¿½ï¿½ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½ç‚·
             float x = init_positions[i];
             if (i == index)
             {

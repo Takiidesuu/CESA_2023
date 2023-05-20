@@ -24,6 +24,8 @@ public class StageRotation : MonoBehaviour
 
     GameObject player_obj;
     
+    private SoundManager soundManager;
+    
     public bool GetRotatingStatus()
     {
         if (is_reverse_rotation || is_rotation)
@@ -47,6 +49,8 @@ public class StageRotation : MonoBehaviour
         player_obj = GameObject.FindGameObjectWithTag("Player");
         is_reverse_rotation = false;
         is_rotation = false;
+        
+        soundManager = GetComponent<SoundManager>();
     }
 
     void Update()
@@ -105,8 +109,10 @@ public class StageRotation : MonoBehaviour
     }
     private IEnumerator Wait()
     {
+        soundManager.PlaySoundEffect("StartRotate");
         yield return new WaitForSeconds(wait_rotation_time);
         is_rotation = true;
+        soundManager.PlaySoundEffect("Rotating");
     }
 
     float Ease(float x)

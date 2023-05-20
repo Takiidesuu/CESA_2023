@@ -43,6 +43,8 @@ public class GameOverManager : MonoBehaviour
     [SerializeField] private GameObject player_shadow_tex;
     private RectTransform player_shadow_tex_rect;
     
+    private SoundManager soundManager;
+    
     private float elapsed_time;
     
     public bool game_over_state {get; private set;}
@@ -86,6 +88,8 @@ public class GameOverManager : MonoBehaviour
         player_obj_tex_rect = player_obj_tex.GetComponent<RectTransform>();
         player_shadow_tex_rect = player_shadow_tex.GetComponent<RectTransform>();
         
+        soundManager = GetComponent<SoundManager>();
+        
         hammer_pic.SetActive(false);
         
         player_anim = player_obj.transform.GetChild(0).GetComponent<Animator>();
@@ -121,8 +125,8 @@ public class GameOverManager : MonoBehaviour
                     
                     if (elapsed_time < -1.0f)
                     {
-                        player_obj_tex_rect.localPosition = Vector3.MoveTowards(player_obj_tex_rect.localPosition, new Vector3(515, player_obj_tex_rect.localPosition.y, player_obj_tex_rect.localPosition.z), Time.unscaledDeltaTime * 310.0f);
-                        player_shadow_tex_rect.localPosition = player_obj_tex_rect.localPosition + new Vector3(50, -109, 365);
+                        player_obj_tex_rect.localPosition = Vector3.MoveTowards(player_obj_tex_rect.localPosition, new Vector3(510, player_obj_tex_rect.localPosition.y, player_obj_tex_rect.localPosition.z), Time.unscaledDeltaTime * 310.0f);
+                        player_shadow_tex_rect.localPosition = player_obj_tex_rect.localPosition + new Vector3(45, -109, 365);
                     }
                     
                     if (elapsed_time >= -1.0f && elapsed_time < 0.0f)
@@ -178,10 +182,12 @@ public class GameOverManager : MonoBehaviour
                 if (InputManager.instance.GetMenuMoveFloat() < 0)
                 {
                     current_menu = MENU.RETRY;
+                    soundManager.PlaySoundEffect("Cursor");
                 }
                 else if (InputManager.instance.GetMenuMoveFloat() > 0)
                 {
                     current_menu = MENU.SELECT;
+                    soundManager.PlaySoundEffect("Cursor");
                 }
 
                 switch (current_menu)
@@ -214,6 +220,7 @@ public class GameOverManager : MonoBehaviour
                 }
                 else
                 {
+                    soundManager.PlaySoundEffect("OK");
                     switch (current_menu)
                     {
                         case MENU.RETRY:

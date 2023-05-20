@@ -5,25 +5,25 @@ using UnityEngine.SceneManagement;
 
 public class ScoreManager : MonoBehaviour
 {
-    //‚RD‹óŠÔƒeƒLƒXƒg
+    //ï¿½RDï¿½ï¿½Ôƒeï¿½Lï¿½Xï¿½g
     public TextMeshPro ScoreText;
     public TextMeshPro TimeText;
 
-    public string NextSceneName;    //ŸƒV[ƒ“‚ÌƒeƒLƒXƒg
+    public string NextSceneName;    //ï¿½ï¿½ï¿½Vï¿½[ï¿½ï¿½ï¿½Ìƒeï¿½Lï¿½Xï¿½g
 
-    //ƒ‰ƒ“ƒN‰æ‘œ
+    //ï¿½ï¿½ï¿½ï¿½ï¿½Nï¿½æ‘œ
     public GameObject rank_s;
     public GameObject rank_a;
     public GameObject rank_b;
     public GameObject rank_c;
     public GameObject rank_pos;
-    //ƒ‰ƒ“ƒNƒ{[ƒ_[
+    //ï¿½ï¿½ï¿½ï¿½ï¿½Nï¿½{ï¿½[ï¿½_ï¿½[
     public int border_s;
     public int border_a;
     public int border_b;
     public int border_c;
     public float rank_push_time;
-    //ƒJƒEƒ“ƒgƒAƒbƒvˆ—
+    //ï¿½Jï¿½Eï¿½ï¿½ï¿½gï¿½Aï¿½bï¿½vï¿½ï¿½ï¿½ï¿½
     public int CountUpTime;
     public int ClearTime = 60;
     public int Score = 100;
@@ -33,12 +33,13 @@ public class ScoreManager : MonoBehaviour
     private float elapsedtime;
     public GameObject TimeTextObj;
     public GameObject ScoreTextObj;
-    //ˆê“x‚µ‚©Às‚µ‚È‚¢‚æ‚¤ƒtƒ‰ƒOŠÇ—
+    //ï¿½ï¿½xï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½È‚ï¿½ï¿½æ‚¤ï¿½tï¿½ï¿½ï¿½Oï¿½Ç—ï¿½
     private bool time_countup_flg;
     private bool score_countup_flg;
 
+    private SoundManager soundManager;
 
-    //ƒAƒCƒeƒ€ˆÚ“®—pƒXƒNƒŠƒvƒg
+    //ï¿½Aï¿½Cï¿½eï¿½ï¿½ï¿½Ú“ï¿½ï¿½pï¿½Xï¿½Nï¿½ï¿½ï¿½vï¿½g
     ItemMover itemmover;
     private void Start()
     {
@@ -51,6 +52,9 @@ public class ScoreManager : MonoBehaviour
         counting = true;
         time_countup_flg = false;
         score_countup_flg = false;
+        
+        soundManager = GetComponent<SoundManager>();
+        soundManager.PlaySoundEffect("ClearJingle");
     }
 
     private void Update()
@@ -73,7 +77,7 @@ public class ScoreManager : MonoBehaviour
                     elapsedtime = 0;
                     time_countup_flg = true;
                 }
-                //ƒJƒEƒ“ƒgƒAƒbƒvI—¹
+                //ï¿½Jï¿½Eï¿½ï¿½ï¿½gï¿½Aï¿½bï¿½vï¿½Iï¿½ï¿½
                 if(timeLeft >= ClearTime)
                 {
                     time_countup_flg = true;
@@ -140,7 +144,7 @@ public class ScoreManager : MonoBehaviour
                     itemmover.MoveItem(rank_c, rank_push_time, rank_pos.transform.position);
 
                 }
-                //ÅI“ü—Í
+                //ï¿½ÅIï¿½ï¿½ï¿½ï¿½
                 if (InputManager.instance.press_select)
                 {
                     int current_world = StageDataManager.instance.now_world + 1;

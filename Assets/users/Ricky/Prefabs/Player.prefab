@@ -224,7 +224,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 912
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
@@ -315,15 +315,19 @@ MonoBehaviour:
   - name: Strike
     clip:
     - {fileID: 8300000, guid: c962d900b8ead6244bdaaa2262d6d828, type: 3}
+    volume: 1
   - name: Walk
     clip:
     - {fileID: 8300000, guid: 85360783fa6caaa4b8e81a995c4df1ac, type: 3}
+    volume: 0.504
   - name: Charge_0
     clip:
     - {fileID: 8300000, guid: 99a569db9534ef044927449c9df87f82, type: 3}
+    volume: 0.521
   - name: Charge_1
     clip:
     - {fileID: 8300000, guid: f6d791bb6eef0244baf931db1d566c35, type: 3}
+    volume: 0.539
 --- !u!81 &180004898995524914
 AudioListener:
   m_ObjectHideFlags: 0
