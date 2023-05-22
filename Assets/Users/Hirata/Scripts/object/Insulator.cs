@@ -4,17 +4,20 @@ using UnityEngine;
 
 public class Insulator : MonoBehaviour
 {
-    private int hit_count;           //“–‚½‚Á‚Ä‚ç‚¸‚É‰½ƒtƒŒ[ƒ€—§‚Á‚½‚© (Exit‚ªŒÄ‚Î‚ê‚È‚¢‚½‚ß)
-    private MeshRenderer material;          //Œõ‚ç‚·‚½‚ß
+    private int hit_count;           //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ç‚¸ï¿½É‰ï¿½ï¿½tï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (Exitï¿½ï¿½ï¿½Ä‚Î‚ï¿½È‚ï¿½ï¿½ï¿½ï¿½ï¿½)
+    private MeshRenderer material;          //ï¿½ï¿½ï¿½ç‚·ï¿½ï¿½ï¿½ï¿½
+    
+    private SoundManager soundManager;
 
     private void Start()
     {
         material = GetComponent<MeshRenderer>();
+        soundManager = GetComponent<SoundManager>();
     }
 
     private void Update()
     {
-        //‚Ç‚¿‚ç‚àƒXƒe[ƒW‚É“–‚½‚Á‚Ä‚¢‚é‚©
+        //ï¿½Ç‚ï¿½ï¿½ï¿½ï¿½ï¿½Xï¿½eï¿½[ï¿½Wï¿½É“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½é‚©
         if (hit_count < 50)
         {
             material.material.color = Color.yellow;
@@ -28,9 +31,10 @@ public class Insulator : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        //ƒGƒŒƒLƒ{[ƒ‹‚É“–‚½‚ê‚ÎÁ‚·
+        //ï¿½Gï¿½ï¿½ï¿½Lï¿½{ï¿½[ï¿½ï¿½ï¿½É“ï¿½ï¿½ï¿½ï¿½ï¿½Îï¿½ï¿½ï¿½
         if (other.gameObject.CompareTag("ElectricalBall"))
         {
+            soundManager.PlaySoundEffect("ElectricHit");
             hit_count = 0;
             Destroy(other.gameObject);
         }

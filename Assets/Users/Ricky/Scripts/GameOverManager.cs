@@ -43,6 +43,8 @@ public class GameOverManager : MonoBehaviour
     [SerializeField] private GameObject player_shadow_tex;
     private RectTransform player_shadow_tex_rect;
     
+    private SoundManager soundManager;
+    
     private float elapsed_time;
     
     public bool game_over_state {get; private set;}
@@ -86,13 +88,15 @@ public class GameOverManager : MonoBehaviour
         player_obj_tex_rect = player_obj_tex.GetComponent<RectTransform>();
         player_shadow_tex_rect = player_shadow_tex.GetComponent<RectTransform>();
         
+        soundManager = GetComponent<SoundManager>();
+        
         hammer_pic.SetActive(false);
         
         player_anim = player_obj.transform.GetChild(0).GetComponent<Animator>();
         
         game_over_state = false;
         
-        elapsed_time = -3.0f;
+        elapsed_time = -3.5f;
         
         button_x_target = -430.0f;
         
@@ -119,17 +123,19 @@ public class GameOverManager : MonoBehaviour
                         elapsed_time += Time.unscaledDeltaTime;
                     }
                     
-                    if (elapsed_time < -1.0f)
+                    if (elapsed_time >= -2.8f && elapsed_time < -0.5f)
                     {
-                        player_obj_tex_rect.localPosition = Vector3.MoveTowards(player_obj_tex_rect.localPosition, new Vector3(515, player_obj_tex_rect.localPosition.y, player_obj_tex_rect.localPosition.z), Time.unscaledDeltaTime * 310.0f);
-                        player_shadow_tex_rect.localPosition = player_obj_tex_rect.localPosition + new Vector3(50, -109, 365);
+                        player_obj_tex_rect.localPosition = Vector3.MoveTowards(player_obj_tex_rect.localPosition, new Vector3(510, player_obj_tex_rect.localPosition.y, player_obj_tex_rect.localPosition.z), Time.unscaledDeltaTime * 310.0f);
+                        player_shadow_tex_rect.localPosition = player_obj_tex_rect.localPosition + new Vector3(45, -109, 365);
+                        player_anim.speed = 0.7f;
                     }
                     
-                    if (elapsed_time >= -1.0f && elapsed_time < 0.0f)
+                    if (elapsed_time >= -0.5f && elapsed_time < 0.0f)
                     {
                         player_anim.SetTrigger("failAnim");
+                        player_anim.speed = 1.0f;
                         player_obj.transform.localEulerAngles = new Vector3(0, 90, 0);
-                        light_obj_rect.localScale = Vector3.MoveTowards(light_obj_rect.localScale, new Vector3(7, 16, 1), Time.unscaledDeltaTime * 30.0f);
+                        light_obj_rect.localScale = Vector3.MoveTowards(light_obj_rect.localScale, new Vector3(7, 16, 1), Time.unscaledDeltaTime * 100.0f);
                     }
                     
                     if (elapsed_time >= 0.0f)
@@ -147,7 +153,7 @@ public class GameOverManager : MonoBehaviour
                         }
                     }
                     
-                    if (elapsed_time > 1.0f)
+                    if (elapsed_time > 0.5f)
                     {
                         if(move_button)
                         {
@@ -178,10 +184,12 @@ public class GameOverManager : MonoBehaviour
                 if (InputManager.instance.GetMenuMoveFloat() < 0)
                 {
                     current_menu = MENU.RETRY;
+                    soundManager.PlaySoundEffect("Cursor");
                 }
                 else if (InputManager.instance.GetMenuMoveFloat() > 0)
                 {
                     current_menu = MENU.SELECT;
+                    soundManager.PlaySoundEffect("Cursor");
                 }
 
                 switch (current_menu)
@@ -209,11 +217,12 @@ public class GameOverManager : MonoBehaviour
                     }
                     else if (elapsed_time >= 0.0f && elapsed_time < 3.0f)
                     {
-                        elapsed_time = 1.0f;
+                        elapsed_time = 0.5f;
                     }
                 }
                 else
                 {
+                    soundManager.PlaySoundEffect("OK");
                     switch (current_menu)
                     {
                         case MENU.RETRY:
@@ -234,7 +243,7 @@ public class GameOverManager : MonoBehaviour
         
         if (black_panel_rect.localPosition != Vector3.zero)
         {
-            black_panel_rect.localPosition = Vector3.MoveTowards(black_panel_rect.localPosition, Vector3.zero, 20.0f);
+            black_panel_rect.localPosition = Vector3.MoveTowards(black_panel_rect.localPosition, Vector3.zero, 200.0f);
         }
         else
         {

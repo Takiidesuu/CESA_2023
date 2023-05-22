@@ -28,7 +28,7 @@ public class PauseManager : MonoBehaviour
     
     private bool switch_scene = false;
     
-    [SerializeField] private GameObject[] obj_to_disable;
+    private SoundManager soundManager;
     
     private void Awake() 
     {
@@ -57,6 +57,8 @@ public class PauseManager : MonoBehaviour
         }
         
         curtain_transform = transform.GetChild(0).GetComponent<RectTransform>();
+        
+        soundManager = GetComponent<SoundManager>();
     }
 
     // Update is called once per frame
@@ -87,6 +89,7 @@ public class PauseManager : MonoBehaviour
                     if (InputManager.instance.press_start || InputManager.instance.press_cancel)
                     {
                         pause_flg = false;
+                        soundManager.PlaySoundEffect("Cancel");
                     }
                     
                     selected_option = GetNextMenu(InputManager.instance.GetMenuMoveFloat());
@@ -105,6 +108,8 @@ public class PauseManager : MonoBehaviour
                     
                     if (InputManager.instance.press_select)
                     {
+                        soundManager.PlaySoundEffect("OK");
+                        
                         switch (selected_option)
                         {
                             case MENU_OPTION.RESUME:
@@ -117,8 +122,10 @@ public class PauseManager : MonoBehaviour
                             
                             break;
                             case MENU_OPTION.STAGESELECT:
+                            SceneManager.LoadScene("StageSelect");
                             break;
                             case MENU_OPTION.TITLE:
+                            SceneManager.LoadScene("Title");
                             break;
                         }
                     }
@@ -152,6 +159,8 @@ public class PauseManager : MonoBehaviour
         
         if (iinput > 0)
         {
+            
+            
             switch (selected_option)
             {
                 case MENU_OPTION.RESUME:
@@ -173,6 +182,8 @@ public class PauseManager : MonoBehaviour
         }
         else if (iinput < 0)
         {
+            soundManager.PlaySoundEffect("Cursor");
+            
             switch (selected_option)
             {
                 case MENU_OPTION.RESUME:

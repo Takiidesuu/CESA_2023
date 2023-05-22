@@ -34,18 +34,18 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private float smash_threshold = 2.0f;
     [Tooltip("溜める最大秒数")]
     [SerializeField] private float smash_max_time = 5.0f;
-    [Header("叩く力")]
+    [Tooltip("叩く力")]
     [SerializeField] private float smash_power_scalar = 3.0f;
     
-    [Header("震度")]
+    [Header("Vibration param")]
     [Tooltip("溜めてる時の震度")]
     [SerializeField] private float hold_smash_vibration = 1.0f;
-    [Header("叩く時の震度")]
+    [Tooltip("叩く時の震度")]
     [SerializeField] private float smash_vibration = 3.0f;
-    [Header("カメラの震度")]
+    [Tooltip("カメラの震度")]
     [SerializeField] private float camera_vibration = 2.0f;
  
-    [Header("プレハブ")]
+    [Header("Prefab")]
     [Tooltip("火花")]
     [SerializeField] private GameObject spark_effect;
     
@@ -74,6 +74,9 @@ public class PlayerMove : MonoBehaviour
     private SMASHJUMP can_jump_status;   //叩く力の段階
 
     private SoundManager soundmanager;
+    
+    private bool play_small_charge;
+    private bool play_max_charge;
 
     [Tooltip("線のパーティクル")]
     [SerializeField] private ParticleSystem part_line_sys;
@@ -163,6 +166,9 @@ public class PlayerMove : MonoBehaviour
         //soundmannagerを取得
         soundmanager = GetComponent<SoundManager>();
         
+        play_small_charge = true;
+        play_max_charge = true;
+        
         check_is_cleared = GameObject.FindObjectOfType<LightBulbCollector>();
     }
 
@@ -193,6 +199,17 @@ public class PlayerMove : MonoBehaviour
                     {
                         DecelerateSpeed();
                     }
+                    else
+                    {
+                        if (!soundmanager.CheckIsPlaying("Walk"))
+                        {
+                            soundmanager.PlaySoundEffect("Walk");
+                        }
+                    }
+                }
+                else
+                {
+                    soundmanager.StopSoundEffect("Walk");
                 }
                 
                 if (InputManager.instance.press_smash)
@@ -249,6 +266,9 @@ public class PlayerMove : MonoBehaviour
                             part_line_effect.enabled = false;
                             part_circle_effect.enabled = false;
                             
+                            play_small_charge = true;
+                            play_max_charge = true;
+                            
                             break;
                             case SMASHSTATE.HOLDING:    //力を溜めてる状態
                             
@@ -276,11 +296,23 @@ public class PlayerMove : MonoBehaviour
                                 {
                                     line_color.startColor = new Color(1.0f, 0.0f, 0.0f);
                                     circle_color.startColor = new Color(1.0f, 0.0f, 0.0f);
+                                    
+                                    if (play_max_charge)
+                                    {
+                                        soundmanager.PlaySoundEffect("Charge_1");
+                                        play_max_charge = false;
+                                    }
                                 }
                                 else
                                 {
                                     line_color.startColor = new Color(0.0f, 1.0f, 0.0f);
                                     circle_color.startColor = new Color(0.0f, 1.0f, 0.0f);
+                                    
+                                    if (play_small_charge)
+                                    {
+                                        soundmanager.PlaySoundEffect("Charge_0");
+                                        play_small_charge = false;
+                                    }
                                 }   
                             }
                             else
