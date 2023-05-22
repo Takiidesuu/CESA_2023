@@ -27,6 +27,11 @@ public class ElectricBallMove : MonoBehaviour
     
     private float m_real_speed;
     
+    //帯電エフェクト
+    private GameObject m_electric_effect;
+    private Vector3 m_electric_startsize;
+    public GameObject m_destroy_effect;
+
     private bool has_jumped;
     private float elapsed_time;
     
@@ -44,7 +49,9 @@ public class ElectricBallMove : MonoBehaviour
         has_jumped = false;
         
         check_is_cleared = GameObject.FindObjectOfType<LightBulbCollector>();
-
+        m_electric_effect = transform.Find("ElectlicEffect").gameObject;
+        m_electric_startsize = m_electric_effect.transform.localScale;
+        m_destroy_effect = transform.Find("ElectricBall_Destroy_Effect").gameObject;
         elapsed_time = 0.0f;
         is_on_boost = false;
     }
@@ -59,10 +66,15 @@ public class ElectricBallMove : MonoBehaviour
             rb.velocity = transform.TransformDirection(locVel);
 
             m_destroy_timer += Time.deltaTime;
+            //エフェクトの大きさを経過時間に応じて小さくする
+            Vector3 effect_scale = m_electric_startsize - (m_electric_startsize * (m_destroy_timer / m_destroy_time));
+
+            m_electric_effect.transform.localScale = effect_scale;
 
             //時間経過後削除
             if(m_destroy_timer > m_destroy_time)
             {
+                Instantiate(m_destroy_effect,transform.position,Quaternion.identity,transform.parent);
                 Destroy(this.gameObject);
             }
             
