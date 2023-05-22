@@ -9,7 +9,7 @@ public class PlayerNPC : MonoBehaviour
         RIGHT,
         LEFT
     }
-    
+
     [Tooltip("移動速度")]
     [SerializeField] private float move_speed = 5.0f;
     [Tooltip("移動方向")]
@@ -37,11 +37,11 @@ public class PlayerNPC : MonoBehaviour
         {
             transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, 0.0f, transform.localEulerAngles.z);
         }
-        else
+        else 
         {
             transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, 180.0f, transform.localEulerAngles.z);
         }
-        
+      
         var locVel = transform.InverseTransformDirection(rb.velocity);
         locVel.x = move_speed;
         rb.velocity = transform.TransformDirection(locVel);
