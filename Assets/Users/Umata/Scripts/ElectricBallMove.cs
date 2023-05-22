@@ -51,7 +51,6 @@ public class ElectricBallMove : MonoBehaviour
         check_is_cleared = GameObject.FindObjectOfType<LightBulbCollector>();
         m_electric_effect = transform.Find("ElectlicEffect").gameObject;
         m_electric_startsize = m_electric_effect.transform.localScale;
-        m_destroy_effect = transform.Find("ElectricBall_Destroy_Effect").gameObject;
         elapsed_time = 0.0f;
         is_on_boost = false;
     }
