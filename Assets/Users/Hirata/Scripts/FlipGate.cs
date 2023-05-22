@@ -67,7 +67,7 @@ public class FlipGate : MonoBehaviour
         Barrier.SetActive(true);
         if (FlipObj.CompareTag("Player") || FlipObj.CompareTag("ElectricalBall")) 
             StartCoroutine(Flip(FlipTime));
-        else if (FlipObj.CompareTag("FlipObj"))
+        else if (FlipObj.CompareTag("BackBuilding"))
         {
             FlipObj.transform.parent = this.transform;
             FlipObj.transform.localPosition = Vector3.zero;
@@ -84,7 +84,7 @@ public class FlipGate : MonoBehaviour
         Barrier.SetActive(false);
         if (FlipObj.GetComponent<Rigidbody>()) 
             FlipObj.GetComponent<Rigidbody>().velocity = Vector3.zero;
-        if (FlipObj.CompareTag("FlipObj"))
+        if (FlipObj.CompareTag("BackBuilding"))
             FlipObj.transform.parent = null;
 
         yield return new WaitForSeconds(value);
