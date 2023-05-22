@@ -15,6 +15,9 @@ public class LightBulb : MonoBehaviour
     [SerializeField] private float m_destroy_time = 5.0f;
     private float m_destroy_timer;
     
+    private Vector3 default_scale = new Vector3(3, 3, 3);
+    private GameObject electric_effect;
+    
     public GameObject line_status_obj {get;set;}
 
     public float GetDestroyTime()
@@ -31,6 +34,8 @@ public class LightBulb : MonoBehaviour
     {   
         changeMaterial = GetComponent<LightBulbChangeMaterial>();
         soundManager = GetComponent<SoundManager>();    
+        electric_effect = transform.GetChild(0).gameObject;
+        electric_effect.transform.localScale = default_scale;
         
         line_status_obj = null;
     }
@@ -47,8 +52,10 @@ public class LightBulb : MonoBehaviour
             else
             {
                 changeMaterial.OnPower = false;
-
             }
+            
+            float scale_to_minus = default_scale.x * (m_destroy_timer / m_destroy_time);
+            electric_effect.transform.localScale = new Vector3(default_scale.x - scale_to_minus, default_scale.y - scale_to_minus, default_scale.z - scale_to_minus);
 
             //ŽžŠÔŒo‰ßŒãíœ
             if (m_destroy_timer > m_destroy_time)
