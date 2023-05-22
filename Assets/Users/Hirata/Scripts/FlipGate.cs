@@ -8,7 +8,7 @@ public class FlipGate : MonoBehaviour
     public GameObject Barrier;
     private GameObject FlipObj;
 
-    private Vector3 targetpos = new Vector3(0, -2.25f, 0);
+    public Vector3 targetpos = new Vector3(0, -2.25f, 0);   //ˆÚ“®—Ê
     private float StartTime;
     public float FlipSpeed = 1;
     public float StopTime = 1;
@@ -45,6 +45,17 @@ public class FlipGate : MonoBehaviour
                 boxCollider.enabled = true;
             }
         }
+        if (transform.childCount == 3) 
+        {
+            transform.GetChild(2).localPosition = transform.GetChild(0).localPosition;
+        }
+
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("BackBuilding") && !IsFlip)
+            Flip(other.gameObject);
     }
 
     public void Flip(GameObject obj)
@@ -54,7 +65,13 @@ public class FlipGate : MonoBehaviour
         StartTime = Time.time;
         boxCollider.enabled = false;
         Barrier.SetActive(true);
-        StartCoroutine(PlayerFlip(FlipTime));
+        if (FlipObj.CompareTag("Player") || FlipObj.CompareTag("ElectricalBall")) 
+            StartCoroutine(Flip(FlipTime));
+        else if (FlipObj.CompareTag("FlipObj"))
+        {
+            FlipObj.transform.parent = this.transform;
+            FlipObj.transform.localPosition = Vector3.zero;
+        }
     }
 
     void FlipReturn()
@@ -65,14 +82,17 @@ public class FlipGate : MonoBehaviour
 
     IEnumerator MoveWait(float value) {
         Barrier.SetActive(false);
-        FlipObj.GetComponent<Rigidbody>().velocity = Vector3.zero;
+        if (FlipObj.GetComponent<Rigidbody>()) 
+            FlipObj.GetComponent<Rigidbody>().velocity = Vector3.zero;
+        if (FlipObj.CompareTag("FlipObj"))
+            FlipObj.transform.parent = null;
 
         yield return new WaitForSeconds(value);
 
         FlipReturn();
     }
 
-    IEnumerator PlayerFlip(float value)
+    IEnumerator Flip(float value)
     {
         yield return new WaitForSeconds(value);
         if (FlipObj.CompareTag("Player"))
