@@ -182,7 +182,7 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.05
+  m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &8770918900206177597
 Rigidbody:
@@ -212,10 +212,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9a83a2af4d9f6849b52b231f72fa89e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gravity_power: 15
+  gravity_power: 20
   gravity_increase_power: 2
   rotation_speed: 41.59
   time_to_warp: 3
+  fire_effect: {fileID: 0}
 --- !u!96 &8770918900206177598
 TrailRenderer:
   serializedVersion: 2
@@ -335,7 +336,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 499dc1886888b594087b2c876f6673c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_speed: 25
+  m_speed: 40
   m_destroy_time: 30
   time_to_normal_speed: 2
   return_speed: 1
@@ -608,7 +609,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1683411105828452785, guid: bb224433be185cc4bb498c621689d562, type: 3}
       propertyPath: m_Name
-      value: ElectlicEffect
+      value: ElectricEffect
       objectReference: {fileID: 0}
     - target: {fileID: 1683411105828452785, guid: bb224433be185cc4bb498c621689d562, type: 3}
       propertyPath: m_Layer

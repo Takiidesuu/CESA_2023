@@ -89,6 +89,8 @@ public class PlayerMove : MonoBehaviour
     private GameObject grav_obj;
     
     private LightBulbCollector check_is_cleared;
+    
+    public bool start_game {get; set;}
 
     /// <summary>
     /// 平田
@@ -170,6 +172,8 @@ public class PlayerMove : MonoBehaviour
         play_max_charge = true;
         
         check_is_cleared = GameObject.FindObjectOfType<LightBulbCollector>();
+        
+        start_game = false;
     }
 
     // Update is called once per frame

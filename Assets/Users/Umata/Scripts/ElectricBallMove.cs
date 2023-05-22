@@ -49,7 +49,7 @@ public class ElectricBallMove : MonoBehaviour
         has_jumped = false;
         
         check_is_cleared = GameObject.FindObjectOfType<LightBulbCollector>();
-        m_electric_effect = transform.Find("ElectlicEffect").gameObject;
+        m_electric_effect = transform.Find("ElectricEffect").gameObject;
         m_electric_startsize = m_electric_effect.transform.localScale;
         elapsed_time = 0.0f;
         is_on_boost = false;
@@ -58,7 +58,7 @@ public class ElectricBallMove : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!check_is_cleared.IsCleared() && !GameOverManager.instance.game_over_state)
+        if (!check_is_cleared.IsCleared() && !GameOverManager.instance.game_over_state && player.GetComponent<PlayerMove>().start_game)
         {
             var locVel = transform.InverseTransformDirection(rb.velocity);
             locVel.x = m_real_speed;

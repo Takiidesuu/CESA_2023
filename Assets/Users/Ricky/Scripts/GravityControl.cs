@@ -14,6 +14,9 @@ public class GravityControl : MonoBehaviour
     [SerializeField] private float rotation_speed = 20.0f;
     [Tooltip("戻るまでの時間")]
     [SerializeField] private float time_to_warp = 3.0f;
+    
+    [Tooltip("火花")]
+    [SerializeField] private GameObject fire_effect;
 
     private Rigidbody rb;
 
@@ -26,6 +29,7 @@ public class GravityControl : MonoBehaviour
     private float increase_gravity_scalar;
     
     private float time_in_air;
+    private bool going_back_to_ground;
     
     private GameObject last_ground_obj;
 
@@ -41,7 +45,12 @@ public class GravityControl : MonoBehaviour
         in_gravfield = false;
         
         increase_gravity_scalar = 1.0f;
-        time_in_air = 0.0f;
+        time_in_air = time_to_warp;
+        
+        if (this.gameObject.tag == "Player")
+        {
+            going_back_to_ground = true;
+        }
         
         last_ground_obj = null;
     }
@@ -93,6 +102,23 @@ public class GravityControl : MonoBehaviour
         if (Physics.Raycast(this.transform.position, gravity_dir, 1.0f, ground_layer_mask))
         {
             on_ground = true;
+            
+            if (going_back_to_ground)
+            {
+                if (this.gameObject.tag == "Player")
+                {
+                    this.GetComponent<PlayerMove>().start_game = true;
+                }
+                
+                Vector3 spawn_pos = this.transform.position - this.transform.up * 0.5f;
+                GameObject first = Instantiate(fire_effect, spawn_pos, this.transform.rotation);
+                first.transform.Rotate(new Vector3(0, 0, 45), Space.World);
+                GameObject second = Instantiate(fire_effect, spawn_pos, this.transform.rotation);
+                second.transform.Rotate(new Vector3(0, 0, -45), Space.World);
+                going_back_to_ground = false;
+                
+                Invoke("Shake", 0.05f);
+            }
         }
         else
         {
@@ -111,6 +137,11 @@ public class GravityControl : MonoBehaviour
 
         Vector3 real_grav_dir = gravity_dir * gravity_number * real_gravity_power * increase_gravity_scalar;
         rb.AddForce(real_grav_dir);
+    }
+    
+    void Shake()
+    {
+        GameObject.Find("Main Camera").GetComponent<CameraMove>().ShakeCamera(2.0f, 0.1f, this.transform.up);
     }
 
     private Vector3 CheckFloorAngle()
@@ -277,7 +308,26 @@ public class GravityControl : MonoBehaviour
             this.transform.GetChild(2).gameObject.SetActive(true);
         }
         
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1.0f);
+        
+        going_back_to_ground = true;
+        
+        if (last_ground_obj == null)
+        {
+            GameObject[] stage_obj = GameObject.FindGameObjectsWithTag("Stage");
+            
+            float distance_to_compare = Mathf.Infinity;
+            
+            foreach (var current in stage_obj)
+            {
+                float distance_to_current = Vector3.Distance(this.transform.position, current.transform.position);
+                if (distance_to_current < distance_to_compare)
+                {
+                    distance_to_compare = distance_to_current;
+                    last_ground_obj = current;
+                }
+            }
+        }
         
         increase_gravity_scalar = 1.0f;
         
