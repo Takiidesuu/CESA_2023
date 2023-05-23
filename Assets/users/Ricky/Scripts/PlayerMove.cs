@@ -189,6 +189,8 @@ public class PlayerMove : MonoBehaviour
                 CheckIsGrounded();
                 CheckSide();
                 
+                Debug.Log(TakingDamage());
+                
                 if (!TakingDamage() && start_game && is_grounded)
                 {
                     //インプット方向を取得
@@ -212,9 +214,23 @@ public class PlayerMove : MonoBehaviour
                     {
                         RotateGround();
                     }
+                    
+                    if (ground_obj != null)
+                    {
+                        if (!ground_obj_parent.gameObject.GetComponent<StageRotation>().GetRotatingStatus())
+                        {
+                            UpdateSmash();
+                        }
+                    }
                 }
                 else
                 {
+                    if (TakingDamage())
+                    {
+                        speed = 0;
+                        rb.velocity = Vector3.zero;
+                    }
+                    
                     input_direction = Vector2.zero;
                 }
                 
@@ -242,20 +258,6 @@ public class PlayerMove : MonoBehaviour
         }
         
         transform.position = new Vector3(transform.position.x, transform.position.y, 0);
-    }
-    
-    void FixedUpdate() 
-    {   
-        if (!check_is_cleared.IsCleared() && !is_dead)
-        {
-            if (ground_obj != null)
-            {
-                if (!ground_obj_parent.gameObject.GetComponent<StageRotation>().GetRotatingStatus())
-                {
-                    UpdateSmash();
-                }
-            }
-        }
     }
     
     void UpdateSmash()
@@ -610,7 +612,7 @@ public class PlayerMove : MonoBehaviour
     {
         bool result = false;
         
-        if (anim.GetCurrentAnimatorStateInfo(0).IsName("tookDamage") && anim.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f)
+        if (anim.GetCurrentAnimatorStateInfo(0).IsName("DamageState") && anim.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f)
         {
             result = true;
         }
