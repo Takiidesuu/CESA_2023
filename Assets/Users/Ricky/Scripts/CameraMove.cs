@@ -90,7 +90,7 @@ public class CameraMove : MonoBehaviour
         
         Vector3 target_pos = new Vector3(target_obj.transform.position.x, target_obj.transform.position.y, target_obj.transform.position.z - Mathf.Abs(distance_from_obj));
         
-        lookat_pos.transform.position = Vector3.MoveTowards(lookat_pos.transform.position, targetLookAt, Time.deltaTime * 300.0f);
+        lookat_pos.transform.position = targetLookAt;
         transform.position = Vector3.MoveTowards(transform.position, target_pos, 300.0f * Time.deltaTime);
         
         if (transform.position == target_pos)

@@ -39,6 +39,8 @@ public class ElectricBallMove : MonoBehaviour
     
     LightBulbCollector check_is_cleared;
     
+    private AudioSource audioSource;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -55,6 +57,8 @@ public class ElectricBallMove : MonoBehaviour
         is_on_boost = false;
         
         speed_effect.SetActive(false);
+        
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -95,6 +99,7 @@ public class ElectricBallMove : MonoBehaviour
         else
         {
             rb.velocity = Vector3.MoveTowards(rb.velocity, Vector3.zero, Time.deltaTime * 30.0f);
+            audioSource.Stop();
         }
     }
     

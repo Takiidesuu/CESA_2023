@@ -212,9 +212,23 @@ public class PlayerMove : MonoBehaviour
                     {
                         RotateGround();
                     }
+                    
+                    if (ground_obj != null)
+                    {
+                        if (!ground_obj_parent.gameObject.GetComponent<StageRotation>().GetRotatingStatus())
+                        {
+                            UpdateSmash();
+                        }
+                    }
                 }
                 else
                 {
+                    if (TakingDamage())
+                    {
+                        speed = 0;
+                        rb.velocity = Vector3.zero;
+                    }
+                    
                     input_direction = Vector2.zero;
                 }
                 
@@ -237,22 +251,6 @@ public class PlayerMove : MonoBehaviour
                 else
                 {
                     soundmanager.StopSoundEffect("Walk");
-                }
-            }
-        }
-        
-        transform.position = new Vector3(transform.position.x, transform.position.y, 0);
-    }
-    
-    void FixedUpdate() 
-    {   
-        if (!check_is_cleared.IsCleared() && !is_dead)
-        {
-            if (ground_obj != null)
-            {
-                if (!ground_obj_parent.gameObject.GetComponent<StageRotation>().GetRotatingStatus())
-                {
-                    UpdateSmash();
                 }
             }
         }
@@ -408,6 +406,11 @@ public class PlayerMove : MonoBehaviour
     {
         rb.velocity = Vector3.MoveTowards(rb.velocity, Vector3.zero, deceleration_speed * Time.deltaTime * 4.0f);
         speed = Mathf.MoveTowards(speed, 0.0f, deceleration_speed * 0.5f);
+    }
+    
+    private void LateUpdate() 
+    {
+        transform.position = new Vector3(transform.position.x, transform.position.y, 0);
     }
     
     private void CheckIsGrounded()
@@ -610,7 +613,7 @@ public class PlayerMove : MonoBehaviour
     {
         bool result = false;
         
-        if (anim.GetCurrentAnimatorStateInfo(0).IsName("tookDamage") && anim.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f)
+        if (anim.GetCurrentAnimatorStateInfo(0).IsName("DamageState") && anim.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f)
         {
             result = true;
         }

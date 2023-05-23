@@ -48,12 +48,14 @@ public class GravityControl : MonoBehaviour
         on_ground = false;
         in_gravfield = false;
         
+        time_in_air = 0;
+        
         increase_gravity_scalar = 1.0f;
         
         if (this.gameObject.tag == "Player")
         {
-            time_in_air = time_to_warp;
             going_back_to_ground = true;
+            StartCoroutine(WarpBackToGround());
         }
         else
         {
@@ -72,7 +74,17 @@ public class GravityControl : MonoBehaviour
             
             if (time_in_air > time_to_warp - Time.deltaTime && time_in_air < time_to_warp + Time.deltaTime)
             {
-                StartCoroutine(WarpBackToGround());
+                if (this.gameObject.tag == "Player")
+                {
+                    if (this.gameObject.GetComponent<PlayerMove>().start_game)
+                    {
+                        StartCoroutine(WarpBackToGround());
+                    }
+                }
+                else
+                {
+                    StartCoroutine(WarpBackToGround());
+                }
             }
         }
         else
@@ -105,7 +117,8 @@ public class GravityControl : MonoBehaviour
         var targetRotation = Quaternion.FromToRotation(transform.up, gravity_dir * -1.0f) * transform.rotation;
 
         // Apply rotation and gravity
-        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotation_speed * Time.deltaTime);
+        //transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotation_speed * Time.deltaTime);
+        transform.rotation = targetRotation;
         
         if (Physics.Raycast(this.transform.position, gravity_dir, 3.0f, ground_layer_mask))
         {
