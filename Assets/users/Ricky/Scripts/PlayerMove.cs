@@ -189,35 +189,38 @@ public class PlayerMove : MonoBehaviour
                 CheckIsGrounded();
                 CheckSide();
                 
-                if (!TakingDamage() && start_game && is_grounded)
+                if (!TakingDamage() && start_game && in_grav_field)
                 {
                     //インプット方向を取得
                     input_direction = InputManager.instance.player_move_float;
-                    
-                    if (InputManager.instance.press_smash)
-                    {
-                        HoldSmash();
-                    }
-                    else
-                    {
-                        ReleaseSmash();
-                    }
-                    
-                    if (InputManager.instance.press_flip)
-                    {
-                        FlipCharacter();
-                    }
-                    
-                    if (InputManager.instance.press_rotate)
-                    {
-                        RotateGround();
-                    }
                     
                     if (ground_obj != null)
                     {
                         if (!ground_obj_parent.gameObject.GetComponent<StageRotation>().GetRotatingStatus())
                         {
                             UpdateSmash();
+                            
+                            if (is_grounded)
+                            {
+                                if (InputManager.instance.press_smash)
+                                {
+                                    HoldSmash();
+                                }
+                                else
+                                {
+                                    ReleaseSmash();
+                                }
+                                
+                                if (InputManager.instance.press_flip)
+                                {
+                                    FlipCharacter();
+                                }
+                                
+                                if (InputManager.instance.press_rotate)
+                                {
+                                    RotateGround();
+                                }
+                            }
                         }
                     }
                 }
