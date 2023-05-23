@@ -135,10 +135,7 @@ public class ElectricBallMove : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(this.transform.position, this.transform.up * -1, out hit, 2.0f, LayerMask.GetMask("Ground")))
         {
-            Vector3 center_vec = hit.point - hit.transform.root.gameObject.transform.position;
-            float dot_to_center = Vector3.Dot(center_vec.normalized, transform.up);
-            
-            if (dot_to_center < 0)
+            if (CheckInCircle(hit))
             {
                 transform.eulerAngles = new Vector3(transform.eulerAngles.x, 180.0f, transform.eulerAngles.z);
             }
@@ -149,15 +146,19 @@ public class ElectricBallMove : MonoBehaviour
         }
     }
     
-    private bool CheckInCircle()
+    private bool CheckInCircle(RaycastHit hit)
     {
-        bool result = false;
+        Vector3 center_vec = hit.point - hit.transform.root.gameObject.transform.position;
+        float dot_to_center = Vector3.Dot(center_vec.normalized, transform.up);
         
-        Vector3[] axis_to_check;
-        
-
-        
-        return result;
+        if (dot_to_center < 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
     
     public void ChangeSpeed(float boostSpeed)

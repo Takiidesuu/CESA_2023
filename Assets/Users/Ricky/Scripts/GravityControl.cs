@@ -121,6 +121,8 @@ public class GravityControl : MonoBehaviour
                     Invoke("Shake", 0.05f);
                 }
                 
+                real_gravity_power = gravity_power;
+                
                 going_back_to_ground = false;
             }
         }
