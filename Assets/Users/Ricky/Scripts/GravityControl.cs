@@ -33,9 +33,13 @@ public class GravityControl : MonoBehaviour
     
     private GameObject last_ground_obj;
 
+    private SoundManager soundManager;
+    private bool StartMeteorStrike = false;
+
     // Start is called before the first frame update
     void Start()
     {
+        soundManager = GetComponent<SoundManager>();
         rb = GetComponent<Rigidbody>();
         rb.useGravity = false;
         real_gravity_power = gravity_power;
@@ -117,11 +121,12 @@ public class GravityControl : MonoBehaviour
                     first.transform.Rotate(new Vector3(0, 0, 45), Space.World);
                     GameObject second = Instantiate(fire_effect, spawn_pos, this.transform.rotation);
                     second.transform.Rotate(new Vector3(0, 0, -45), Space.World);
-                    
+
+                    soundManager.PlaySoundEffect("Strike");
+
                     Invoke("Shake", 0.05f);
                 }
                 
-                real_gravity_power = gravity_power;
                 
                 going_back_to_ground = false;
             }
@@ -313,7 +318,18 @@ public class GravityControl : MonoBehaviour
             this.transform.GetChild(0).gameObject.SetActive(false);
             this.transform.GetChild(2).gameObject.SetActive(true);
         }
-        
+
+
+        //初回のメテオストライクのみＳＥを遅らせる
+        if (!StartMeteorStrike)
+        {
+            yield return new WaitForSeconds(0.3f);
+            StartMeteorStrike = true;
+        }
+
+
+        soundManager.PlaySoundEffect("MeteorStrike");
+
         yield return new WaitForSeconds(1.0f);
         
         going_back_to_ground = true;

@@ -6,6 +6,7 @@ public class StageBackgroundManager : MonoBehaviour
 {
     public RotateGear[] GearObjects; //生成した電球配列
     public GameObject[] SmokeObjects; //生成した電球配列
+    public ElectricRoads electricRoads;
 
     public float AddTime;
     public float startDensity = 0.001f;
@@ -49,6 +50,11 @@ public class StageBackgroundManager : MonoBehaviour
 
         if (ComplateRate != SecondComplateRate)
         {
+            if (electricRoads != null)
+            {
+                if(ComplateRate < SecondComplateRate)
+                    electricRoads.SpeedUp();
+            }
             ChangeGearsMove();
             ChangeSmokeEffect();
         }
