@@ -252,17 +252,6 @@ public partial class @MainInputControls : IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""aeb94f1d-59a0-4d48-95ee-7b4e6476b17a"",
-                    ""path"": ""<Keyboard>/leftCtrl"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""KeyboardMouse"",
-                    ""action"": ""Rotate"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""9f1f208f-2ab3-406d-afb5-6c1d558b5cb1"",
                     ""path"": ""<Keyboard>/escape"",
                     ""interactions"": """",
@@ -332,7 +321,7 @@ public partial class @MainInputControls : IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""14408921-3b0a-477d-924d-df27e7a97ed7"",
-                    ""path"": ""<Keyboard>/escape"",
+                    ""path"": ""<Keyboard>/leftCtrl"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""KeyboardMouse"",
