@@ -45,11 +45,15 @@ public class GravityControl : MonoBehaviour
         in_gravfield = false;
         
         increase_gravity_scalar = 1.0f;
-        time_in_air = time_to_warp;
         
         if (this.gameObject.tag == "Player")
         {
+            time_in_air = time_to_warp;
             going_back_to_ground = true;
+        }
+        else
+        {
+            going_back_to_ground = false;
         }
         
         last_ground_obj = null;
@@ -99,7 +103,7 @@ public class GravityControl : MonoBehaviour
         // Apply rotation and gravity
         transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotation_speed * Time.deltaTime);
         
-        if (Physics.Raycast(this.transform.position, gravity_dir, 1.0f, ground_layer_mask))
+        if (Physics.Raycast(this.transform.position, gravity_dir, 3.0f, ground_layer_mask))
         {
             on_ground = true;
             
@@ -108,16 +112,16 @@ public class GravityControl : MonoBehaviour
                 if (this.gameObject.tag == "Player")
                 {
                     this.GetComponent<PlayerMove>().start_game = true;
+                    Vector3 spawn_pos = this.transform.position - this.transform.up * 0.5f;
+                    GameObject first = Instantiate(fire_effect, spawn_pos, this.transform.rotation);
+                    first.transform.Rotate(new Vector3(0, 0, 45), Space.World);
+                    GameObject second = Instantiate(fire_effect, spawn_pos, this.transform.rotation);
+                    second.transform.Rotate(new Vector3(0, 0, -45), Space.World);
+                    
+                    Invoke("Shake", 0.05f);
                 }
                 
-                Vector3 spawn_pos = this.transform.position - this.transform.up * 0.5f;
-                GameObject first = Instantiate(fire_effect, spawn_pos, this.transform.rotation);
-                first.transform.Rotate(new Vector3(0, 0, 45), Space.World);
-                GameObject second = Instantiate(fire_effect, spawn_pos, this.transform.rotation);
-                second.transform.Rotate(new Vector3(0, 0, -45), Space.World);
                 going_back_to_ground = false;
-                
-                Invoke("Shake", 0.05f);
             }
         }
         else
@@ -320,11 +324,14 @@ public class GravityControl : MonoBehaviour
             
             foreach (var current in stage_obj)
             {
-                float distance_to_current = Vector3.Distance(this.transform.position, current.transform.position);
-                if (distance_to_current < distance_to_compare)
+                if (current.name.Contains("Stage"))
                 {
-                    distance_to_compare = distance_to_current;
-                    last_ground_obj = current;
+                    float distance_to_current = Vector3.Distance(this.transform.position, current.transform.position);
+                    if (distance_to_current < distance_to_compare)
+                    {
+                        distance_to_compare = distance_to_current;
+                        last_ground_obj = current;
+                    }
                 }
             }
         }

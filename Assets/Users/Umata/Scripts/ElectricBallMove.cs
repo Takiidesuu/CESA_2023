@@ -51,8 +51,10 @@ public class ElectricBallMove : MonoBehaviour
         check_is_cleared = GameObject.FindObjectOfType<LightBulbCollector>();
         m_electric_effect = transform.Find("ElectricEffect").gameObject;
         m_electric_startsize = m_electric_effect.transform.localScale;
-        elapsed_time = 0.0f;
+        elapsed_time = time_to_normal_speed;
         is_on_boost = false;
+        
+        speed_effect.SetActive(false);
     }
 
     // Update is called once per frame
@@ -145,6 +147,17 @@ public class ElectricBallMove : MonoBehaviour
                 transform.eulerAngles = new Vector3(transform.eulerAngles.x, 0.0f, transform.eulerAngles.z);
             }
         }
+    }
+    
+    private bool CheckInCircle()
+    {
+        bool result = false;
+        
+        Vector3[] axis_to_check;
+        
+
+        
+        return result;
     }
     
     public void ChangeSpeed(float boostSpeed)
