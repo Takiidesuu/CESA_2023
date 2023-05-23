@@ -189,8 +189,6 @@ public class PlayerMove : MonoBehaviour
                 CheckIsGrounded();
                 CheckSide();
                 
-                Debug.Log(TakingDamage());
-                
                 if (!TakingDamage() && start_game && is_grounded)
                 {
                     //インプット方向を取得
@@ -256,8 +254,6 @@ public class PlayerMove : MonoBehaviour
                 }
             }
         }
-        
-        transform.position = new Vector3(transform.position.x, transform.position.y, 0);
     }
     
     void UpdateSmash()
@@ -410,6 +406,11 @@ public class PlayerMove : MonoBehaviour
     {
         rb.velocity = Vector3.MoveTowards(rb.velocity, Vector3.zero, deceleration_speed * Time.deltaTime * 4.0f);
         speed = Mathf.MoveTowards(speed, 0.0f, deceleration_speed * 0.5f);
+    }
+    
+    private void LateUpdate() 
+    {
+        transform.position = new Vector3(transform.position.x, transform.position.y, 0);
     }
     
     private void CheckIsGrounded()
