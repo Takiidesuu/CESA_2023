@@ -116,7 +116,7 @@ public class PauseManager : MonoBehaviour
                             pause_flg = false;
                             break;
                             case MENU_OPTION.RETRY:
-                            
+                            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
                             break;
                             case MENU_OPTION.OPTION:
                             
