@@ -46,6 +46,9 @@ public class WorldSelect : MonoBehaviour
     public GameObject[] SubPreviewObj;  // サブプレビューオブジェクト
     public GameObject[] SubPreviewHorogram;  // サブプレビューホロオブジェクト
 
+    public GameObject[] WorldSelectModel;    //ワールドモデル
+    public GameObject[] WorldSelectHorogram;    //ワールドモデル
+
     [SerializeField] private AnimationCurve curve = AnimationCurve.Linear(0f, 0f, 1f, 1f); // イージングカーブ
 
     private Vector3 StartHammerPos;
@@ -141,6 +144,9 @@ public class WorldSelect : MonoBehaviour
                 }
             }
         }
+        //ワールド選択モデルの変更
+        ChangeWorldModel(currentWorld);
+
         //シーン遷移エフェクト中
         if(isTransitioning)
         {
@@ -196,7 +202,12 @@ public class WorldSelect : MonoBehaviour
             }
         }
 
-        if (InputManager.instance.press_menu_left)
+        if (InputManager.instance)
+        {
+        
+        }
+
+            if (InputManager.instance.press_menu_left)
         {
             // 左キーでワールドまたはステージを1つ戻す
             if (selectingWorld)
@@ -365,5 +376,17 @@ public class WorldSelect : MonoBehaviour
         {
             enabled = true;
         }
+    }
+
+    private void ChangeWorldModel(int currentWorld)
+    {
+        for(int i = 0;i < WorldSelectModel.Length;i++)
+        {
+            WorldSelectModel[i].SetActive(false);
+            WorldSelectHorogram[i].SetActive(false);
+        }
+        WorldSelectModel[currentWorld].SetActive(true);
+        WorldSelectHorogram[currentWorld].SetActive(true);
+
     }
 }
