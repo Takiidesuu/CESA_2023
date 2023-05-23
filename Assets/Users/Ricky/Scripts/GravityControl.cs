@@ -135,6 +135,8 @@ public class GravityControl : MonoBehaviour
                     GameObject second = Instantiate(fire_effect, spawn_pos, this.transform.rotation);
                     second.transform.Rotate(new Vector3(0, 0, -45), Space.World);
 
+                    real_gravity_power = gravity_power;
+
                     soundManager.PlaySoundEffect("Strike");
 
                     Invoke("Shake", 0.05f);
