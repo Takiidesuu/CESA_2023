@@ -64,8 +64,6 @@ public class InputManager : MonoBehaviour
             instance = this; 
         } 
     
-        DontDestroyOnLoad(this.gameObject);
-    
         input_system = new MainInputControls();
     }
     
