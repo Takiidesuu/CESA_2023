@@ -21,8 +21,6 @@ public class ElectricalPower : MonoBehaviour
     private ParticleSystem ChargeEffect;
     private GameObject ElectricBallEffect;
 
-    private ElectricBallCounter ElectricBallCounter;
-
     private float RateOverTime;
     private float SimurationSpeed;
     private Vector3 ElectricBallScale;
@@ -37,7 +35,6 @@ public class ElectricalPower : MonoBehaviour
         ElectricBallScale = ElectricBallEffect.transform.localScale;
         //îzóÒÇÃèâä˙âª
         InstantElectricBall = new List<GameObject>();
-        ElectricBallCounter = GameObject.Find("Canvas").GetComponent<ElectricBallCounter>();
     }
 
     private void Update()
@@ -113,7 +110,6 @@ public class ElectricalPower : MonoBehaviour
                 ChargeEffect.Clear();
                 ChargeEffect.Play();
                 is_init = false;
-                ElectricBallCounter.CountUpBulb();
             }
         }
         else
