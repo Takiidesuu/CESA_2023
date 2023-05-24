@@ -25,6 +25,8 @@ public class InputManager : MonoBehaviour
     public bool press_cancel {get; private set;}
     public bool press_start {get; private set;}
     
+    public bool press_menu_up {get; private set;}
+    public bool press_menu_down {get; private set;}
     public bool press_menu_left {get; private set;}
     public bool press_menu_right {get; private set;}
     
@@ -63,8 +65,6 @@ public class InputManager : MonoBehaviour
         { 
             instance = this; 
         } 
-    
-        DontDestroyOnLoad(this.gameObject);
     
         input_system = new MainInputControls();
     }
@@ -178,6 +178,8 @@ public class InputManager : MonoBehaviour
         press_cancel = false;
         press_start = false;
         
+        press_menu_up = false;
+        press_menu_down = false;
         press_menu_right = false;
         press_menu_left = false;
     }
@@ -220,6 +222,16 @@ public class InputManager : MonoBehaviour
     private void StartButtonInput(InputAction.CallbackContext obj)
     {
         press_start = true;
+    }
+    
+    private void MenuUpInput(InputAction.CallbackContext obj)
+    {
+        press_menu_up = true;
+    }
+    
+    private void MenuDownInput(InputAction.CallbackContext obj)
+    {
+        press_menu_down = true;
     }
     
     private void MenuRightInput(InputAction.CallbackContext obj)
@@ -286,6 +298,12 @@ public class InputManager : MonoBehaviour
         
         input_system.Menu.Left.performed += MenuLeftInput;
         input_system.Menu.Left.Enable();
+        
+        input_system.Menu.Up.performed += MenuUpInput;
+        input_system.Menu.Up.Enable();
+        
+        input_system.Menu.Down.performed += MenuDownInput;
+        input_system.Menu.Down.Enable();
         
         input_system.Prototype.ReloadScene.performed += ProtoReloadScene;
         input_system.Prototype.ReloadScene.Enable();

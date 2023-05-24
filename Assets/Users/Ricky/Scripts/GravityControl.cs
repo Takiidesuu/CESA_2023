@@ -14,6 +14,9 @@ public class GravityControl : MonoBehaviour
     [SerializeField] private float rotation_speed = 20.0f;
     [Tooltip("戻るまでの時間")]
     [SerializeField] private float time_to_warp = 3.0f;
+    
+    [Tooltip("火花")]
+    [SerializeField] private GameObject fire_effect;
 
     private Rigidbody rb;
 
@@ -26,12 +29,17 @@ public class GravityControl : MonoBehaviour
     private float increase_gravity_scalar;
     
     private float time_in_air;
+    private bool going_back_to_ground;
     
     private GameObject last_ground_obj;
+
+    private SoundManager soundManager;
+    private bool StartMeteorStrike = false;
 
     // Start is called before the first frame update
     void Start()
     {
+        soundManager = GetComponent<SoundManager>();
         rb = GetComponent<Rigidbody>();
         rb.useGravity = false;
         real_gravity_power = gravity_power;
@@ -40,8 +48,19 @@ public class GravityControl : MonoBehaviour
         on_ground = false;
         in_gravfield = false;
         
+        time_in_air = 0;
+        
         increase_gravity_scalar = 1.0f;
-        time_in_air = 0.0f;
+        
+        if (this.gameObject.tag == "Player")
+        {
+            going_back_to_ground = true;
+            StartCoroutine(WarpBackToGround());
+        }
+        else
+        {
+            going_back_to_ground = false;
+        }
         
         last_ground_obj = null;
     }
@@ -55,7 +74,17 @@ public class GravityControl : MonoBehaviour
             
             if (time_in_air > time_to_warp - Time.deltaTime && time_in_air < time_to_warp + Time.deltaTime)
             {
-                StartCoroutine(WarpBackToGround());
+                if (this.gameObject.tag == "Player")
+                {
+                    if (this.gameObject.GetComponent<PlayerMove>().start_game)
+                    {
+                        StartCoroutine(WarpBackToGround());
+                    }
+                }
+                else
+                {
+                    StartCoroutine(WarpBackToGround());
+                }
             }
         }
         else
@@ -88,11 +117,34 @@ public class GravityControl : MonoBehaviour
         var targetRotation = Quaternion.FromToRotation(transform.up, gravity_dir * -1.0f) * transform.rotation;
 
         // Apply rotation and gravity
-        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotation_speed * Time.deltaTime);
+        //transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotation_speed * Time.deltaTime);
+        transform.rotation = targetRotation;
         
-        if (Physics.Raycast(this.transform.position, gravity_dir, 1.0f, ground_layer_mask))
+        if (Physics.Raycast(this.transform.position, gravity_dir, 3.0f, ground_layer_mask))
         {
             on_ground = true;
+            
+            if (going_back_to_ground)
+            {
+                if (this.gameObject.tag == "Player")
+                {
+                    this.GetComponent<PlayerMove>().start_game = true;
+                    Vector3 spawn_pos = this.transform.position - this.transform.up * 0.5f;
+                    GameObject first = Instantiate(fire_effect, spawn_pos, this.transform.rotation);
+                    first.transform.Rotate(new Vector3(0, 0, 45), Space.World);
+                    GameObject second = Instantiate(fire_effect, spawn_pos, this.transform.rotation);
+                    second.transform.Rotate(new Vector3(0, 0, -45), Space.World);
+
+                    real_gravity_power = gravity_power;
+
+                    soundManager.PlaySoundEffect("Strike");
+
+                    Invoke("Shake", 0.05f);
+                }
+                
+                
+                going_back_to_ground = false;
+            }
         }
         else
         {
@@ -111,6 +163,11 @@ public class GravityControl : MonoBehaviour
 
         Vector3 real_grav_dir = gravity_dir * gravity_number * real_gravity_power * increase_gravity_scalar;
         rb.AddForce(real_grav_dir);
+    }
+    
+    void Shake()
+    {
+        GameObject.Find("Main Camera").GetComponent<CameraMove>().ShakeCamera(2.0f, 0.1f, this.transform.up);
     }
 
     private Vector3 CheckFloorAngle()
@@ -276,8 +333,41 @@ public class GravityControl : MonoBehaviour
             this.transform.GetChild(0).gameObject.SetActive(false);
             this.transform.GetChild(2).gameObject.SetActive(true);
         }
+
+
+        //初回のメテオストライクのみＳＥを遅らせる
+        if (!StartMeteorStrike)
+        {
+            yield return new WaitForSeconds(0.3f);
+            StartMeteorStrike = true;
+        }
+
+
+        soundManager.PlaySoundEffect("MeteorStrike");
+
+        yield return new WaitForSeconds(1.0f);
         
-        yield return new WaitForSeconds(0.5f);
+        going_back_to_ground = true;
+        
+        if (last_ground_obj == null)
+        {
+            GameObject[] stage_obj = GameObject.FindGameObjectsWithTag("Stage");
+            
+            float distance_to_compare = Mathf.Infinity;
+            
+            foreach (var current in stage_obj)
+            {
+                if (current.name.Contains("Stage"))
+                {
+                    float distance_to_current = Vector3.Distance(this.transform.position, current.transform.position);
+                    if (distance_to_current < distance_to_compare)
+                    {
+                        distance_to_compare = distance_to_current;
+                        last_ground_obj = current;
+                    }
+                }
+            }
+        }
         
         increase_gravity_scalar = 1.0f;
         

@@ -39,6 +39,8 @@ public class ElectricBallMove : MonoBehaviour
     
     LightBulbCollector check_is_cleared;
     
+    private AudioSource audioSource;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -49,16 +51,20 @@ public class ElectricBallMove : MonoBehaviour
         has_jumped = false;
         
         check_is_cleared = GameObject.FindObjectOfType<LightBulbCollector>();
-        m_electric_effect = transform.Find("ElectlicEffect").gameObject;
+        m_electric_effect = transform.Find("ElectricEffect").gameObject;
         m_electric_startsize = m_electric_effect.transform.localScale;
-        elapsed_time = 0.0f;
+        elapsed_time = time_to_normal_speed;
         is_on_boost = false;
+        
+        speed_effect.SetActive(false);
+        
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!check_is_cleared.IsCleared() && !GameOverManager.instance.game_over_state)
+        if (!check_is_cleared.IsCleared() && !GameOverManager.instance.game_over_state && player.GetComponent<PlayerMove>().start_game)
         {
             var locVel = transform.InverseTransformDirection(rb.velocity);
             locVel.x = m_real_speed;
@@ -93,6 +99,7 @@ public class ElectricBallMove : MonoBehaviour
         else
         {
             rb.velocity = Vector3.MoveTowards(rb.velocity, Vector3.zero, Time.deltaTime * 30.0f);
+            audioSource.Stop();
         }
     }
     
@@ -133,10 +140,7 @@ public class ElectricBallMove : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(this.transform.position, this.transform.up * -1, out hit, 2.0f, LayerMask.GetMask("Ground")))
         {
-            Vector3 center_vec = hit.point - hit.transform.root.gameObject.transform.position;
-            float dot_to_center = Vector3.Dot(center_vec.normalized, transform.up);
-            
-            if (dot_to_center < 0)
+            if (CheckInCircle(hit))
             {
                 transform.eulerAngles = new Vector3(transform.eulerAngles.x, 180.0f, transform.eulerAngles.z);
             }
@@ -144,6 +148,21 @@ public class ElectricBallMove : MonoBehaviour
             {
                 transform.eulerAngles = new Vector3(transform.eulerAngles.x, 0.0f, transform.eulerAngles.z);
             }
+        }
+    }
+    
+    private bool CheckInCircle(RaycastHit hit)
+    {
+        Vector3 center_vec = hit.point - hit.transform.root.gameObject.transform.position;
+        float dot_to_center = Vector3.Dot(center_vec.normalized, transform.up);
+        
+        if (dot_to_center < 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
     

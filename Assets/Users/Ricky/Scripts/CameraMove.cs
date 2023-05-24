@@ -65,19 +65,19 @@ public class CameraMove : MonoBehaviour
         
         bool is_player_smashing = player_obj.GetComponent<PlayerMove>().GetSmashingState();
         
+        Vector3 targetLookAt;
+        
         if (target_obj)
         {
             distance_from_obj = distance_from_stage * 10.0f * distance_scalar;
+            targetLookAt = target_obj.transform.position;
         }
         else
         {
-            target_obj = player_obj;
-            distance_from_obj = player_distance * 10.0f * distance_scalar;
+            target_obj = GameObject.FindGameObjectWithTag("Stage");
+            targetLookAt = player_obj.transform.position;
+            distance_from_obj = distance_from_stage * 10.0f * distance_scalar;
         }
-        
-        Vector3 targetLookAt;
-        
-        targetLookAt = target_obj.transform.position;
         
         if (distance_scalar < 1.0f)
         {
@@ -90,7 +90,7 @@ public class CameraMove : MonoBehaviour
         
         Vector3 target_pos = new Vector3(target_obj.transform.position.x, target_obj.transform.position.y, target_obj.transform.position.z - Mathf.Abs(distance_from_obj));
         
-        lookat_pos.transform.position = Vector3.MoveTowards(lookat_pos.transform.position, targetLookAt, Time.deltaTime * 300.0f);
+        lookat_pos.transform.position = targetLookAt;
         transform.position = Vector3.MoveTowards(transform.position, target_pos, 300.0f * Time.deltaTime);
         
         if (transform.position == target_pos)

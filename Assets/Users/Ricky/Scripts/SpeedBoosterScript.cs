@@ -6,11 +6,13 @@ public class SpeedBoosterScript : MonoBehaviour
 {
     [Tooltip("加算される速度")]
     [SerializeField] private float speed_boost = 20.0f;
-    
+
+    SoundManager soundManager;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        soundManager = GetComponent<SoundManager>();
     }
 
     // Update is called once per frame
@@ -23,6 +25,7 @@ public class SpeedBoosterScript : MonoBehaviour
     {
         if (other.gameObject.tag == "ElectricalBall")
         {
+            soundManager.PlaySoundEffect("BoostSE");
             other.GetComponent<ElectricBallMove>().ChangeSpeed(speed_boost);
         }
     }

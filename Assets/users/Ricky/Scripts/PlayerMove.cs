@@ -89,6 +89,8 @@ public class PlayerMove : MonoBehaviour
     private GameObject grav_obj;
     
     private LightBulbCollector check_is_cleared;
+    
+    public bool start_game {get; set;}
 
     /// <summary>
     /// 平田
@@ -170,6 +172,8 @@ public class PlayerMove : MonoBehaviour
         play_max_charge = true;
         
         check_is_cleared = GameObject.FindObjectOfType<LightBulbCollector>();
+        
+        start_game = false;
     }
 
     // Update is called once per frame
@@ -182,14 +186,54 @@ public class PlayerMove : MonoBehaviour
             // 生きている場合
             if (!is_dead)
             {
-                if (!TakingDamage())
+                CheckIsGrounded();
+                CheckSide();
+                
+                if (!TakingDamage() && start_game && in_grav_field)
                 {
                     //インプット方向を取得
                     input_direction = InputManager.instance.player_move_float;
+                    
+                    if (ground_obj != null)
+                    {
+                        if (!ground_obj_parent.gameObject.GetComponent<StageRotation>().GetRotatingStatus())
+                        {
+                            UpdateSmash();
+                            
+                            if (is_grounded)
+                            {
+                                if (InputManager.instance.press_smash)
+                                {
+                                    HoldSmash();
+                                }
+                                else
+                                {
+                                    ReleaseSmash();
+                                }
+                                
+                                if (InputManager.instance.press_flip)
+                                {
+                                    FlipCharacter();
+                                }
+                                
+                                if (InputManager.instance.press_rotate)
+                                {
+                                    RotateGround();
+                                }
+                            }
+                        }
+                    }
                 }
-                
-                CheckIsGrounded();
-                CheckSide();
+                else
+                {
+                    if (TakingDamage())
+                    {
+                        speed = 0;
+                        rb.velocity = Vector3.zero;
+                    }
+                    
+                    input_direction = Vector2.zero;
+                }
                 
                 speed = Mathf.MoveTowards(speed, input_direction.magnitude * max_speed, acceleration_speed);
                 
@@ -211,134 +255,105 @@ public class PlayerMove : MonoBehaviour
                 {
                     soundmanager.StopSoundEffect("Walk");
                 }
-                
-                if (InputManager.instance.press_smash)
-                {
-                    HoldSmash();
-                }
-                else
-                {
-                    ReleaseSmash();
-                }
-                
-                if (InputManager.instance.press_flip)
-                {
-                    FlipCharacter();
-                }
-                
-                if (InputManager.instance.press_rotate)
-                {
-                    RotateGround();
-                }
             }
-
-            transform.position = new Vector3(transform.position.x, transform.position.y, 0);
         }
     }
     
-    void FixedUpdate() 
-    {   
-        if (!check_is_cleared.IsCleared())
+    void UpdateSmash()
+    {
+        //叩く状態によって、更新を変える
+        switch (smash_state)
         {
-            if (!is_dead)
+            case SMASHSTATE.NORMAL:     //通常状態
+            
+            //インプット方向があったら、移動させる
+            if (input_direction != Vector2.zero)
             {
-                if (ground_obj != null)
+                Move();
+            }
+            else
+            {
+                anim.SetBool("isWalking", false);
+            }
+            
+            smash_power_num = 0.0f;
+            
+            part_line_effect.enabled = false;
+            part_circle_effect.enabled = false;
+            
+            play_small_charge = true;
+            play_max_charge = true;
+            
+            break;
+            
+            
+            case SMASHSTATE.HOLDING:    //力を溜めてる状態
+            
+            part_line_effect.enabled = true;
+            part_circle_effect.enabled = true;
+            
+            var line_color = part_line_sys.main;
+            var circle_color = part_circle_sys.main;
+            
+            //溜めた力を加算する
+            if (smash_power_num >= smash_max_time)
+            {
+                smash_power_num = smash_max_time;
+            }
+            else
+            {
+                smash_power_num += Time.deltaTime;
+            }
+            
+            if (smash_power_num >= smash_threshold)
+            {
+                can_jump_status = SMASHJUMP.CAN_JUMP;
+                
+                if (smash_power_num >= smash_max_time)
                 {
-                    if (!ground_obj_parent.gameObject.GetComponent<StageRotation>().GetRotatingStatus())
+                    line_color.startColor = new Color(1.0f, 0.0f, 0.0f);
+                    circle_color.startColor = new Color(1.0f, 0.0f, 0.0f);
+                    
+                    if (play_max_charge)
                     {
-                        //叩く状態によって、更新を変える
-                        switch (smash_state)
-                        {
-                            case SMASHSTATE.NORMAL:     //通常状態
-                            
-                            //インプット方向があったら、移動させる
-                            if (input_direction != Vector2.zero)
-                            {
-                                Move();
-                            }
-                            else
-                            {
-                                anim.SetBool("isWalking", false);
-                            }
-                            
-                            smash_power_num = 0.0f;
-                            
-                            part_line_effect.enabled = false;
-                            part_circle_effect.enabled = false;
-                            
-                            play_small_charge = true;
-                            play_max_charge = true;
-                            
-                            break;
-                            case SMASHSTATE.HOLDING:    //力を溜めてる状態
-                            
-                            part_line_effect.enabled = true;
-                            part_circle_effect.enabled = true;
-                            
-                            var line_color = part_line_sys.main;
-                            var circle_color = part_circle_sys.main;
-                            
-                            //溜めた力を加算する
-                            if (smash_power_num >= smash_max_time)
-                            {
-                                smash_power_num = smash_max_time;
-                            }
-                            else
-                            {
-                                smash_power_num += Time.deltaTime;
-                            }
-                            
-                            if (smash_power_num >= smash_threshold)
-                            {
-                                can_jump_status = SMASHJUMP.CAN_JUMP;
-                                
-                                if (smash_power_num >= smash_max_time)
-                                {
-                                    line_color.startColor = new Color(1.0f, 0.0f, 0.0f);
-                                    circle_color.startColor = new Color(1.0f, 0.0f, 0.0f);
-                                    
-                                    if (play_max_charge)
-                                    {
-                                        soundmanager.PlaySoundEffect("Charge_1");
-                                        play_max_charge = false;
-                                    }
-                                }
-                                else
-                                {
-                                    line_color.startColor = new Color(0.0f, 1.0f, 0.0f);
-                                    circle_color.startColor = new Color(0.0f, 1.0f, 0.0f);
-                                    
-                                    if (play_small_charge)
-                                    {
-                                        soundmanager.PlaySoundEffect("Charge_0");
-                                        play_small_charge = false;
-                                    }
-                                }   
-                            }
-                            else
-                            {
-                                can_jump_status = SMASHJUMP.NONE;
-                                line_color.startColor = new Color(0.0f, 0.0f, 1.0f);
-                                circle_color.startColor = new Color(0.0f, 0.0f, 1.0f);
-                            }
-                            
-                            part_line_effect.rateOverTime = 90.0f * (smash_power_num / smash_threshold);
-                            circle_color.startSize = 8.0f * (smash_power_num / smash_threshold);
-                            
-                            InputManager.instance.VibrateController(Time.deltaTime, 0.1f);
-                            camera_obj.GetComponent<CameraMove>().ShakeCamera(0.1f, Time.deltaTime, this.transform.up);
-                            
-                            break;
-                            case SMASHSTATE.SMASHING:   //力を放ってる状態
-                            
-                            part_line_effect.enabled = false;
-                            part_circle_effect.enabled = false;
-                            
-                            break;
-                        }
+                        soundmanager.PlaySoundEffect("Charge_1");
+                        play_max_charge = false;
                     }
                 }
+                else
+                {
+                    line_color.startColor = new Color(0.0f, 1.0f, 0.0f);
+                    circle_color.startColor = new Color(0.0f, 1.0f, 0.0f);
+                    
+                    if (play_small_charge)
+                    {
+                        soundmanager.PlaySoundEffect("Charge_0");
+                        play_small_charge = false;
+                    }
+                }   
             }
+            else
+            {
+                can_jump_status = SMASHJUMP.NONE;
+                line_color.startColor = new Color(0.0f, 0.0f, 1.0f);
+                circle_color.startColor = new Color(0.0f, 0.0f, 1.0f);
+            }
+            
+            part_line_effect.rateOverTime = 90.0f * (smash_power_num / smash_threshold);
+            circle_color.startSize = 8.0f * (smash_power_num / smash_threshold);
+            
+            InputManager.instance.VibrateController(Time.deltaTime, 0.1f);
+            camera_obj.GetComponent<CameraMove>().ShakeCamera(0.1f, Time.deltaTime, this.transform.up);
+            
+            break;
+            
+            
+            case SMASHSTATE.SMASHING:   //力を放ってる状態
+            
+            part_line_effect.enabled = false;
+            part_circle_effect.enabled = false;
+            
+            break;
         }
     }
     
@@ -394,6 +409,11 @@ public class PlayerMove : MonoBehaviour
     {
         rb.velocity = Vector3.MoveTowards(rb.velocity, Vector3.zero, deceleration_speed * Time.deltaTime * 4.0f);
         speed = Mathf.MoveTowards(speed, 0.0f, deceleration_speed * 0.5f);
+    }
+    
+    private void LateUpdate() 
+    {
+        transform.position = new Vector3(transform.position.x, transform.position.y, 0);
     }
     
     private void CheckIsGrounded()
@@ -596,7 +616,7 @@ public class PlayerMove : MonoBehaviour
     {
         bool result = false;
         
-        if (anim.GetCurrentAnimatorStateInfo(0).IsName("tookDamage") && anim.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f)
+        if (anim.GetCurrentAnimatorStateInfo(0).IsName("DamageState") && anim.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f)
         {
             result = true;
         }
