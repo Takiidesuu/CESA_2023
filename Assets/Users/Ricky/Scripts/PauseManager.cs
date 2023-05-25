@@ -53,10 +53,10 @@ public class PauseManager : MonoBehaviour
         
         for (int i = 0; i < (int)MENU_OPTION.MAX; i++)
         {
-            pause_menu[i] = transform.GetChild(1).GetChild(i + 1).gameObject.GetComponent<PauseButtonMove>();
+            pause_menu[i] = transform.GetChild(0).GetChild(i + 1).gameObject.GetComponent<PauseButtonMove>();
         }
         
-        curtain_transform = transform.GetChild(0).GetComponent<RectTransform>();
+        curtain_transform = transform.GetChild(1).GetComponent<RectTransform>();
         
         soundManager = GetComponent<SoundManager>();
     }
@@ -72,15 +72,32 @@ public class PauseManager : MonoBehaviour
                 {
                     if (curtain_transform.localPosition != Vector3.zero)
                     {
-                        curtain_transform.localPosition = Vector3.MoveTowards(curtain_transform.localPosition, Vector3.zero, Time.unscaledDeltaTime * 20.0f);
+                        curtain_transform.localPosition = Vector3.MoveTowards(curtain_transform.localPosition, Vector3.zero, Time.unscaledDeltaTime * 1000.0f);
                     }
                     else
                     {
                         // Switch scene
+                        switch (selected_option)
+                        {
+                            case MENU_OPTION.STAGESELECT:
+                            SceneManager.LoadScene("StageSelect");
+                            switch_scene = false;
+                            pause_flg = false;
+                            Time.timeScale = 1.0f;
+                            break;
+                            case MENU_OPTION.TITLE:
+                            SceneManager.LoadScene("Title");
+                            switch_scene = false;
+                            pause_flg = false;
+                            Time.timeScale = 1.0f;
+                            break;
+                        }
                     }
                 }
                 else
                 {
+                    Time.timeScale = 0.0f;
+                    
                     foreach (Transform child in transform)
                     {
                         child.gameObject.SetActive(true);
@@ -116,22 +133,22 @@ public class PauseManager : MonoBehaviour
                             pause_flg = false;
                             break;
                             case MENU_OPTION.RETRY:
+                            Time.timeScale = 1.0f;
                             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                            pause_flg = false;
                             break;
                             case MENU_OPTION.OPTION:
                             
                             break;
                             case MENU_OPTION.STAGESELECT:
-                            SceneManager.LoadScene("StageSelect");
+                            switch_scene = true;
                             break;
                             case MENU_OPTION.TITLE:
-                            SceneManager.LoadScene("Title");
+                            switch_scene = true;
                             break;
                         }
                     }
                 }
-                
-                Time.timeScale = 0.0f;
             }
             else
             {   

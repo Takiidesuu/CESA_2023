@@ -18,6 +18,8 @@ public class LightBulb : MonoBehaviour
     [Tooltip("クリア判定の子オブジェクト")]
     [SerializeField] private GameObject clear_trigger_obj;
     
+    private GameObject touching_electric;
+    
     private Vector3 default_scale = new Vector3(3, 3, 3);
     private GameObject electric_effect;
     
@@ -66,6 +68,11 @@ public class LightBulb : MonoBehaviour
                 is_stage_hit = false;
                 m_destroy_timer = 0;
             }
+            
+            if (GameObject.FindObjectOfType<LightBulbCollector>().lightbulb_left == 1 && changeMaterial.OnPower == false)
+            {
+                clear_trigger_obj.SetActive(true);
+            }
         }
         else
         {
@@ -78,31 +85,49 @@ public class LightBulb : MonoBehaviour
     {
         if (other.gameObject.CompareTag("ElectricalBall"))
         {
-            is_stage_hit = true;
-            nothit_count = 0;
+            if (clear_trigger_obj.activeSelf == false)
+            {
+                is_stage_hit = true;
+                nothit_count = 0;
+            }
+            else
+            {
+                GameObject.FindObjectOfType<CameraMove>().IsLastBulb(true, this.gameObject);
+            }
         }
     }
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("ElectricalBall"))
         {
-            soundManager.PlaySoundEffect("Hit");
-            m_destroy_timer = 0;
-            is_stage_hit = true;
-            Quaternion LaserRotation = CalculateRotation(gameObject.transform.position, other.gameObject.GetComponent<ElectricBallMove>().ParentGenerator.gameObject.transform.position);
-            Instantiate(Laser, gameObject.transform.position,LaserRotation);
-            Instantiate(HitEffect, gameObject.transform.position,transform.rotation);
-
-            if (line_status_obj == null)
+            touching_electric = other.gameObject;
+            
+            if (clear_trigger_obj.activeSelf == false)
             {
-                line_status_obj = GameObject.FindObjectOfType<BulbStatusScript>().AddStatus(this);
-            }
-            else
-            {
-                GameObject.FindObjectOfType<BulbStatusScript>().ResetStatus(this);
+                LightUpBulb();
             }
         }
     }
+    
+    public void LightUpBulb()
+    {
+        soundManager.PlaySoundEffect("Hit");
+        m_destroy_timer = 0;
+        is_stage_hit = true;
+        Quaternion LaserRotation = CalculateRotation(gameObject.transform.position, touching_electric.gameObject.GetComponent<ElectricBallMove>().ParentGenerator.gameObject.transform.position);
+        Instantiate(Laser, gameObject.transform.position,LaserRotation);
+        Instantiate(HitEffect, gameObject.transform.position,transform.rotation);
+
+        if (line_status_obj == null)
+        {
+            line_status_obj = GameObject.FindObjectOfType<BulbStatusScript>().AddStatus(this);
+        }
+        else
+        {
+            GameObject.FindObjectOfType<BulbStatusScript>().ResetStatus(this);
+        }
+    }
+    
     public Quaternion CalculateRotation(Vector3 startPos, Vector3 endPos)
     {
         Vector3 direction = endPos - startPos;

@@ -38,6 +38,11 @@ public class CameraMove : MonoBehaviour
         StartCoroutine("StopShake", fduration);
     }
     
+    public void IsLastBulb(bool state, GameObject lookat)
+    {
+        is_zooming = state;
+    }
+    
     private void Start() 
     {
         cam = GetComponent<Camera>();
@@ -88,15 +93,15 @@ public class CameraMove : MonoBehaviour
             distance_scalar = 1.0f;
         }
         
+        if (is_zooming)
+        {
+            distance_from_obj = 10;
+        }
+        
         Vector3 target_pos = new Vector3(target_obj.transform.position.x, target_obj.transform.position.y, target_obj.transform.position.z - Mathf.Abs(distance_from_obj));
         
         lookat_pos.transform.position = targetLookAt;
         transform.position = Vector3.MoveTowards(transform.position, target_pos, 300.0f * Time.deltaTime);
-        
-        if (transform.position == target_pos)
-        {
-            is_zooming = false;
-        }
         
         transform.LookAt(lookat_pos.transform, Vector3.up);
         

@@ -8,6 +8,8 @@ public class LightBulbCollector : MonoBehaviour
     public int LightBulb_active;
     public GameObject[] lightBulbs;
     
+    [HideInInspector] public int lightbulb_left;
+    
     public bool IsCleared()
     {
         return LightBulb_active == LightBulb_num ? true : false;
@@ -35,6 +37,7 @@ public class LightBulbCollector : MonoBehaviour
                 LightBulb_active++;
             }
         }
+        
+        lightbulb_left = LightBulb_num - LightBulb_active;
     }
-  
 }
