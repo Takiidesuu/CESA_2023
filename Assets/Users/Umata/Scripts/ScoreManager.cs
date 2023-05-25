@@ -56,6 +56,11 @@ public class ScoreManager : MonoBehaviour
         score_countup_flg = false;
         
         soundManager.PlaySoundEffect("ClearJingle");
+
+        border_s = StageDataManager.instance.GetCurrentStageData().rank_s_border;
+        border_a = StageDataManager.instance.GetCurrentStageData().rank_a_border;
+        border_b = StageDataManager.instance.GetCurrentStageData().rank_b_border;
+        border_c = StageDataManager.instance.GetCurrentStageData().rank_c_border;
     }
 
     private void Update()
