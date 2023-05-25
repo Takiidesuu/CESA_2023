@@ -25,4 +25,14 @@ public class SmashCallScript : MonoBehaviour
     {
         player_script.ResetAnim();
     }
+    
+    public void StartDamage()
+    {
+        player_script.taking_damage = true;
+    }
+    
+    public void StopDamage()
+    {
+        player_script.taking_damage = false;
+    }
 }

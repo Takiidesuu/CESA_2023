@@ -82,10 +82,13 @@ public class FlipGate : MonoBehaviour
 
     IEnumerator MoveWait(float value) {
         Barrier.SetActive(false);
-        if (FlipObj.GetComponent<Rigidbody>()) 
-            FlipObj.GetComponent<Rigidbody>().velocity = Vector3.zero;
-        if (FlipObj.CompareTag("BackBuilding"))
-            FlipObj.transform.parent = null;
+        if (FlipObj != null)
+        {
+            if (FlipObj.GetComponent<Rigidbody>())
+                FlipObj.GetComponent<Rigidbody>().velocity = Vector3.zero;
+            if (FlipObj.CompareTag("BackBuilding"))
+                FlipObj.transform.parent = null;
+        }
 
         yield return new WaitForSeconds(value);
 

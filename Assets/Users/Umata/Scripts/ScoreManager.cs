@@ -43,6 +43,8 @@ public class ScoreManager : MonoBehaviour
     ItemMover itemmover;
     private void Start()
     {
+        transform.root.GetComponent<ScoreCount>().SetScore();
+        soundManager = GetComponent<SoundManager>();
         itemmover = gameObject.GetComponent<ItemMover>();
         TimeText = TimeTextObj.transform.GetComponent<TextMeshPro>();
         ScoreText = ScoreTextObj.transform.GetComponent<TextMeshPro>();
@@ -53,8 +55,12 @@ public class ScoreManager : MonoBehaviour
         time_countup_flg = false;
         score_countup_flg = false;
         
-        soundManager = GetComponent<SoundManager>();
         soundManager.PlaySoundEffect("ClearJingle");
+
+        border_s = StageDataManager.instance.GetCurrentStageData().rank_s_border;
+        border_a = StageDataManager.instance.GetCurrentStageData().rank_a_border;
+        border_b = StageDataManager.instance.GetCurrentStageData().rank_b_border;
+        border_c = StageDataManager.instance.GetCurrentStageData().rank_c_border;
     }
 
     private void Update()

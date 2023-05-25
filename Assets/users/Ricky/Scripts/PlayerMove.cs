@@ -91,6 +91,7 @@ public class PlayerMove : MonoBehaviour
     private LightBulbCollector check_is_cleared;
     
     public bool start_game {get; set;}
+    public bool taking_damage {get; set;}
 
     /// <summary>
     /// 平田
@@ -189,7 +190,7 @@ public class PlayerMove : MonoBehaviour
                 CheckIsGrounded();
                 CheckSide();
                 
-                if (!TakingDamage() && start_game && in_grav_field)
+                if (!taking_damage && start_game && in_grav_field)
                 {
                     //インプット方向を取得
                     input_direction = InputManager.instance.player_move_float;
@@ -226,7 +227,7 @@ public class PlayerMove : MonoBehaviour
                 }
                 else
                 {
-                    if (TakingDamage())
+                    if (taking_damage)
                     {
                         speed = 0;
                         rb.velocity = Vector3.zero;
@@ -255,6 +256,10 @@ public class PlayerMove : MonoBehaviour
                 {
                     soundmanager.StopSoundEffect("Walk");
                 }
+            }
+            else
+            {
+                anim.SetBool("isWalking", false);
             }
         }
     }
@@ -455,7 +460,7 @@ public class PlayerMove : MonoBehaviour
     private void HoldSmash()
     {   
         //地面についていたら、力を溜める可能にする
-        if (is_grounded && !is_dead && !TakingDamage())
+        if (is_grounded && !is_dead && !taking_damage)
         {
             if (!ground_obj_parent.GetComponent<StageRotation>().GetRotatingStatus())
             {
@@ -610,18 +615,6 @@ public class PlayerMove : MonoBehaviour
             
             this.transform.position = new_pos;
         }
-    }
-    
-    private bool TakingDamage()
-    {
-        bool result = false;
-        
-        if (anim.GetCurrentAnimatorStateInfo(0).IsName("DamageState") && anim.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f)
-        {
-            result = true;
-        }
-        
-        return result;
     }
     
     IEnumerator StartDamageTimer(float delay)
