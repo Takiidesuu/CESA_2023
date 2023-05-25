@@ -43,7 +43,7 @@ public class PreviewSS : MonoBehaviour
         // カメラのRenderTextureをクリアする
         previewCamera.targetTexture = null;
 
-        // ステージ1-1のシーンをアンロー
+        // ステージ1-1のシーンをアンロ
         //EditorSceneManager.CloseScene(stageScene, true);
     }
 }

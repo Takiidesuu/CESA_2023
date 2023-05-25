@@ -64,7 +64,7 @@ public class ImageSlider : MonoBehaviour
 
             });
 
-            Invoke("ChangeScene", 1);
+            Invoke("ChangeScene", 1.5f);
         }
        
         if (!is_firsttime)
