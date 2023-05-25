@@ -43,6 +43,7 @@ public class ScoreManager : MonoBehaviour
     ItemMover itemmover;
     private void Start()
     {
+        transform.root.GetComponent<ScoreCount>().SetScore();
         soundManager = GetComponent<SoundManager>();
         itemmover = gameObject.GetComponent<ItemMover>();
         TimeText = TimeTextObj.transform.GetComponent<TextMeshPro>();

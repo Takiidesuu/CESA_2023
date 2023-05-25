@@ -1,0 +1,36 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class ScoreCount : MonoBehaviour
+{
+    private ScoreManager scoreManager;
+    private DamageScript damageScript;
+
+    public int BaseTiem = 300;
+    private float CurrentTime;
+    public int Coefficient = 10;
+    [Tooltip("HPåWêî")] public int HPCoefficient = 100;
+
+
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        scoreManager = transform.GetChild(0).GetChild(0).GetComponent<ScoreManager>();
+        damageScript = GameObject.Find("Player").GetComponent<DamageScript>();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        CurrentTime += Time.deltaTime;
+    }
+
+    public void SetScore()
+    {
+        int bonus = damageScript.GetHitPoint() * HPCoefficient;
+        scoreManager.Score = (BaseTiem - (int)CurrentTime) * Coefficient + bonus;
+        scoreManager.ClearTime = (int)CurrentTime;
+    }
+}
