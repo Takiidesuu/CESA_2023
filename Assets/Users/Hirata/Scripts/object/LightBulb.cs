@@ -71,7 +71,7 @@ public class LightBulb : MonoBehaviour
             
             if (GameObject.FindObjectOfType<LightBulbCollector>().lightbulb_left == 1 && changeMaterial.OnPower == false)
             {
-                clear_trigger_obj.SetActive(true);
+                clear_trigger_obj.SetActive(false);
             }
         }
         else
@@ -85,15 +85,8 @@ public class LightBulb : MonoBehaviour
     {
         if (other.gameObject.CompareTag("ElectricalBall"))
         {
-            if (clear_trigger_obj.activeSelf == false)
-            {
-                is_stage_hit = true;
-                nothit_count = 0;
-            }
-            else
-            {
-                GameObject.FindObjectOfType<CameraMove>().IsLastBulb(true, this.gameObject);
-            }
+            is_stage_hit = true;
+            nothit_count = 0;
         }
     }
     private void OnTriggerEnter(Collider other)
@@ -101,11 +94,7 @@ public class LightBulb : MonoBehaviour
         if (other.gameObject.CompareTag("ElectricalBall"))
         {
             touching_electric = other.gameObject;
-            
-            if (clear_trigger_obj.activeSelf == false)
-            {
-                LightUpBulb();
-            }
+            LightUpBulb();
         }
     }
     
