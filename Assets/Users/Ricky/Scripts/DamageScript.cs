@@ -58,18 +58,16 @@ public class DamageScript : MonoBehaviour
                             GameObject.FindObjectOfType<GameOverManager>().SwitchToGameOver();
                         }
                     }
-                    else
+                    
+                    if (this.gameObject.tag == "Player")
                     {
-                        if (this.gameObject.tag == "Player")
-                        {
-                            this.GetComponent<PlayerMove>().TookDamage(invincible_duration * 1.2f);
-                            
-                            prev_angle = this.transform.eulerAngles.y;
-                            this.transform.eulerAngles = new Vector3(this.transform.eulerAngles.x, 90.0f, this.transform.eulerAngles.z);
-                            
-                            hiteffect.is_damage = true;
-                            hiteffect.UpdateMaterial();
-                        }
+                        this.GetComponent<PlayerMove>().TookDamage(invincible_duration * 1.2f);
+                        
+                        prev_angle = this.transform.eulerAngles.y;
+                        this.transform.eulerAngles = new Vector3(this.transform.eulerAngles.x, 90.0f, this.transform.eulerAngles.z);
+                        
+                        hiteffect.is_damage = true;
+                        hiteffect.UpdateMaterial();
                     }
                     
                     is_invincible = true;

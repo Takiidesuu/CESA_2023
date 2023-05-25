@@ -8,6 +8,10 @@ public class AudioManager : MonoBehaviour
     static public AudioManager instance;
     
     [Header("BGM")]
+    [SerializeField] private AudioClip title_bgm;
+    [SerializeField] [Range(0.0f, 1.0f)] private float title_bgm_volume = 1.0f;
+    [SerializeField] private AudioClip stage_select_bgm;
+    [SerializeField] [Range(0.0f, 1.0f)] private float stage_select_bgm_volume = 1.0f;
     [SerializeField] private AudioClip world1_bgm;
     [SerializeField] [Range(0.0f, 1.0f)] private float world1_bgm_volume = 1.0f;
     [SerializeField] private AudioClip world2_bgm;
