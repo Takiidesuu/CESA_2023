@@ -19,13 +19,9 @@ public class BulbManager : MonoBehaviour
 
     public GameObject ResultWindow;
 
-    private SoundManager soundManager;
-
     private void Start()
     {
-        collector = gameObject.GetComponent<LightBulbCollector>();
-        soundManager = GetComponent<SoundManager>();
-    }
+        collector = gameObject.GetComponent<LightBulbCollector>();    }
 
     void Update()
     {
@@ -39,7 +35,6 @@ public class BulbManager : MonoBehaviour
     IEnumerator ActiveResultWindow(float time)
     {
         yield return new WaitForSeconds(time);
-        soundManager.PlaySoundEffect("Clear");
         ResultWindow.SetActive(true);
     }
 }
