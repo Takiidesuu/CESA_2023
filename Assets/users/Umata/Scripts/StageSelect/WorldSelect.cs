@@ -82,9 +82,11 @@ public class WorldSelect : MonoBehaviour
     LoadSceneFade LoadSceneFade;//スクリプト
     bool isSceneChange = false; //シーン移行のフラグ
     AsyncOperation asyncOperation;//進捗チェック
+    private SoundManager soundManager;  //サウンドマネージャー
 
     void Start()
     {
+        soundManager = GetComponent<SoundManager>();
         LoadSceneFade = GameObject.Find("LoadSceneFade").GetComponent<LoadSceneFade>();
         postProcessVolume.transform.GetComponent<Volume>().profile.TryGet(out vignette);
 
@@ -122,6 +124,7 @@ public class WorldSelect : MonoBehaviour
             {
                 // ワールドを選択中の場合、ステージ選択に移行
                 selectingWorld = false;
+                soundManager.PlaySoundEffect("OK");
             }
             else
             {
@@ -136,6 +139,7 @@ public class WorldSelect : MonoBehaviour
                         PlayerObj.GetComponent<CellEffect>().ChangeMaterialsToInvisible();
                         Invoke("LoadScene", time * 3);
                         Invoke("TransitionInit", 1);
+                        soundManager.PlaySoundEffect("GO");
                     }
                 }
                 else
@@ -200,6 +204,7 @@ public class WorldSelect : MonoBehaviour
             {
                 currentStage = (currentStage + 1) % numStages;
             }
+            soundManager.PlaySoundEffect("Cursor");
         }
 
         if (InputManager.instance)
@@ -207,7 +212,7 @@ public class WorldSelect : MonoBehaviour
         
         }
 
-            if (InputManager.instance.press_menu_left)
+        if (InputManager.instance.press_menu_left)
         {
             // 左キーでワールドまたはステージを1つ戻す
             if (selectingWorld)
@@ -218,6 +223,8 @@ public class WorldSelect : MonoBehaviour
             {
                 currentStage = (currentStage - 1 + numStages) % numStages;
             }
+            soundManager.PlaySoundEffect("Cursor");
+
         }
 
         if (InputManager.instance.press_cancel)
@@ -226,6 +233,7 @@ public class WorldSelect : MonoBehaviour
             if (!selectingWorld)
             {
                 selectingWorld = true;
+                soundManager.PlaySoundEffect("Cancel");
             }
         }
         if (!selectingWorld)
@@ -347,9 +355,11 @@ public class WorldSelect : MonoBehaviour
         // ワールドとステージに応じてシーンをロードする処理を書く
         string stage_name = "Stage" + (currentWorld+1) + "-" + (currentStage+1);
         //fadeのテクスチャセットロード開始
-        LoadSceneFade.SetTexture(currentWorld, currentStage);
-        if (asyncOperation == null) 
+        if (asyncOperation == null)
+        {
             asyncOperation = SceneManager.LoadSceneAsync(stage_name);
+            LoadSceneFade.SetTexture(currentWorld, currentStage);
+        }
         asyncOperation.allowSceneActivation = false;
     }
 

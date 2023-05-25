@@ -21,6 +21,7 @@ public class SoundManager : MonoBehaviour
 
     public void PlaySoundEffect(string name)
     {
+        audioSource = GetComponent<AudioSource>();
         SoundEffect effect = GetSoundEffectByName(name);
         if (effect.clip != null)
         {
@@ -34,7 +35,7 @@ public class SoundManager : MonoBehaviour
             {
                 audioSource.volume = 1;
             }
-            audioSource.Play();
+            audioSource.PlayOneShot(audioSource.clip);
         }
         else
         {
