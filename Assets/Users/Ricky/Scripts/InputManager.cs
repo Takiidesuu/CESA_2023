@@ -256,16 +256,40 @@ public class InputManager : MonoBehaviour
     
     private void ProtoNextScene(InputAction.CallbackContext obj)
     {
-        int currentSceneName = SceneManager.GetActiveScene().buildIndex;
-        
-        if (currentSceneName == 6)
+        int current_world = StageDataManager.instance.now_world + 1;
+        int current_stage = StageDataManager.instance.now_stage + 1;
+
+        string world_to_load = "StageSelect";
+
+        bool change_to_select = false;
+
+        if (current_stage < 5)
         {
-            SceneManager.LoadScene("Select");
+            current_stage++;
         }
         else
         {
-            SceneManager.LoadScene(currentSceneName + 1);
+            if (current_world < 4)
+            {
+                current_world++;
+                current_stage = 1;
+            }
+            else
+            {
+                change_to_select = true;
+            }
         }
+
+        if (change_to_select)
+        {
+            world_to_load = "StageSelect";
+        }
+        else
+        {
+            world_to_load = "Stage" + current_world + "-" + current_stage;
+        }
+
+        SceneManager.LoadScene(world_to_load);
     }
     
     
