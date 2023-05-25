@@ -28,6 +28,13 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioClip world4_bgm;
     [SerializeField] [Range(0.0f, 1.0f)] private float world4_bgm_volume = 1.0f;
     
+    [Tooltip("フェードイン速度")]
+    [SerializeField] private float fadein_speed = 2.0f;
+    [Tooltip("フェードアウト速度")]
+    [SerializeField] private float fadeout_speed = 2.0f;
+    [Tooltip("次のBGMまでの待ち時間")]
+    [SerializeField] private float bgm_wait_time = 1.0f;
+    
     private AudioSource audio_source;
     
     private float volume_to_use;
@@ -83,10 +90,10 @@ public class AudioManager : MonoBehaviour
             case VOLUMESTATE.KEEP:
             break;
             case VOLUMESTATE.FADEOUT:
-            volume_t -= Time.deltaTime / 2.0f;
+            volume_t -= Time.deltaTime / 2.0f * fadeout_speed;
             break;
             case VOLUMESTATE.FADEIN:
-            volume_t += Time.deltaTime / 4.0f;
+            volume_t += Time.deltaTime / 2.0f * fadein_speed;
             break;
         }
         
@@ -175,7 +182,7 @@ public class AudioManager : MonoBehaviour
         
         if (volume_t <= 0 && volume_state == VOLUMESTATE.FADEOUT)
         {
-            if (switch_bgm_delay < 2.0f)
+            if (switch_bgm_delay < bgm_wait_time)
             {
                 switch_bgm_delay += Time.deltaTime;
             }
