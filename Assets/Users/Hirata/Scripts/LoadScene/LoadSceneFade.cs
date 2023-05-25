@@ -138,6 +138,16 @@ public class LoadSceneFade : MonoBehaviour
     {
         if (Is_move)
         {
+            if (!gameObjects[0, 0].activeSelf)
+            {
+                for (int y = 0; y < rows; y++)
+                {
+                    for (int x = 0; x < columns; x++)
+                    {
+                        gameObjects[y, x].SetActive(true);
+                    }
+                }
+            }
             if (!Is_Coroutine)
             {
                 if (EndCount == 0)
@@ -192,6 +202,7 @@ public class LoadSceneFade : MonoBehaviour
             for (int x = 0; x < columns; x++)
             {
                 GameObject gameObject = new GameObject();
+                gameObject.SetActive(false);
                 gameObject.transform.parent = canvas.transform;
                 Image image = gameObject.AddComponent<Image>();
                 image.sprite = load_split[y, x];

@@ -43,6 +43,7 @@ public class ScoreManager : MonoBehaviour
     ItemMover itemmover;
     private void Start()
     {
+        soundManager = GetComponent<SoundManager>();
         itemmover = gameObject.GetComponent<ItemMover>();
         TimeText = TimeTextObj.transform.GetComponent<TextMeshPro>();
         ScoreText = ScoreTextObj.transform.GetComponent<TextMeshPro>();
@@ -53,7 +54,6 @@ public class ScoreManager : MonoBehaviour
         time_countup_flg = false;
         score_countup_flg = false;
         
-        soundManager = GetComponent<SoundManager>();
         soundManager.PlaySoundEffect("ClearJingle");
     }
 
