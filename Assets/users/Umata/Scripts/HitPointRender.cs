@@ -48,7 +48,7 @@ public class HitPointRender : MonoBehaviour
         RowImageParent.AddComponent<RectTransform>();
         RowImageParent.transform.SetParent(transform);
         RowImageParent.transform.localPosition = ParentPos;
-        RowImageParent.transform.SetSiblingIndex(5);
+        RowImageParent.transform.SetSiblingIndex(4);
 
         // RowImage�𐶐�
         for (int i = 0; i < hitpoint; i++)

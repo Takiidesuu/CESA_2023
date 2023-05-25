@@ -19,6 +19,13 @@ public class PlayerMove : MonoBehaviour
         CAN_JUMP,       //ジャンプできる
     }
     
+    enum SMASHPOWERLEVEL
+    {
+        NORMAL,
+        BIG,
+        MAX
+    }
+    
     [Header("Player Param")]
     [Tooltip("加速度")]
     [SerializeField] private float acceleration_speed = 2.0f;
@@ -36,6 +43,11 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private float smash_max_time = 5.0f;
     [Tooltip("叩く力")]
     [SerializeField] private float smash_power_scalar = 3.0f;
+    [Tooltip("１段階目の力の乗算")]
+    [SerializeField] private float increase_power_scalar_one = 2.0f;
+    [Tooltip("マックスの力の乗算")]
+    [SerializeField] private float increase_power_scalar_max = 4.0f;
+    private SMASHPOWERLEVEL power_level = SMASHPOWERLEVEL.NORMAL;
     
     [Header("Vibration param")]
     [Tooltip("溜めてる時の震度")]
@@ -324,9 +336,12 @@ public class PlayerMove : MonoBehaviour
                         soundmanager.PlaySoundEffect("Charge_1");
                         play_max_charge = false;
                     }
+                    
+                    power_level = SMASHPOWERLEVEL.MAX;
                 }
                 else
                 {
+                    power_level = SMASHPOWERLEVEL.BIG;
                     line_color.startColor = new Color(0.0f, 1.0f, 0.0f);
                     circle_color.startColor = new Color(0.0f, 1.0f, 0.0f);
                     
@@ -339,6 +354,7 @@ public class PlayerMove : MonoBehaviour
             }
             else
             {
+                power_level = SMASHPOWERLEVEL.NORMAL;
                 can_jump_status = SMASHJUMP.NONE;
                 line_color.startColor = new Color(0.0f, 0.0f, 1.0f);
                 circle_color.startColor = new Color(0.0f, 0.0f, 1.0f);
@@ -555,7 +571,17 @@ public class PlayerMove : MonoBehaviour
 
             if (isSmash)
             {
-                Vector3 spawn_point = deform_stage.AddDeformpointDown(transform.position, transform.eulerAngles.y, smash_power_num + 1 * smash_power_scalar, is_flip);
+                float increase_power_scalar = 1;
+                if (power_level == SMASHPOWERLEVEL.MAX)
+                {
+                    increase_power_scalar = increase_power_scalar_max;
+                }
+                else if (power_level == SMASHPOWERLEVEL.BIG)
+                {
+                    increase_power_scalar = increase_power_scalar_one;
+                }
+                
+                Vector3 spawn_point = deform_stage.AddDeformpointDown(transform.position, transform.eulerAngles.y, (smash_power_num + 1) * smash_power_scalar * increase_power_scalar, is_flip);
                 spawn_point -= this.transform.up;
                 Instantiate(spark_effect, spawn_point, this.transform.rotation);
             }
