@@ -4,40 +4,48 @@ using UnityEngine.SceneManagement;
 
 public class ImageSlider : MonoBehaviour
 {
-    public Image[] images;  // �R��Image���i�[����z��
-    public int select_button = 0;  // �I�𒆂̃{�^���̃C���f�b�N�X
-    public int select_distance = 50;  // �{�^�������炷����
-    public float select_delay = 0.3f; // �{�^���I���̍X�V�𐧌����鎞��
+    public Image[] images; 
+    public int select_button = 0; 
+    public int select_distance = 50;  
+    public float select_delay = 0.3f; 
 
-    public bool is_firsttime = true; // ����N�����ǂ����̃t���O
+    public bool is_firsttime = true;
 
-    public string scene_start_name; //�ŏ��̃V�[����
-    public string scene_continue_name; //�����̃V�[����
-    public string scene_option_name; //�I�v�V�����̃V�[����
-
-
-    public Image image_hammer; // �ǉ���Image Hammer
-    public Image image_banner; // �ǉ���Image Banner
+    public string scene_start_name; 
+    public string scene_continue_name;
+    public string scene_option_name;
 
 
-    public float hammer_image_distance;  // �������W��ۑ�����z��
+    public Image image_hammer;
+    public Image image_banner; 
 
-    private float[] init_positions;  // �������W��ۑ�����z��
-    private float timeSinceSelect = 0f; // �O��̃{�^���I������̎���
-    private bool canSelect = true; // �{�^���I�����\���ǂ����̃t���O
+    public float hammer_image_distance; 
+
+    private float[] init_positions; 
+    private float timeSinceSelect = 0f;
+    private bool canSelect = true; 
 
     private SoundManager soundManager;
-    
+
+    [SerializeField] Color color1 = Color.white, color2 = Color.white;
+    [SerializeField] UnityEngine.UI.Image image = null;
+
+    [SerializeField]
+    CanvasGroup group = null;
+
+    [SerializeField]
+    Fade fade = null;
+
     void Start()
     {
-        // �������W��z��ɕۑ�
+       
         init_positions = new float[images.Length];
         for (int i = 0; i < images.Length; i++)
         {
             init_positions[i] = images[i].rectTransform.anchoredPosition.x;
         }
 
-        // ������Ԃ̃{�^����I��
+       
         SetSelectedButton(select_button);
 
         soundManager = GetComponent<SoundManager>();
@@ -45,26 +53,20 @@ public class ImageSlider : MonoBehaviour
 
     void Update()
     {
-        //�V�[���ؑ�
+       
         if (InputManager.instance.press_select)
         {
             soundManager.PlaySoundEffect("OK");
-            
-            // �X�y�[�X�L�[�܂��̓W�����v�{�^���������ꂽ�Ƃ��̏���
-            switch (select_button){
-                case 0:
-                    SceneManager.LoadScene(scene_start_name);
-                    break;
-                case 1:
-                    SceneManager.LoadScene(scene_continue_name);
-                    break;
 
-                case 2:
-                    SceneManager.LoadScene(scene_option_name);
-                    break;
-            }
+            group.blocksRaycasts = false;
+            fade.FadeIn(1, () =>
+            {
+
+            });
+
+            Invoke("ChangeScene", 1);
         }
-        // ����N���̏ꍇ�AadditionalImage�̃A���t�@�l��255�ɐݒ�
+       
         if (!is_firsttime)
         {
             Color color = images[1].color;
@@ -80,7 +82,7 @@ public class ImageSlider : MonoBehaviour
 
         timeSinceSelect += Time.deltaTime;
 
-        // �L�[�{�[�h����őI�𒆂̃{�^����ύX
+       
         if (canSelect && InputManager.instance.GetMenuMoveFloat() < 0)
         {
             soundManager.PlaySoundEffect("Cursor");
@@ -104,22 +106,21 @@ public class ImageSlider : MonoBehaviour
             }
         }
 
-        // �{�^���I���̍X�V���������Ԃ𒴂�����t���O�𗧂Ă�
+       
         if (timeSinceSelect >= select_delay)
         {
             canSelect = true;
         }
 
-        // �I�𒆂̃{�^�����ړ�
         SetSelectedButton(select_button);
     }
 
-    // �I�𒆂̃{�^�����ړ�����֐�
+   
     void SetSelectedButton(int index)
     {
         for (int i = 0; i < images.Length; i++)
         {
-            // �������W����I�𒆂̃{�^���̋����ɉ����āAX���W�����炷
+          
             float x = init_positions[i];
             if (i == index)
             {
@@ -130,6 +131,23 @@ public class ImageSlider : MonoBehaviour
             image_hammer.rectTransform.anchoredPosition = new Vector2(images[select_button].rectTransform.anchoredPosition.x - hammer_image_distance, images[select_button].rectTransform.anchoredPosition.y);
             image_banner.rectTransform.anchoredPosition = new Vector2(images[select_button].rectTransform.anchoredPosition.x, images[select_button].rectTransform.anchoredPosition.y);
 
+        }
+    }
+
+     void ChangeScene()
+    {
+        switch (select_button)
+        {
+            case 0:
+                SceneManager.LoadScene(scene_start_name);
+                break;
+            case 1:
+                SceneManager.LoadScene(scene_continue_name);
+                break;
+
+            case 2:
+                SceneManager.LoadScene(scene_option_name);
+                break;
         }
     }
 }
