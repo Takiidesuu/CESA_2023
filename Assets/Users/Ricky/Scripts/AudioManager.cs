@@ -69,7 +69,7 @@ public class AudioManager : MonoBehaviour
         is_game = false;
         
         volume_t = 0;
-        switch_bgm_delay = 0;
+        switch_bgm_delay = 2;
     }
     
     private void Update() 
@@ -111,6 +111,7 @@ public class AudioManager : MonoBehaviour
         {
             volume_state = VOLUMESTATE.FADEOUT;
             scene_has_changed = false;
+            previous_scene_name = current_scene;
         }
         
         if (!audio_source.isPlaying)

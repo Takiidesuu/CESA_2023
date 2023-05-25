@@ -15,6 +15,9 @@ public class LightBulb : MonoBehaviour
     [SerializeField] private float m_destroy_time = 5.0f;
     private float m_destroy_timer;
     
+    [Tooltip("クリア判定の子オブジェクト")]
+    [SerializeField] private GameObject clear_trigger_obj;
+    
     private Vector3 default_scale = new Vector3(3, 3, 3);
     private GameObject electric_effect;
     
