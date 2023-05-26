@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 public class ElectricBallMove : MonoBehaviour
 {
+    public bool BackBuilding = false;
+
     [Tooltip("移動速度")]
     [SerializeField] private float m_speed = 5.0f;
 
@@ -64,7 +66,7 @@ public class ElectricBallMove : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!check_is_cleared.IsCleared() && !GameOverManager.instance.game_over_state && player.GetComponent<PlayerMove>().start_game && GameObject.FindObjectOfType<LightBulbClearTrigger>() == null)
+        if ((!check_is_cleared.IsCleared() && !GameOverManager.instance.game_over_state && player.GetComponent<PlayerMove>().start_game && GameObject.FindObjectOfType<LightBulbClearTrigger>() == null) || BackBuilding)
         {
             var locVel = transform.InverseTransformDirection(rb.velocity);
             locVel.x = m_real_speed;
@@ -86,7 +88,11 @@ public class ElectricBallMove : MonoBehaviour
             Vector3 playerpos;
             playerpos.x = transform.position.x;
             playerpos.y = transform.position.y;
-            playerpos.z = 0;
+            if (!BackBuilding)
+                playerpos.z = 0;
+            else
+                playerpos.z = transform.position.z;
+
 
             Vector3 playerRot;
             playerRot.x = 0;
@@ -166,6 +172,10 @@ public class ElectricBallMove : MonoBehaviour
         }
     }
     
+    public float GetSpeed()
+    {
+        return m_real_speed;
+    }
     public void ChangeSpeed(float boostSpeed)
     {
         m_real_speed = m_speed + boostSpeed;
