@@ -14,6 +14,9 @@ public class StageStartScript : MonoBehaviour
     
     private bool start;
     
+    private Material mat;
+    private Color defaultColor;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -21,6 +24,8 @@ public class StageStartScript : MonoBehaviour
         transform.SetParent(null);
         lerp_t = 0;
         start = true;
+        
+        mat = transform.GetChild(0).GetComponent<Renderer>().materials[0];
         
         StartCoroutine(EffectDelay(0.5f));
     }
@@ -35,6 +40,8 @@ public class StageStartScript : MonoBehaviour
         else
         {
             transform.localScale = Vector3.Lerp(new Vector3(0, 1, 0.1f), new Vector3(1, 1, 0.1f), lerp_t);
+            defaultColor.a = Mathf.Lerp(0, 1, lerp_t);
+            mat.SetFloat("_Alpha", lerp_t);
         
             if (start)
             {

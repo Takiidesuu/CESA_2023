@@ -46,6 +46,7 @@ public class LightBulb : MonoBehaviour
         col = GetComponent<SphereCollider>();
         
         line_status_obj = null;
+        clear_trigger_obj.SetActive(false);
     }
 
     private void Update()
@@ -70,15 +71,6 @@ public class LightBulb : MonoBehaviour
             {
                 is_stage_hit = false;
                 m_destroy_timer = 0;
-            }
-            
-            if (clear_trigger_obj.activeSelf)
-            {
-                col.radius = 0.75f;
-            }
-            else
-            {
-                col.radius = 0.65f;
             }
         }
         else
@@ -112,6 +104,17 @@ public class LightBulb : MonoBehaviour
             else
             {
                 LightUpBulb();
+            }
+        }
+    }
+    
+    private void OnTriggerExit(Collider other) 
+    {
+        if (other.gameObject.CompareTag("ElectricalBall"))
+        {
+            if (GameObject.FindObjectOfType<LightBulbCollector>().lightbulb_left == 1 && changeMaterial.OnPower == false)
+            {
+                clear_trigger_obj.SetActive(false);
             }
         }
     }
