@@ -19,6 +19,7 @@ public class LightBulb : MonoBehaviour
     [SerializeField] private GameObject clear_trigger_obj;
     
     private GameObject touching_electric;
+    private SphereCollider col;
     
     private Vector3 default_scale = new Vector3(3, 3, 3);
     private GameObject electric_effect;
@@ -41,6 +42,8 @@ public class LightBulb : MonoBehaviour
         soundManager = GetComponent<SoundManager>();    
         electric_effect = transform.GetChild(0).gameObject;
         electric_effect.transform.localScale = default_scale;
+        
+        col = GetComponent<SphereCollider>();
         
         line_status_obj = null;
     }
@@ -69,9 +72,13 @@ public class LightBulb : MonoBehaviour
                 m_destroy_timer = 0;
             }
             
-            if (GameObject.FindObjectOfType<LightBulbCollector>().lightbulb_left == 1 && changeMaterial.OnPower == false)
+            if (clear_trigger_obj.activeSelf)
             {
-                clear_trigger_obj.SetActive(false);
+                col.radius = 0.75f;
+            }
+            else
+            {
+                col.radius = 0.65f;
             }
         }
         else
@@ -85,8 +92,11 @@ public class LightBulb : MonoBehaviour
     {
         if (other.gameObject.CompareTag("ElectricalBall"))
         {
-            is_stage_hit = true;
-            nothit_count = 0;
+            if (!clear_trigger_obj.activeSelf)
+            {
+                is_stage_hit = true;
+                nothit_count = 0;
+            }
         }
     }
     private void OnTriggerEnter(Collider other)
@@ -94,7 +104,15 @@ public class LightBulb : MonoBehaviour
         if (other.gameObject.CompareTag("ElectricalBall"))
         {
             touching_electric = other.gameObject;
-            LightUpBulb();
+            
+            if (GameObject.FindObjectOfType<LightBulbCollector>().lightbulb_left == 1 && changeMaterial.OnPower == false)
+            {
+                clear_trigger_obj.SetActive(true);
+            }
+            else
+            {
+                LightUpBulb();
+            }
         }
     }
     

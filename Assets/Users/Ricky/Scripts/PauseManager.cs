@@ -81,23 +81,19 @@ public class PauseManager : MonoBehaviour
                         {
                             case MENU_OPTION.STAGESELECT:
                             SceneManager.LoadScene("StageSelect");
-                            switch_scene = false;
-                            pause_flg = false;
-                            Time.timeScale = 1.0f;
                             break;
                             case MENU_OPTION.TITLE:
                             SceneManager.LoadScene("Title");
-                            switch_scene = false;
-                            pause_flg = false;
-                            Time.timeScale = 1.0f;
                             break;
                         }
+                        
+                        switch_scene = false;
+                        pause_flg = false;
+                        Time.timeScale = 1.0f;
                     }
                 }
                 else
                 {
-                    Time.timeScale = 0.0f;
-                    
                     foreach (Transform child in transform)
                     {
                         child.gameObject.SetActive(true);
@@ -107,6 +103,7 @@ public class PauseManager : MonoBehaviour
                     {
                         pause_flg = false;
                         soundManager.PlaySoundEffect("Cancel");
+                        Time.timeScale = 1.0f;
                     }
                     
                     selected_option = GetNextMenu(InputManager.instance.GetMenuMoveFloat());
@@ -131,6 +128,7 @@ public class PauseManager : MonoBehaviour
                         {
                             case MENU_OPTION.RESUME:
                             pause_flg = false;
+                            Time.timeScale = 1.0f;
                             break;
                             case MENU_OPTION.RETRY:
                             Time.timeScale = 1.0f;
@@ -160,11 +158,7 @@ public class PauseManager : MonoBehaviour
                 if (InputManager.instance.press_pause)
                 {
                     pause_flg = true;
-                }
-                
-                if (!HitstopManager.instance.is_stopped)
-                {
-                    Time.timeScale = 1.0f;
+                    Time.timeScale = 0.0f;
                 }
             }
         }
@@ -176,7 +170,7 @@ public class PauseManager : MonoBehaviour
         
         if (iinput > 0)
         {
-            
+            soundManager.PlaySoundEffect("Cursor");
             
             switch (selected_option)
             {

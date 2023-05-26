@@ -195,7 +195,6 @@ public class AudioManager : MonoBehaviour
         
         if (volume_t >= 1 && volume_state == VOLUMESTATE.FADEIN)
         {
-            Debug.Log("CHANGETOKEEP");
             switch_bgm_delay = 0;
             volume_state = VOLUMESTATE.KEEP;
         }
