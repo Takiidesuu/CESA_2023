@@ -55,7 +55,7 @@ public class GravityControl : MonoBehaviour
         if (this.gameObject.tag == "Player")
         {
             going_back_to_ground = true;
-            StartCoroutine(WarpBackToGround());
+            StartCoroutine(WarpBackToGround(2));
         }
         else
         {
@@ -78,12 +78,12 @@ public class GravityControl : MonoBehaviour
                 {
                     if (this.gameObject.GetComponent<PlayerMove>().start_game)
                     {
-                        StartCoroutine(WarpBackToGround());
+                        StartCoroutine(WarpBackToGround(1));
                     }
                 }
                 else
                 {
-                    StartCoroutine(WarpBackToGround());
+                    StartCoroutine(WarpBackToGround(1));
                 }
             }
         }
@@ -322,7 +322,7 @@ public class GravityControl : MonoBehaviour
         return hit_dir.normalized * -1.0f;
     }
     
-    IEnumerator WarpBackToGround()
+    IEnumerator WarpBackToGround(float wait)
     {
         gravity_dir = Vector3.zero;
         real_gravity_power = 0.0f;
@@ -345,7 +345,7 @@ public class GravityControl : MonoBehaviour
 
         soundManager.PlaySoundEffect("MeteorStrike");
 
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(wait);
         
         going_back_to_ground = true;
         
