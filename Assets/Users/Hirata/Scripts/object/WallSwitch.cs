@@ -9,7 +9,7 @@ public class WallSwitch : MonoBehaviour
 
     private void Start()
     {
-        wall_move = transform.parent.Find("Wall").GetComponent<WallMove>();
+        wall_move = transform.parent.transform.GetChild(1).GetComponent<WallMove>();
     }
     public bool GetIsHit()
     {
