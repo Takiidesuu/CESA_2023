@@ -115,6 +115,7 @@ public class LightBulb : MonoBehaviour
             if (GameObject.FindObjectOfType<LightBulbCollector>().lightbulb_left == 1 && changeMaterial.OnPower == false)
             {
                 clear_trigger_obj.SetActive(false);
+                Time.timeScale = 1;
             }
         }
     }
