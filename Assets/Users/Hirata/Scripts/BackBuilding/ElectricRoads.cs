@@ -11,10 +11,10 @@ public class ElectricRoads : MonoBehaviour
     {
         foreach(ElectricBallMove electricBall in electricBall)
         {
-            //if (electricBall.GetSpeed() > 0)
-            //    electricBall.ChangeSpeed(AddSpeed);
-            //else
-            //    electricBall.ChangeSpeed(-AddSpeed);
+            if (electricBall.GetSpeed() > 0)
+                electricBall.ChangeSpeed(AddSpeed);
+            else
+                electricBall.ChangeSpeed(-AddSpeed);
         }
     }
 
