@@ -208,14 +208,14 @@ public class DeformStage : MonoBehaviour
                 position.x -= y * offset;
                 position.y += x * offset;
                 for (int i = 0; i < 3; i++)
-                    pointdown.Add(Instantiate(point_down, position, Quaternion.Euler(-90 - GetAngle(transform.position, player_gameobject.transform.position) + 180, -90, 90), this.transform));
+                    pointdown.Add(Instantiate(point_down, position, Quaternion.Euler(-90 - GetAngle(transform.position, position) + 180, -90, 90), this.transform));
             }
             else
             {
                 position.x += y * offset;
                 position.y -= x * offset;
                 for (int i = 0; i < 3; i++)
-                    pointdown.Add(Instantiate(point_down, position, Quaternion.Euler(-90 - GetAngle(transform.position, player_gameobject.transform.position) + 180, -90, 90), this.transform));
+                    pointdown.Add(Instantiate(point_down, position, Quaternion.Euler(-90 - GetAngle(transform.position, position) + 180, -90, 90), this.transform));
             }
         }
         else
@@ -225,14 +225,14 @@ public class DeformStage : MonoBehaviour
                 position.x -= y * offset;
                 position.y += x * offset;
                 for (int i = 0; i < 3; i++)
-                    pointdown.Add(Instantiate(point_down, position, Quaternion.Euler(-90 - GetAngle(transform.position, player_gameobject.transform.position), -90, 90), this.transform));
+                    pointdown.Add(Instantiate(point_down, position, Quaternion.Euler(-90 - GetAngle(transform.position, position), -90, 90), this.transform));
             }
             else
             {
                 position.x += y * offset;
                 position.y -= x * offset;
                 for (int i = 0; i < 3; i++)
-                    pointdown.Add(Instantiate(point_down, position, Quaternion.Euler(-90 - GetAngle(transform.position, player_gameobject.transform.position), -90, 90), this.transform));
+                    pointdown.Add(Instantiate(point_down, position, Quaternion.Euler(-90 - GetAngle(transform.position, position), -90, 90), this.transform));
             }
         }
 
