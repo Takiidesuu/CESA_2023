@@ -1336,11 +1336,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GearObjects: []
   SmokeObjects: []
+  electricRoads: {fileID: 0}
   AddTime: 1
   startDensity: 0.0002
   endDensity: 0.00002
   duration: 3
-  StartFogColor: {r: 1, g: 0.7607843, b: 0.53333336, a: 1}
+  StartFogColor: {r: 0.40392157, g: 0.19607843, b: 0, a: 1}
   ClearFogColor: {r: 0.92156863, g: 1, b: 1, a: 1}
 --- !u!82 &5904550463491502458
 AudioSource:
@@ -1454,9 +1455,11 @@ MonoBehaviour:
   - name: GearMove
     clip:
     - {fileID: 8300000, guid: 25494841e2770d746aee8b514914c846, type: 3}
+    volume: 0
   - name: ReverseGear
     clip:
     - {fileID: 8300000, guid: 54045ad54d0b91c468a7a962b49b0aa8, type: 3}
+    volume: 0
 --- !u!1 &3840217295950846836
 GameObject:
   m_ObjectHideFlags: 0
