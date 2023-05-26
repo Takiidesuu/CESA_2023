@@ -64,7 +64,7 @@ public class ElectricBallMove : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!check_is_cleared.IsCleared() && !GameOverManager.instance.game_over_state && player.GetComponent<PlayerMove>().start_game)
+        if (!check_is_cleared.IsCleared() && !GameOverManager.instance.game_over_state && player.GetComponent<PlayerMove>().start_game && GameObject.FindObjectOfType<LightBulbClearTrigger>() == null)
         {
             var locVel = transform.InverseTransformDirection(rb.velocity);
             locVel.x = m_real_speed;

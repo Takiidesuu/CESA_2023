@@ -21,12 +21,16 @@ public class CameraMove : MonoBehaviour
     GameObject player_obj;
     GameObject lookat_pos;
     
+    private GameObject final_bulb;
+    
     Vector3 origin_pos;
     
     private float distance_scalar;
     
     private bool shake_camera;
     private float shake_power;
+    
+    private float move_speed_scalar;
     
     public bool is_zooming {get; private set;}
     
@@ -36,11 +40,6 @@ public class CameraMove : MonoBehaviour
         shake_camera = true;
         
         StartCoroutine("StopShake", fduration);
-    }
-    
-    public void IsLastBulb(bool state, GameObject lookat)
-    {
-        is_zooming = state;
     }
     
     private void Start() 
@@ -53,6 +52,7 @@ public class CameraMove : MonoBehaviour
         lookat_pos = new GameObject("CameraLookAtObj");
         
         distance_scalar = 1.0f;
+        move_speed_scalar = 1;
         
         shake_camera = false;
         is_zooming = false;
@@ -72,16 +72,38 @@ public class CameraMove : MonoBehaviour
         
         Vector3 targetLookAt;
         
-        if (target_obj)
+        LightBulbClearTrigger last_bulb_script = GameObject.FindObjectOfType<LightBulbClearTrigger>();
+        
+        if (last_bulb_script != null)
         {
-            distance_from_obj = distance_from_stage * 10.0f * distance_scalar;
+            distance_from_obj = 50.0f;
+            target_obj = last_bulb_script.gameObject;
             targetLookAt = target_obj.transform.position;
+            
+            move_speed_scalar = 5;
         }
         else
         {
-            target_obj = GameObject.FindGameObjectWithTag("Stage");
-            targetLookAt = player_obj.transform.position;
-            distance_from_obj = distance_from_stage * 10.0f * distance_scalar;
+            if (target_obj)
+            {
+                distance_from_obj = distance_from_stage * 10.0f * distance_scalar;
+                targetLookAt = target_obj.transform.position;
+            }
+            else
+            {
+                target_obj = GameObject.FindGameObjectWithTag("Stage");
+                targetLookAt = player_obj.transform.position;
+                distance_from_obj = distance_from_stage * 10.0f * distance_scalar;
+            }
+            
+            if (GameObject.FindObjectOfType<LightBulbCollector>().IsCleared())
+            {
+                move_speed_scalar = 0.5f;
+            }
+            else
+            {
+                move_speed_scalar = 1;
+            }
         }
         
         if (distance_scalar < 1.0f)
@@ -99,15 +121,23 @@ public class CameraMove : MonoBehaviour
         }
         
         Vector3 target_pos = new Vector3(target_obj.transform.position.x, target_obj.transform.position.y, target_obj.transform.position.z - Mathf.Abs(distance_from_obj));
+        transform.position = Vector3.MoveTowards(transform.position, target_pos, 300.0f * Time.unscaledDeltaTime * move_speed_scalar);
         
-        lookat_pos.transform.position = targetLookAt;
-        transform.position = Vector3.MoveTowards(transform.position, target_pos, 300.0f * Time.deltaTime);
+        if (GameObject.FindObjectOfType<LightBulbCollector>().IsCleared())
+        {
+            lookat_pos.transform.position = Vector3.MoveTowards(lookat_pos.transform.position, targetLookAt, Time.deltaTime * 50.0f * move_speed_scalar);
+        }
+        else
+        {
+            lookat_pos.transform.position = targetLookAt;
+        }
         
         transform.LookAt(lookat_pos.transform, Vector3.up);
         
+        
         if (shake_camera)
         {
-            transform.position = origin_pos + Random.insideUnitSphere * shake_power * Time.timeScale;
+            transform.position = origin_pos + Random.insideUnitSphere * shake_power * Time.deltaTime;
         }
     }
     

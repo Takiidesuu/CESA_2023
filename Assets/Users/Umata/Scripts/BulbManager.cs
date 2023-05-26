@@ -26,7 +26,7 @@ public class BulbManager : MonoBehaviour
     void Update()
     {
         //ƒŠƒUƒ‹ƒgˆ—
-        if(GameObject.FindObjectOfType<LightBulbCollector>().IsCleared())
+        if(GameObject.FindObjectOfType<LightBulbCollector>().IsCleared() && GameObject.FindObjectOfType<LightBulbClearTrigger>() == null)
         {
             StartCoroutine(ActiveResultWindow(WaitTime));
         }

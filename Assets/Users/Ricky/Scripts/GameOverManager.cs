@@ -14,6 +14,17 @@ public class GameOverManager : MonoBehaviour
         SELECT
     }
     
+    enum ANIMSTATE
+    {
+        PLAYERWALK,
+        LIGHT,
+        LOGO,
+        RETRY,
+        SELECT,
+        
+        MAX
+    }
+    
     [Header("画像オブジェクト")]
     [Tooltip("黒いパネル")]
     [SerializeField] private GameObject black_panel;
@@ -43,9 +54,15 @@ public class GameOverManager : MonoBehaviour
     [SerializeField] private GameObject player_shadow_tex;
     private RectTransform player_shadow_tex_rect;
     
+    private float player_move_t;
+    private float light_ray_t;
+    private float fail_pic_t;
+    private float retry_t;
+    private float select_t;
+    
     private SoundManager soundManager;
     
-    private float elapsed_time;
+    private ANIMSTATE anim_state = ANIMSTATE.PLAYERWALK;
     
     public bool game_over_state {get; private set;}
     
@@ -96,8 +113,6 @@ public class GameOverManager : MonoBehaviour
         
         game_over_state = false;
         
-        elapsed_time = -3.5f;
-        
         button_x_target = -430.0f;
         
         move_button = true;
@@ -118,65 +133,52 @@ public class GameOverManager : MonoBehaviour
             {                
                 if (MoveBlackPanel())
                 {
-                    if (elapsed_time < 4.0f)
+                    switch (anim_state)
                     {
-                        elapsed_time += Time.unscaledDeltaTime;
-                    }
-                    
-                    if (elapsed_time >= -2.8f && elapsed_time < -0.5f)
-                    {
-                        player_obj_tex_rect.localPosition = Vector3.MoveTowards(player_obj_tex_rect.localPosition, new Vector3(510, player_obj_tex_rect.localPosition.y, player_obj_tex_rect.localPosition.z), Time.unscaledDeltaTime * 310.0f);
-                        player_shadow_tex_rect.localPosition = player_obj_tex_rect.localPosition + new Vector3(45, -109, 365);
+                        case ANIMSTATE.PLAYERWALK:
+                        player_move_t = CountT(player_move_t, 3, ANIMSTATE.LIGHT);
+                        player_anim.SetBool("isWalking", true);
                         player_anim.speed = 0.7f;
-                    }
-                    
-                    if (elapsed_time >= -0.5f && elapsed_time < 0.0f)
-                    {
+                        break;
+                        
+                        case ANIMSTATE.LIGHT:
+                        light_ray_t = CountT(light_ray_t, 0.5f, ANIMSTATE.LOGO);
+                        player_anim.speed = 1;
                         player_anim.SetTrigger("failAnim");
-                        player_anim.speed = 1.0f;
                         player_obj.transform.localEulerAngles = new Vector3(0, 90, 0);
-                        light_obj_rect.localScale = Vector3.MoveTowards(light_obj_rect.localScale, new Vector3(7, 16, 1), Time.unscaledDeltaTime * 100.0f);
+                        break;
+                        
+                        case ANIMSTATE.LOGO:
+                        fail_pic_t = CountT(fail_pic_t, 0.5f, ANIMSTATE.RETRY);
+                        ChangeAlphaState(failed_pic);
+                        break;
+                        case ANIMSTATE.RETRY:
+                        retry_t = CountT(retry_t, 0.5f, ANIMSTATE.SELECT);
+                        ChangeAlphaState(retry_button);
+                        ChangeAlphaState(retry_button.transform.GetChild(0).gameObject);
+                        break;
+                        
+                        case ANIMSTATE.SELECT:
+                        select_t = CountT(select_t, 0.5f, ANIMSTATE.MAX);
+                        ChangeAlphaState(select_button);
+                        ChangeAlphaState(select_button.transform.GetChild(0).gameObject);
+                        break;
+                        
+                        case ANIMSTATE.MAX:
+                        accept_button_input = true;
+                        hammer_pic.SetActive(true);
+                        break;
                     }
+    
+                    player_obj_tex_rect.localPosition = Vector3.Lerp(new Vector3(1225, player_obj_tex_rect.localPosition.y, player_obj_tex_rect.localPosition.z), new Vector3(510, player_obj_tex_rect.localPosition.y, player_obj_tex_rect.localPosition.z), player_move_t);
+                    player_shadow_tex_rect.localPosition = player_obj_tex_rect.localPosition + new Vector3(45, -109, 365);
                     
-                    if (elapsed_time >= 0.0f)
-                    {
-                        if (failed_pic_rect.localScale != Vector3.one)
-                        {
-                            failed_pic_rect.localScale = Vector3.MoveTowards(failed_pic_rect.localScale, new Vector3(1.5f, 1.3f, 1), Time.unscaledDeltaTime);
-                            
-                            ChangeAlphaState(failed_pic);
-                        }
-                        else
-                        {
-                            //failed_rect.pivot = new Vector2(0.4f, 1.0f);
-                            //failed_rect.localEulerAngles = Vector3.MoveTowards(failed_rect.localEulerAngles, new Vector3(failed_rect.localEulerAngles.x, failed_rect.localEulerAngles.y, -5.0f), Time.unscaledDeltaTime * 3.0f);
-                        }
-                    }
+                    light_obj_rect.localScale = Vector3.Lerp(new Vector3(0, 16, 1), new Vector3(7, 16, 1), light_ray_t);
                     
-                    if (elapsed_time > 0.5f)
-                    {
-                        if(move_button)
-                        {
-                            if (select_button_rect.localPosition != new Vector3(button_x_target, select_button_rect.localPosition.y, 0.0f))
-                            {
-                                if (retry_button_rect.localPosition != new Vector3(button_x_target, retry_button_rect.localPosition.y, 0.0f))
-                                {
-                                    StartCoroutine(ChangeButtonAlphaState(retry_button));
-                                }
-                                else
-                                {
-                                    StartCoroutine(ChangeButtonAlphaState(select_button));
-                                }
-                            }
-                            else
-                            {
-                                accept_button_input = true;
-                                hammer_pic.SetActive(true);
-                            }
-                            
-                            move_button = false;
-                        }
-                    }
+                    failed_pic_rect.localScale = Vector3.Lerp(new Vector3(1.8f, 1.6f, 1.3f), new Vector3(1.5f, 1.3f, 1), fail_pic_t);
+                    
+                    retry_button_rect.localPosition = Vector3.Lerp(new Vector3(-750, retry_button_rect.localPosition.y, 0), new Vector3(button_x_target, retry_button_rect.localPosition.y, 0), retry_t);
+                    select_button_rect.localPosition = Vector3.Lerp(new Vector3(-750, select_button_rect.localPosition.y, 0), new Vector3(button_x_target, select_button_rect.localPosition.y, 0), select_t);
                 }
             }
             else
@@ -207,31 +209,17 @@ public class GameOverManager : MonoBehaviour
                 }
             }
             
-            if (InputManager.instance.press_select)
+            if (InputManager.instance.press_select && anim_state == ANIMSTATE.MAX)
             {
-                if (!accept_button_input)
+                soundManager.PlaySoundEffect("OK");
+                switch (current_menu)
                 {
-                    if (elapsed_time < 0.0f)
-                    {
-                        elapsed_time = 0.0f;
-                    }
-                    else if (elapsed_time >= 0.0f && elapsed_time < 3.0f)
-                    {
-                        elapsed_time = 0.5f;
-                    }
-                }
-                else
-                {
-                    soundManager.PlaySoundEffect("OK");
-                    switch (current_menu)
-                    {
-                        case MENU.RETRY:
-                        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-                        break;
-                        case MENU.SELECT:
-                        SceneManager.LoadScene("StageSelect");
-                        break;
-                    }
+                    case MENU.RETRY:
+                    SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                    break;
+                    case MENU.SELECT:
+                    SceneManager.LoadScene("StageSelect");
+                    break;
                 }
             }
         }
@@ -250,7 +238,6 @@ public class GameOverManager : MonoBehaviour
             result = true;
             failed_pic.SetActive(true);
             player_obj.SetActive(true);
-            player_anim.SetBool("isWalking", true);
         }
         
         return result;
@@ -262,6 +249,26 @@ public class GameOverManager : MonoBehaviour
         var img_color = img.color;
         img_color.a = Mathf.MoveTowards(img_color.a, 255.0f, Time.unscaledDeltaTime * 10.0f);
         img.color = img_color;
+    }
+    
+    private float CountT(float t, float slowSpeed, ANIMSTATE nextState)
+    {
+        if (InputManager.instance.press_select)
+        {
+            t = 1;
+        }
+        
+        if (t < 1)
+        {
+            t += Time.unscaledDeltaTime / slowSpeed;
+        }
+        else
+        {
+            t = 1;
+            anim_state = nextState;
+        }
+        
+        return t;
     }
     
     IEnumerator ChangeButtonAlphaState(GameObject button_to_change)
