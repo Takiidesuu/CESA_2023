@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.32774305, g: 0.26552856, b: 0.24804606, a: 1}
+  m_IndirectSpecularColor: {r: 0.3275048, g: 0.26538283, b: 0.24791224, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -34777,11 +34777,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WorldTextures:
   - StageTextures:
-    - {fileID: 2800000, guid: 1c3f58f69e5126241ac8c27a2e3bb149, type: 3}
-    - {fileID: 2800000, guid: 26ef14088c65a9f4b9fd4ea4885a074c, type: 3}
-    - {fileID: 2800000, guid: 4f0dd9b41cb52b24396a3f836c83fad4, type: 3}
-    - {fileID: 2800000, guid: 5c048eb98e5b0af48801c0f975c97c85, type: 3}
-    - {fileID: 2800000, guid: 6093362d1abb0da479acb8288755a24b, type: 3}
+    - {fileID: 2800000, guid: a4c2dfa0b19290b44b06930bfb7f722a, type: 3}
+    - {fileID: 2800000, guid: 38b201ba7fdd63e4a91f40bc91ddd3b6, type: 3}
+    - {fileID: 2800000, guid: 9b1b7bb5127d7454bbcb7b353777014f, type: 3}
+    - {fileID: 2800000, guid: 95117eaa94a4e0241942d0762d317c5c, type: 3}
+    - {fileID: 2800000, guid: 1e70ab3de41729249ab8708600fe7fb6, type: 3}
   - StageTextures:
     - {fileID: 2800000, guid: 4de2e8c137c1c1047894705fa46320c9, type: 3}
     - {fileID: 2800000, guid: c5e954cd08b569743879adaed4cc4698, type: 3}
@@ -34789,17 +34789,17 @@ MonoBehaviour:
     - {fileID: 2800000, guid: 5ff7540d4d813804da4b1a623192f725, type: 3}
     - {fileID: 2800000, guid: 20c80697df6751f428f5dbd542ce550d, type: 3}
   - StageTextures:
-    - {fileID: 2800000, guid: 39f4b0323669d1d4fa1c324eb530abc8, type: 3}
-    - {fileID: 2800000, guid: 62931980667c5ce43b4563e09680b62c, type: 3}
-    - {fileID: 2800000, guid: 62f6943dd77aa94439ad0004f79e9587, type: 3}
-    - {fileID: 2800000, guid: 1bd9fb65bd50f334babbfd62411dd4a8, type: 3}
-    - {fileID: 2800000, guid: 976e281496cb2b74daf33d9d06d26dc7, type: 3}
+    - {fileID: 2800000, guid: 7b852768bb5714240ad04777b2c5b3a1, type: 3}
+    - {fileID: 2800000, guid: 638caddfc98904d4596ca2a53cc20482, type: 3}
+    - {fileID: 2800000, guid: 07d79031d88b42a4387910e2a46e7aa5, type: 3}
+    - {fileID: 2800000, guid: 92980fe2263a27648acfaba35047fca6, type: 3}
+    - {fileID: 2800000, guid: 6eb151a592ad0cb4f8afd03e560b70dc, type: 3}
   - StageTextures:
-    - {fileID: 2800000, guid: adbd21f7b65fa5f428108d9d6e9da56d, type: 3}
-    - {fileID: 2800000, guid: d02c06983e95e4f43826275022ae57db, type: 3}
-    - {fileID: 2800000, guid: eefabdbb049cf3044ad6c0a63b9658d6, type: 3}
-    - {fileID: 2800000, guid: eefabdbb049cf3044ad6c0a63b9658d6, type: 3}
-    - {fileID: 2800000, guid: cc27c960230619a4e9e7c038ea98952d, type: 3}
+    - {fileID: 2800000, guid: 0c8b942d793568a41a9ec24fe5a152d7, type: 3}
+    - {fileID: 2800000, guid: 20b71da6776de5b45a7eb39b22a6bd56, type: 3}
+    - {fileID: 2800000, guid: 1c4436f7179254a458cbf4bb24176983, type: 3}
+    - {fileID: 2800000, guid: db444dfde31e4b24f84356ad6f198fb1, type: 3}
+    - {fileID: 2800000, guid: 01a6a592897a78540b98fdc70c9da327, type: 3}
   numWorlds: 4
   numStages: 5
   postProcessVolume: {fileID: 1114385547}
@@ -38138,6 +38138,326 @@ PrefabInstance:
     - target: {fileID: 7909344435772032572, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
       propertyPath: m_Name
       value: StageData
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[0].stages.Array.data[0].rank_a_border
+      value: 5150
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[0].stages.Array.data[0].rank_b_border
+      value: 5000
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[0].stages.Array.data[0].rank_c_border
+      value: 4850
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[0].stages.Array.data[0].rank_s_border
+      value: 5300
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[0].stages.Array.data[1].rank_a_border
+      value: 4950
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[0].stages.Array.data[1].rank_b_border
+      value: 4750
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[0].stages.Array.data[1].rank_c_border
+      value: 4500
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[0].stages.Array.data[1].rank_s_border
+      value: 5150
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[0].stages.Array.data[2].rank_a_border
+      value: 5150
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[0].stages.Array.data[2].rank_b_border
+      value: 5000
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[0].stages.Array.data[2].rank_c_border
+      value: 4850
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[0].stages.Array.data[2].rank_s_border
+      value: 5300
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[0].stages.Array.data[3].rank_a_border
+      value: 4500
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[0].stages.Array.data[3].rank_b_border
+      value: 4000
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[0].stages.Array.data[3].rank_c_border
+      value: 3500
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[0].stages.Array.data[3].rank_s_border
+      value: 5000
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[0].stages.Array.data[4].rank_a_border
+      value: 4500
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[0].stages.Array.data[4].rank_b_border
+      value: 4200
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[0].stages.Array.data[4].rank_c_border
+      value: 4000
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[0].stages.Array.data[4].rank_s_border
+      value: 5000
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[1].stages.Array.data[0].rank_a_border
+      value: 4900
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[1].stages.Array.data[0].rank_b_border
+      value: 4750
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[1].stages.Array.data[0].rank_c_border
+      value: 4500
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[1].stages.Array.data[0].rank_s_border
+      value: 5000
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[1].stages.Array.data[1].rank_a_border
+      value: 5000
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[1].stages.Array.data[1].rank_b_border
+      value: 4500
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[1].stages.Array.data[1].rank_c_border
+      value: 4000
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[1].stages.Array.data[1].rank_s_border
+      value: 5200
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[1].stages.Array.data[2].rank_a_border
+      value: 4700
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[1].stages.Array.data[2].rank_b_border
+      value: 4450
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[1].stages.Array.data[2].rank_c_border
+      value: 4200
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[1].stages.Array.data[2].rank_s_border
+      value: 5250
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[1].stages.Array.data[3].rank_a_border
+      value: 4700
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[1].stages.Array.data[3].rank_b_border
+      value: 4200
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[1].stages.Array.data[3].rank_c_border
+      value: 3800
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[1].stages.Array.data[3].rank_s_border
+      value: 5200
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[1].stages.Array.data[4].rank_a_border
+      value: 4500
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[1].stages.Array.data[4].rank_b_border
+      value: 3900
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[1].stages.Array.data[4].rank_c_border
+      value: 3000
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[1].stages.Array.data[4].rank_s_border
+      value: 5100
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[2].stages.Array.data[0].rank_a_border
+      value: 5250
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[2].stages.Array.data[0].rank_b_border
+      value: 5000
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[2].stages.Array.data[0].rank_c_border
+      value: 4900
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[2].stages.Array.data[0].rank_s_border
+      value: 5350
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[2].stages.Array.data[1].rank_a_border
+      value: 5200
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[2].stages.Array.data[1].rank_b_border
+      value: 5000
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[2].stages.Array.data[1].rank_c_border
+      value: 4700
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[2].stages.Array.data[1].rank_s_border
+      value: 5300
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[2].stages.Array.data[2].rank_a_border
+      value: 4700
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[2].stages.Array.data[2].rank_b_border
+      value: 4200
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[2].stages.Array.data[2].rank_c_border
+      value: 3700
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[2].stages.Array.data[2].rank_s_border
+      value: 5200
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[2].stages.Array.data[3].rank_a_border
+      value: 5100
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[2].stages.Array.data[3].rank_b_border
+      value: 4700
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[2].stages.Array.data[3].rank_c_border
+      value: 4000
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[2].stages.Array.data[3].rank_s_border
+      value: 5200
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[2].stages.Array.data[4].rank_a_border
+      value: 4000
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[2].stages.Array.data[4].rank_b_border
+      value: 3500
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[2].stages.Array.data[4].rank_c_border
+      value: 3000
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[2].stages.Array.data[4].rank_s_border
+      value: 4500
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[3].stages.Array.data[0].rank_a_border
+      value: 4800
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[3].stages.Array.data[0].rank_b_border
+      value: 4450
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[3].stages.Array.data[0].rank_c_border
+      value: 4300
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[3].stages.Array.data[0].rank_s_border
+      value: 4900
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[3].stages.Array.data[1].rank_a_border
+      value: 4500
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[3].stages.Array.data[1].rank_b_border
+      value: 4000
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[3].stages.Array.data[1].rank_c_border
+      value: 3500
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[3].stages.Array.data[1].rank_s_border
+      value: 5100
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[3].stages.Array.data[2].rank_a_border
+      value: 5200
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[3].stages.Array.data[2].rank_b_border
+      value: 5100
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[3].stages.Array.data[2].rank_c_border
+      value: 5000
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[3].stages.Array.data[2].rank_s_border
+      value: 5300
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[3].stages.Array.data[3].rank_a_border
+      value: 4900
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[3].stages.Array.data[3].rank_b_border
+      value: 4800
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[3].stages.Array.data[3].rank_c_border
+      value: 4500
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[3].stages.Array.data[3].rank_s_border
+      value: 5000
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[3].stages.Array.data[4].rank_a_border
+      value: 3300
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[3].stages.Array.data[4].rank_b_border
+      value: 2500
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[3].stages.Array.data[4].rank_c_border
+      value: 2200
+      objectReference: {fileID: 0}
+    - target: {fileID: 7909344435772032573, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
+      propertyPath: worlds.Array.data[3].stages.Array.data[4].rank_s_border
+      value: 3500
       objectReference: {fileID: 0}
     - target: {fileID: 7909344435772032574, guid: da7cf825727655a4da6bb6cf9dd1a6e0, type: 3}
       propertyPath: m_RootOrder

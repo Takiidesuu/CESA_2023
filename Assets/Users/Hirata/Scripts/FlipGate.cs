@@ -45,11 +45,6 @@ public class FlipGate : MonoBehaviour
                 boxCollider.enabled = true;
             }
         }
-        if (transform.childCount == 3) 
-        {
-            transform.GetChild(2).localPosition = transform.GetChild(0).localPosition;
-        }
-
     }
 
     private void OnTriggerEnter(Collider other)
