@@ -67,18 +67,19 @@ public class ImageSlider : MonoBehaviour
             Invoke("ChangeScene", 1.5f);
         }
        
-        if (!is_firsttime)
-        {
-            Color color = images[1].color;
-            color.a = 1;
-            images[1].color = color;
-        }
-        else
-        {
-            Color color = images[1].color;
-            color.a = 0.5f;
-            images[1].color = color;
-        }
+        //続き無いためコメントアウト
+        //if (!is_firsttime)
+        //{
+        //    Color color = images[1].color;
+        //    color.a = 1;
+        //    images[1].color = color;
+        //}
+        //else
+        //{
+        //    Color color = images[1].color;
+        //    color.a = 0.5f;
+        //    images[1].color = color;
+        //}
 
         timeSinceSelect += Time.deltaTime;
 
