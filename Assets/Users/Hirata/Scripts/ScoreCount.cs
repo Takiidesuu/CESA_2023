@@ -7,10 +7,10 @@ public class ScoreCount : MonoBehaviour
     private ScoreManager scoreManager;
     private DamageScript damageScript;
 
-    public int BaseTiem = 300;
+    private int BaseTiem = 300;
     private float CurrentTime;
-    public int Coefficient = 10;
-    [Tooltip("HPŒW”")] public int HPCoefficient = 100;
+    private int Coefficient = 10;
+    private int HPCoefficient = 500;
 
 
 
