@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class LightBulbClearTrigger : MonoBehaviour
-{
-    public bool slow_motion;
+{   
+    public bool slow_motion {get; set;}
+    
+    public BlurScreenScript blur_sc {private get; set;}
     
     private float return_to_normal_duration = 3.0f;
     private float elapsed_time;
@@ -14,12 +16,14 @@ public class LightBulbClearTrigger : MonoBehaviour
     {
         slow_motion = true;
         
+        blur_sc = GameObject.FindObjectOfType<BlurScreenScript>();
+        
         elapsed_time = 0;
     }
 
     // Update is called once per frame
     void Update()
-    {
+    {   
         if (slow_motion)
         {
             if (elapsed_time > return_to_normal_duration / 2.0f)
@@ -43,6 +47,8 @@ public class LightBulbClearTrigger : MonoBehaviour
         if (other.gameObject.tag == "ElectricalBall")
         {
             transform.parent.GetComponent<LightBulb>().LightUpBulb();
+            blur_sc.SetTargetDivide(0.45f);
+            blur_sc.SetPower(0.0042f);
             StartCoroutine(CountTime());
         }
     }
@@ -56,6 +62,7 @@ public class LightBulbClearTrigger : MonoBehaviour
         }
         
         elapsed_time = return_to_normal_duration;
+        blur_sc.StartClean();
         slow_motion = false;
     }
 }

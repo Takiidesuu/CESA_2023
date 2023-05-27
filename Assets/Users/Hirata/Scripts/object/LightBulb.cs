@@ -18,6 +18,8 @@ public class LightBulb : MonoBehaviour
     [Tooltip("クリア判定の子オブジェクト")]
     [SerializeField] private GameObject clear_trigger_obj;
     
+    private GameObject blur_object;
+    
     private GameObject touching_electric;
     private SphereCollider col;
     
@@ -44,6 +46,8 @@ public class LightBulb : MonoBehaviour
         electric_effect.transform.localScale = default_scale;
         
         col = GetComponent<SphereCollider>();
+        
+        blur_object = Camera.main.transform.GetChild(2).gameObject;
         
         line_status_obj = null;
         clear_trigger_obj.SetActive(false);
@@ -99,6 +103,7 @@ public class LightBulb : MonoBehaviour
             
             if (GameObject.FindObjectOfType<LightBulbCollector>().lightbulb_left == 1 && changeMaterial.OnPower == false)
             {
+                blur_object.GetComponent<Renderer>().enabled = true;
                 clear_trigger_obj.SetActive(true);
             }
             else
@@ -115,6 +120,7 @@ public class LightBulb : MonoBehaviour
             if (GameObject.FindObjectOfType<LightBulbCollector>().lightbulb_left == 1 && changeMaterial.OnPower == false)
             {
                 clear_trigger_obj.SetActive(false);
+                blur_object.GetComponent<Renderer>().enabled = false;
                 Time.timeScale = 1;
             }
         }

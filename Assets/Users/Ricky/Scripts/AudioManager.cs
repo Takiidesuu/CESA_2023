@@ -37,7 +37,7 @@ public class AudioManager : MonoBehaviour
     
     private AudioSource audio_source;
     
-    private float volume_to_use;
+    public float volume_to_use {get; set;}
     
     private int world_record;
     private string previous_scene_name;
@@ -72,6 +72,18 @@ public class AudioManager : MonoBehaviour
         
         previous_scene_name = "FirstScene";
         
+        AudioListener[] listeners = GameObject.FindObjectsOfType<AudioListener>();
+        
+        if (listeners != null)
+        {
+            foreach (var lis in listeners)
+            {
+                Destroy(lis);
+            }
+        }
+        
+        this.gameObject.AddComponent<AudioListener>();
+        
         scene_has_changed = true;
         is_game = false;
         
@@ -83,19 +95,6 @@ public class AudioManager : MonoBehaviour
     {
         current_scene = SceneManager.GetActiveScene().name;
         
-        EaseVolume();
-        
-        switch (volume_state)
-        {
-            case VOLUMESTATE.KEEP:
-            break;
-            case VOLUMESTATE.FADEOUT:
-            volume_t -= Time.deltaTime / 2.0f * fadeout_speed;
-            break;
-            case VOLUMESTATE.FADEIN:
-            volume_t += Time.deltaTime / 2.0f * fadein_speed;
-            break;
-        }
         
         if (current_scene.Contains("Stage") && !current_scene.Contains("Select"))
         {
@@ -119,6 +118,18 @@ public class AudioManager : MonoBehaviour
             volume_state = VOLUMESTATE.FADEOUT;
             scene_has_changed = false;
             previous_scene_name = current_scene;
+        }
+        
+        if (is_game)
+        {
+            if (!GameObject.FindObjectOfType<PauseManager>().pause_flg)
+            {
+                EaseVolume();
+            }
+        }
+        else
+        {
+            EaseVolume();
         }
         
         if (!audio_source.isPlaying)
@@ -200,5 +211,17 @@ public class AudioManager : MonoBehaviour
         }
         
         volume_t = Mathf.Clamp(volume_t, 0, 1);
+        
+        switch (volume_state)
+        {
+            case VOLUMESTATE.KEEP:
+            break;
+            case VOLUMESTATE.FADEOUT:
+            volume_t -= Time.deltaTime / 2.0f * fadeout_speed;
+            break;
+            case VOLUMESTATE.FADEIN:
+            volume_t += Time.deltaTime / 2.0f * fadein_speed;
+            break;
+        }
     }
 }
