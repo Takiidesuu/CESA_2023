@@ -108,7 +108,6 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
-
 --- !u!1 &87309554066050108
 GameObject:
   m_ObjectHideFlags: 0
@@ -140,7 +139,7 @@ Transform:
   m_LocalScale: {x: 0.0696142, y: 1.0132428, z: 15.070194}
   m_Children: []
   m_Father: {fileID: 6421557362072623220}
-  m_RootOrder: 3
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
 --- !u!33 &3769128981547737935
 MeshFilter:
@@ -395,7 +394,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
-
 --- !u!1 &2615696194915544264
 GameObject:
   m_ObjectHideFlags: 0
@@ -424,7 +422,9 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -1.6, y: -0.29999924, z: 165.4}
   m_LocalScale: {x: 149.65506, y: 81.14665, z: 0.27654892}
-  m_Children: []
+  m_Children:
+  - {fileID: 5368264435701631374}
+  - {fileID: 7707754996744609636}
   m_Father: {fileID: 4752079729656922305}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -545,7 +545,7 @@ Camera:
   m_Depth: 1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4063
+    m_Bits: 4095
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
