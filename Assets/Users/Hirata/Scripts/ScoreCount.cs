@@ -12,8 +12,6 @@ public class ScoreCount : MonoBehaviour
     private int Coefficient = 10;
     private int HPCoefficient = 500;
 
-
-
     // Start is called before the first frame update
     void Start()
     {
@@ -32,5 +30,10 @@ public class ScoreCount : MonoBehaviour
         int bonus = damageScript.GetHitPoint() * HPCoefficient;
         scoreManager.Score = (BaseTiem - (int)CurrentTime) * Coefficient + bonus;
         scoreManager.ClearTime = (int)CurrentTime;
+
+        int nowstage = StageDataManager.instance.now_stage;
+        int nowworld = StageDataManager.instance.now_world;
+        if (StageDataManager.instance.worlds[nowworld].stages[nowstage].Score < scoreManager.Score)
+            StageDataManager.instance.worlds[nowworld].stages[nowstage].Score = scoreManager.Score;
     }
 }
