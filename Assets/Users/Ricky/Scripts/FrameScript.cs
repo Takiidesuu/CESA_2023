@@ -48,5 +48,7 @@ public class FrameScript : MonoBehaviour
         
         frame_to_use.transform.localPosition = new Vector3(0.007f, 0.006f, 0);
         frame_to_use.transform.localScale = new Vector3(15.855f, 28.98f, 6142.26f);
+        
+        frame_to_use.layer = LayerMask.NameToLayer("Frame");
     }
 }
