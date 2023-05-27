@@ -61,7 +61,10 @@ public class StageBackgroundManager : MonoBehaviour
         //ƒNƒŠƒA‚É–¶‚ğ°‚ç‚·
         if (ComplateRate == 1)
         {
-            electricRoads.SpeedUp();
+            if (electricRoads != null)
+            {
+                electricRoads.SpeedUp();
+            }
 
             for (int i = 0; i < GearObjects.Length; i++)
             {
