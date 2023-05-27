@@ -330,10 +330,12 @@ public class GravityControl : MonoBehaviour
         
         if (this.gameObject.tag == "Player")
         {
+            this.GetComponent<PlayerMove>().taking_damage = false;
+            this.GetComponent<DamageScript>().ResetDamageStatus();
+            
             this.transform.GetChild(0).gameObject.SetActive(false);
             this.transform.GetChild(2).gameObject.SetActive(true);
         }
-
 
         //初回のメテオストライクのみＳＥを遅らせる
         if (!StartMeteorStrike)

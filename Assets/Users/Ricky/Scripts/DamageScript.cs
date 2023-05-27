@@ -85,16 +85,24 @@ public class DamageScript : MonoBehaviour
     {
         yield return new WaitForSeconds(invincible_duration);
         
-        is_invincible = false;
-        
-        if (renderer_component != null)
+        ResetDamageStatus();
+    }
+    
+    public void ResetDamageStatus()
+    {
+        if (is_invincible)
         {
-            renderer_component.enabled = true;
+            is_invincible = false;
+        
+            if (renderer_component != null)
+            {
+                renderer_component.enabled = true;
+            }
+            
+            hiteffect.is_damage = false;
+            hiteffect.UpdateMaterial();
+            
+            this.transform.eulerAngles = new Vector3(this.transform.eulerAngles.x, prev_angle, this.transform.eulerAngles.z);
         }
-        
-        hiteffect.is_damage = false;
-        hiteffect.UpdateMaterial();
-        
-        this.transform.eulerAngles = new Vector3(this.transform.eulerAngles.x, prev_angle, this.transform.eulerAngles.z);
     }
 }

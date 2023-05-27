@@ -609,6 +609,7 @@ public class PlayerMove : MonoBehaviour
     public void ResetAnim()
     {
         smash_state = SMASHSTATE.NORMAL;
+        taking_damage = false;
         anim.speed = 1.0f;
     }
     
