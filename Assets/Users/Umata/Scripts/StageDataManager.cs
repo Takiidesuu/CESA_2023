@@ -36,6 +36,8 @@ public class StageDataManager : MonoBehaviour
         }
 
         instance = this;
+        now_stage = -1;
+        now_world = -1;
         DontDestroyOnLoad(gameObject);
     }
 

@@ -85,6 +85,8 @@ public class PauseManager : MonoBehaviour
                             SceneManager.LoadScene("StageSelect");
                             break;
                             case MENU_OPTION.TITLE:
+                            StageDataManager.instance.now_world = -1;
+                            StageDataManager.instance.now_stage = -1;
                             SceneManager.LoadScene("Title");
                             break;
                         }

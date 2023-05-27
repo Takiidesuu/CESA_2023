@@ -106,13 +106,22 @@ public class WorldSelect : MonoBehaviour
 
         Renderer renderer = MainPreviewObj.GetComponent<Renderer>();
         MainPreviewMaterial = renderer.material;
-        for (int i = 0;i < SubPreviewObj.Length;i++)
+        for (int i = 0; i < SubPreviewObj.Length; i++) 
         {
             SubPreviewMaterial[i] = SubPreviewObj[i].GetComponent<Renderer>().material;
         }
         for (int i = 0; i < SubPreviewHorogram.Length; i++)
         {
             SubPreviewHorogramMaterial[i] = SubPreviewHorogram[i].GetComponent<Renderer>().material;
+        }
+        if (StageDataManager.instance.now_stage != -1)
+            currentStage = StageDataManager.instance.now_stage;
+        if (StageDataManager.instance.now_world != -1)
+            currentWorld = StageDataManager.instance.now_world;
+        if (StageDataManager.instance.now_world != -1 && StageDataManager.instance.now_world != -1)
+        {
+            selectingStage = true;
+            selectingWorld = false;
         }
 
     }
