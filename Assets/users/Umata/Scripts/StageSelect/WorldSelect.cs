@@ -195,16 +195,19 @@ public class WorldSelect : MonoBehaviour
         }
         if (InputManager.instance.press_menu_right)
         {
-            // 右キーでワールドまたはステージを1つ進める
-            if (selectingWorld)
+            if (!isTransitioning)
             {
-                currentWorld = (currentWorld + 1) % numWorlds;
+                // 右キーでワールドまたはステージを1つ進める
+                if (selectingWorld)
+                {
+                    currentWorld = (currentWorld + 1) % numWorlds;
+                }
+                else
+                {
+                    currentStage = (currentStage + 1) % numStages;
+                }
+                soundManager.PlaySoundEffect("Cursor");
             }
-            else
-            {
-                currentStage = (currentStage + 1) % numStages;
-            }
-            soundManager.PlaySoundEffect("Cursor");
         }
 
         if (InputManager.instance)
@@ -214,17 +217,19 @@ public class WorldSelect : MonoBehaviour
 
         if (InputManager.instance.press_menu_left)
         {
-            // 左キーでワールドまたはステージを1つ戻す
-            if (selectingWorld)
+            if (!isTransitioning)
             {
-                currentWorld = (currentWorld - 1 + numWorlds) % numWorlds;
+                // 左キーでワールドまたはステージを1つ戻す
+                if (selectingWorld)
+                {
+                    currentWorld = (currentWorld - 1 + numWorlds) % numWorlds;
+                }
+                else
+                {
+                    currentStage = (currentStage - 1 + numStages) % numStages;
+                }
+                soundManager.PlaySoundEffect("Cursor");
             }
-            else
-            {
-                currentStage = (currentStage - 1 + numStages) % numStages;
-            }
-            soundManager.PlaySoundEffect("Cursor");
-
         }
 
         if (InputManager.instance.press_cancel)

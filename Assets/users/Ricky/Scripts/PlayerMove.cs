@@ -204,9 +204,6 @@ public class PlayerMove : MonoBehaviour
                 
                 if (!taking_damage && start_game && in_grav_field)
                 {
-                    //インプット方向を取得
-                    input_direction = InputManager.instance.player_move_float;
-                    
                     if (ground_obj != null)
                     {
                         if (!ground_obj_parent.gameObject.GetComponent<StageRotation>().GetRotatingStatus())
@@ -234,6 +231,12 @@ public class PlayerMove : MonoBehaviour
                                     RotateGround();
                                 }
                             }
+                            
+                            if (smash_state == SMASHSTATE.NORMAL)
+                            {
+                                //インプット方向を取得
+                                input_direction = InputManager.instance.player_move_float;
+                            }
                         }
                     }
                 }
@@ -250,7 +253,7 @@ public class PlayerMove : MonoBehaviour
                 
                 speed = Mathf.MoveTowards(speed, input_direction.magnitude * max_speed, acceleration_speed);
                 
-                if (rb.velocity.magnitude > 0.0f && is_grounded)
+                if (rb.velocity.magnitude > 0.0f && is_grounded && smash_state == SMASHSTATE.NORMAL)
                 {
                     if (input_direction == Vector2.zero || recheck_input)
                     {
@@ -606,6 +609,7 @@ public class PlayerMove : MonoBehaviour
     public void ResetAnim()
     {
         smash_state = SMASHSTATE.NORMAL;
+        taking_damage = false;
         anim.speed = 1.0f;
     }
     
