@@ -10,7 +10,7 @@ public class PreviewSS : MonoBehaviour
 
     private void Start()
     {
-        // ステージ1f
+        // ステージaaaaa
         //EditorSceneManager.OpenScene("Assets/users/Pak/world1/Stage1-1.unity", OpenSceneMode.Single);
 
         // カメラが設定されていない場合、デフォルトのメインカメラを使用する
