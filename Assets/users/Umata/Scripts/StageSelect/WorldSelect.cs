@@ -35,9 +35,6 @@ public class WorldSelect : MonoBehaviour
     public Transform worldSelectPos;
     public Transform stageSelectPos;
     public Transform LastCameraPos;
-    public Transform HammerPos;
-    public Transform BackImagePos;
-    public Transform StartImagePos;
 
     public GameObject CameraObj;
     public GameObject PlayerObj;
@@ -56,13 +53,8 @@ public class WorldSelect : MonoBehaviour
 
     [SerializeField] private AnimationCurve curve = AnimationCurve.Linear(0f, 0f, 1f, 1f); // イージングカーブ
 
-    private Vector3 StartHammerPos;
-    private Vector3 StartBackImagePos;
-    private Vector3 StartStartImagePos;
-
     private bool selectingWorld = true; // ワールドを選択中かどうか
     private bool selectingStage = true; // ステージを選択中かどうか
-    private bool isStart = true;
     private bool isTransitioning = false;
     private Image BlackPanel;//BlackPanel
 
@@ -98,9 +90,6 @@ public class WorldSelect : MonoBehaviour
         LoadSceneFade = GameObject.Find("LoadSceneFade").GetComponent<LoadSceneFade>();
         postProcessVolume.transform.GetComponent<Volume>().profile.TryGet(out vignette);
 
-        StartHammerPos = HammerPos.position;
-        StartBackImagePos = BackImagePos.position;
-        StartStartImagePos = StartImagePos.position;
         //ポストプロセスを格納
         // 初期位置にカメラを移動
         CameraObj.transform.position = worldSelectPos.position;
@@ -148,24 +137,20 @@ public class WorldSelect : MonoBehaviour
             }
             else
             {
-                if (isStart)
+
+                // ステージを選択中の場合、シーンをロード
+                if (CameraObj.transform.position.x - stageSelectPos.position.x < 0.05)
                 {
-                    // ステージを選択中の場合、シーンをロード
-                    if (CameraObj.transform.position.x - stageSelectPos.position.x < 0.05)
-                    {
-                        isTransitioning = true;
-                        startTime = Time.time;
-                        //Vignetイージングを開始
-                        PlayerObj.GetComponent<CellEffect>().ChangeMaterialsToInvisible();
-                        Invoke("LoadScene", time * 3);
-                        Invoke("TransitionInit", 1);
-                        soundManager.PlaySoundEffect("GO");
-                    }
+                    isTransitioning = true;
+                    startTime = Time.time;
+                    //Vignetイージングを開始
+                    PlayerObj.GetComponent<CellEffect>().ChangeMaterialsToInvisible();
+                    Invoke("LoadScene", time * 3);
+                    Invoke("TransitionInit", 1);
+                    soundManager.PlaySoundEffect("GO");
                 }
-                else
-                {
-                    selectingWorld = true;
-                }
+
+
             }
         }
         //ワールド選択モデルの変更
@@ -256,53 +241,7 @@ public class WorldSelect : MonoBehaviour
                 soundManager.PlaySoundEffect("Cancel");
             }
         }
-        if (!selectingWorld)
-        {
-            if (InputManager.instance.GetMenuMoveFloat() < 0.0f)
-            {
-                Vector3 startpos;
-                startpos.x = StartHammerPos.x;
-                startpos.y = StartHammerPos.y;
-                startpos.z = StartHammerPos.z;
 
-                HammerPos.position = startpos;
-
-                startpos.x = StartBackImagePos.x;
-                startpos.y = StartBackImagePos.y;
-                startpos.z = StartBackImagePos.z;
-
-                BackImagePos.position = startpos;
-
-                startpos.x = StartStartImagePos.x;
-                startpos.y = StartStartImagePos.y;
-                startpos.z = StartStartImagePos.z;
-                StartImagePos.position = startpos;
-
-                isStart = true;
-            }
-
-            if (InputManager.instance.GetMenuMoveFloat() > 0.0f)
-            {
-                Vector3 startpos;
-                startpos.x = StartHammerPos.x;
-                startpos.y = StartHammerPos.y - 0.165f;
-                startpos.z = StartHammerPos.z;
-                HammerPos.position = startpos;
-
-                startpos.x = StartBackImagePos.x + 0.08f;
-                startpos.y = StartBackImagePos.y;
-                startpos.z = StartBackImagePos.z;
-                BackImagePos.position = startpos;
-
-                startpos.x = StartStartImagePos.x - 0.08f;
-                startpos.y = StartStartImagePos.y;
-                startpos.z = StartStartImagePos.z;
-                StartImagePos.position = startpos;
-
-                isStart = false;
-            }
-
-        }
         // カメラを移動する
         if (!selectingStage)
         {
