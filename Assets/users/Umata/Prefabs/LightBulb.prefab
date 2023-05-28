@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 3584546692321392286}
   - component: {fileID: 4212111870039589740}
   - component: {fileID: 8516569373502906842}
+  - component: {fileID: 3519383491337300004}
+  - component: {fileID: 7879539601374476147}
   m_Layer: 5
   m_Name: ClearTrigger
   m_TagString: Untagged
@@ -57,7 +59,123 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68c3749a2914a8344bc16551d9a08662, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slow_motion: 0
+--- !u!114 &3519383491337300004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4772621243270697995}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3c4418ebfb0bd748b64be9b6765dc2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundEffects:
+  - name: ElectricOne
+    clip:
+    - {fileID: 8300000, guid: 779e45f572b50084389ea315c0acbcb4, type: 3}
+    volume: 0.145
+  - name: ElectricTwo
+    clip:
+    - {fileID: 8300000, guid: 82b1732e98e48cf40aa4524ceae80fa7, type: 3}
+    volume: 0.242
+--- !u!82 &7879539601374476147
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4772621243270697995}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &7076129661271777898
 GameObject:
   m_ObjectHideFlags: 0
@@ -370,8 +488,8 @@ MonoBehaviour:
   soundEffects:
   - name: Hit
     clip:
-    - {fileID: 8300000, guid: 4fb5e37436023df4895c65b88e0e378e, type: 3}
-    volume: 0
+    - {fileID: 8300000, guid: 240ed093e46d44c45986eec266dd2f20, type: 3}
+    volume: 0.297
 --- !u!1001 &4813152994673472798
 PrefabInstance:
   m_ObjectHideFlags: 0

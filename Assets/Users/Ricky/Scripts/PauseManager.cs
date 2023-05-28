@@ -61,6 +61,7 @@ public class PauseManager : MonoBehaviour
         curtain_transform = transform.GetChild(1).GetComponent<RectTransform>();
         
         soundManager = GetComponent<SoundManager>();
+        GetComponent<AudioSource>().ignoreListenerPause = true;
     }
 
     // Update is called once per frame
@@ -165,6 +166,7 @@ public class PauseManager : MonoBehaviour
                 
                 if (InputManager.instance.press_pause)
                 {
+                    soundManager.PlaySoundEffect("Pause");
                     store_bgm_volume = GameObject.FindObjectOfType<AudioManager>().volume_to_use;
                     GameObject.FindObjectOfType<AudioManager>().volume_to_use = store_bgm_volume / 4;
                     pause_flg = true;

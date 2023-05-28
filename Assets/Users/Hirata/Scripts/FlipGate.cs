@@ -7,6 +7,7 @@ public class FlipGate : MonoBehaviour
     private BoxCollider boxCollider;
     public GameObject Barrier;
     private GameObject FlipObj;
+    private SoundManager soundManager;
 
     public Vector3 targetpos = new Vector3(0, -2.25f, 0);   //ˆÚ“®—Ê
     private float StartTime;
@@ -20,6 +21,7 @@ public class FlipGate : MonoBehaviour
     void Start()
     {
         boxCollider = GetComponent<BoxCollider>();
+        soundManager = GetComponent<SoundManager>();
     }
 
     // Update is called once per frame
@@ -50,7 +52,10 @@ public class FlipGate : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("BackBuilding") && !IsFlip)
+        {
+            soundManager.PlaySoundEffect("Flip");
             Flip(other.gameObject);
+        }
     }
 
     public void Flip(GameObject obj)

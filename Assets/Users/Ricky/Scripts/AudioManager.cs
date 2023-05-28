@@ -28,6 +28,9 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioClip world4_bgm;
     [SerializeField] [Range(0.0f, 1.0f)] private float world4_bgm_volume = 1.0f;
     
+    [SerializeField] private AudioClip clear_bgm;
+    [SerializeField] [Range(0.0f, 1.0f)] private float clear_bgm_volume = 1.0f;
+    
     [Tooltip("フェードイン速度")]
     [SerializeField] private float fadein_speed = 2.0f;
     [Tooltip("フェードアウト速度")]
@@ -51,6 +54,8 @@ public class AudioManager : MonoBehaviour
     private VOLUMESTATE volume_state = VOLUMESTATE.FADEIN;
     private float switch_bgm_delay;
     
+    AudioListener listener;
+    
     private void Awake() 
     {
         if (instance != null && instance != this) 
@@ -69,23 +74,16 @@ public class AudioManager : MonoBehaviour
     {
         audio_source = GetComponent<AudioSource>();
         audio_source.loop = true;
+        audio_source.ignoreListenerPause = true;
         
         previous_scene_name = "FirstScene";
         
-        AudioListener[] listeners = GameObject.FindObjectsOfType<AudioListener>();
-        
-        if (listeners != null)
-        {
-            foreach (var lis in listeners)
-            {
-                Destroy(lis);
-            }
-        }
-        
-        this.gameObject.AddComponent<AudioListener>();
+        listener = GetComponent<AudioListener>();
         
         scene_has_changed = true;
         is_game = false;
+        
+        world_record = -1;
         
         volume_t = 0;
         switch_bgm_delay = 2;
@@ -95,11 +93,10 @@ public class AudioManager : MonoBehaviour
     {
         current_scene = SceneManager.GetActiveScene().name;
         
-        
         if (current_scene.Contains("Stage") && !current_scene.Contains("Select"))
-        {
+        {   
             if (world_record != StageDataManager.instance.now_world + 1)
-            {
+            {   
                 scene_has_changed = true;
                 is_game = true;
             }
@@ -115,6 +112,32 @@ public class AudioManager : MonoBehaviour
         
         if (scene_has_changed)
         {
+            AudioListener[] list_of_listeners = GameObject.FindObjectsOfType<AudioListener>();
+            foreach (var lis in list_of_listeners)
+            {
+                if (is_game)
+                {
+                    if (lis.gameObject.tag == "Player" || lis == listener)
+                    {
+                        continue;
+                    }
+                }
+                Destroy(lis);
+            }
+                
+            if (is_game)
+            {
+                listener.enabled = false;
+                if (GameObject.FindObjectOfType<PlayerMove>().gameObject.GetComponent<AudioListener>() == null)
+                {
+                    GameObject.FindObjectOfType<PlayerMove>().gameObject.AddComponent<AudioListener>();
+                }
+            }
+            else
+            {
+                listener.enabled = true;
+            }
+            
             volume_state = VOLUMESTATE.FADEOUT;
             scene_has_changed = false;
             previous_scene_name = current_scene;
@@ -125,6 +148,12 @@ public class AudioManager : MonoBehaviour
             if (!GameObject.FindObjectOfType<PauseManager>().pause_flg)
             {
                 EaseVolume();
+                AudioListener.pause = false;
+            }
+            else
+            {
+                AudioListener.pause = true;
+                audio_source.volume = volume_to_use / 2;
             }
         }
         else
@@ -161,6 +190,10 @@ public class AudioManager : MonoBehaviour
                 case 4:
                 audio_source.clip = world4_bgm;
                 volume_to_use = world4_bgm_volume;
+                break;
+                default:
+                audio_source.clip = world1_bgm;
+                volume_to_use = world1_bgm_volume;
                 break;
             }
         }

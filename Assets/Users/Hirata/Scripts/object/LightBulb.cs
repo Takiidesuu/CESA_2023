@@ -103,7 +103,7 @@ public class LightBulb : MonoBehaviour
             
             if (GameObject.FindObjectOfType<LightBulbCollector>().lightbulb_left == 1 && changeMaterial.OnPower == false)
             {
-                //blur_object.GetComponent<Renderer>().enabled = true;
+                blur_object.GetComponent<Renderer>().enabled = true;
                 clear_trigger_obj.SetActive(true);
             }
             else
@@ -120,7 +120,7 @@ public class LightBulb : MonoBehaviour
             if (GameObject.FindObjectOfType<LightBulbCollector>().lightbulb_left == 1 && changeMaterial.OnPower == false)
             {
                 clear_trigger_obj.SetActive(false);
-                //blur_object.GetComponent<Renderer>().enabled = false;
+                blur_object.GetComponent<Renderer>().enabled = false;
                 Time.timeScale = 1;
             }
         }

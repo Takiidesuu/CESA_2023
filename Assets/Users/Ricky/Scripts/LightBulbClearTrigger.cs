@@ -8,15 +8,18 @@ public class LightBulbClearTrigger : MonoBehaviour
     
     public BlurScreenScript blur_sc {private get; set;}
     
-    private float return_to_normal_duration = 3.0f;
+    private float return_to_normal_duration = 6.0f;
     private float elapsed_time;
+    
+    private SoundManager soundManager;
     
     // Start is called before the first frame update
     void Start()
     {
         slow_motion = true;
         
-        //blur_sc = GameObject.FindObjectOfType<BlurScreenScript>();
+        blur_sc = GameObject.FindObjectOfType<BlurScreenScript>();
+        soundManager = GetComponent<SoundManager>();
         
         elapsed_time = 0;
     }
@@ -28,7 +31,8 @@ public class LightBulbClearTrigger : MonoBehaviour
         {
             if (elapsed_time > return_to_normal_duration / 2.0f)
             {
-                Time.timeScale = 0.5f;
+                blur_sc.SetState(false);
+                Time.timeScale = 0.4f;
             }
             else
             {
@@ -37,6 +41,7 @@ public class LightBulbClearTrigger : MonoBehaviour
         }
         else
         {
+            blur_sc.StartClean();
             Time.timeScale = 1.0f;
             Destroy(this);
         }
@@ -47,8 +52,9 @@ public class LightBulbClearTrigger : MonoBehaviour
         if (other.gameObject.tag == "ElectricalBall")
         {
             transform.parent.GetComponent<LightBulb>().LightUpBulb();
-            //blur_sc.SetTargetDivide(0.45f);
-            //blur_sc.SetPower(0.0042f);
+            soundManager.PlaySoundEffect("ElectricOne");
+            soundManager.PlaySoundEffect("ElectricTwo");
+            blur_sc.SetState(true);
             StartCoroutine(CountTime());
         }
     }
@@ -62,7 +68,6 @@ public class LightBulbClearTrigger : MonoBehaviour
         }
         
         elapsed_time = return_to_normal_duration;
-        //blur_sc.StartClean();
         slow_motion = false;
     }
 }

@@ -42,6 +42,9 @@ public class ElectricBallMove : MonoBehaviour
     LightBulbCollector check_is_cleared;
     
     private AudioSource audioSource;
+    private SoundManager soundManager;
+    
+    private bool is_dead;
     
     // Start is called before the first frame update
     void Start()
@@ -59,14 +62,15 @@ public class ElectricBallMove : MonoBehaviour
         is_on_boost = false;
         
         speed_effect.SetActive(false);
+        soundManager = GetComponent<SoundManager>();
         
-        audioSource = GetComponent<AudioSource>();
+        is_dead = false;
     }
 
     // Update is called once per frame
     void Update()
-    {
-        if ((!check_is_cleared.IsCleared() && !GameOverManager.instance.game_over_state && player.GetComponent<PlayerMove>().start_game) || BackBuilding)
+    {   
+        if ((!check_is_cleared.IsCleared() && !GameOverManager.instance.game_over_state && player.GetComponent<PlayerMove>().start_game && !is_dead) || BackBuilding)
         {
             var locVel = transform.InverseTransformDirection(rb.velocity);
             locVel.x = m_real_speed;
@@ -78,11 +82,15 @@ public class ElectricBallMove : MonoBehaviour
 
             m_electric_effect.transform.localScale = effect_scale;
 
-            //時間経過後削除
-            if(m_destroy_timer > m_destroy_time)
+            if (!is_dead)
             {
-                Instantiate(m_destroy_effect,transform.position,Quaternion.identity,transform.parent);
-                Destroy(this.gameObject);
+                //時間経過後削除
+                if(m_destroy_timer > m_destroy_time)
+                {
+                    Instantiate(m_destroy_effect,transform.position,Quaternion.identity,transform.parent);
+                    StartCoroutine(DestroySequence());
+                    is_dead = true;
+                }
             }
             
             Vector3 playerpos;
@@ -101,6 +109,11 @@ public class ElectricBallMove : MonoBehaviour
 
             //Z軸を強制的にPlayer座標に設定
             transform.position = playerpos;
+            
+            if (!soundManager.CheckIsPlaying("Move"))
+            {
+                soundManager.PlaySoundEffect("Move");
+            }
         }
         else
         {
@@ -108,7 +121,7 @@ public class ElectricBallMove : MonoBehaviour
             {
                 rb.velocity = Vector3.MoveTowards(rb.velocity, Vector3.zero, Time.deltaTime * 30.0f);
             }
-            audioSource.Stop();
+            soundManager.StopSoundEffect("Move");
         }
     }
     
@@ -253,5 +266,22 @@ public class ElectricBallMove : MonoBehaviour
     public void ChangeRealSpeed(float speed)
     {
         m_speed = speed;
+    }
+    
+    IEnumerator DestroySequence()
+    {
+        yield return new WaitForSeconds(Time.deltaTime * 2);
+        GetComponent<SphereCollider>().enabled = false;
+        
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            transform.GetChild(i).gameObject.SetActive(false);
+        }
+        
+        soundManager.PlaySoundEffect("Die");
+        
+        yield return new WaitForSeconds(2);
+        
+        Destroy(this.gameObject);
     }
 }
