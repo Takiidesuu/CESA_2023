@@ -95,7 +95,10 @@ public class PauseManager : MonoBehaviour
                         switch_scene = false;
                         pause_flg = false;
                         Time.timeScale = 1.0f;
-                        GameObject.FindObjectOfType<AudioManager>().volume_to_use = store_bgm_volume;
+                        if (GameObject.FindObjectOfType<AudioManager>())
+                        {
+                            GameObject.FindObjectOfType<AudioManager>().volume_to_use = store_bgm_volume;
+                        }
                     }
                 }
                 else
@@ -108,7 +111,10 @@ public class PauseManager : MonoBehaviour
                     if (InputManager.instance.press_start || InputManager.instance.press_cancel)
                     {
                         pause_flg = false;
-                        GameObject.FindObjectOfType<AudioManager>().volume_to_use = store_bgm_volume;
+                        if (GameObject.FindObjectOfType<AudioManager>())
+                        {
+                            GameObject.FindObjectOfType<AudioManager>().volume_to_use = store_bgm_volume;
+                        }
                         soundManager.PlaySoundEffect("Cancel");
                         Time.timeScale = 1.0f;
                     }
@@ -136,13 +142,19 @@ public class PauseManager : MonoBehaviour
                             case MENU_OPTION.RESUME:
                             pause_flg = false;
                             Time.timeScale = 1.0f;
-                            GameObject.FindObjectOfType<AudioManager>().volume_to_use = store_bgm_volume;
+                            if (GameObject.FindObjectOfType<AudioManager>())
+                            {
+                                GameObject.FindObjectOfType<AudioManager>().volume_to_use = store_bgm_volume;
+                            }
                             break;
                             case MENU_OPTION.RETRY:
                             Time.timeScale = 1.0f;
                             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
                             pause_flg = false;
-                            GameObject.FindObjectOfType<AudioManager>().volume_to_use = store_bgm_volume;
+                            if (GameObject.FindObjectOfType<AudioManager>())
+                            {
+                                GameObject.FindObjectOfType<AudioManager>().volume_to_use = store_bgm_volume;
+                            }
                             break;
                             case MENU_OPTION.OPTION:
                             
@@ -167,8 +179,12 @@ public class PauseManager : MonoBehaviour
                 if (InputManager.instance.press_pause)
                 {
                     soundManager.PlaySoundEffect("Pause");
-                    store_bgm_volume = GameObject.FindObjectOfType<AudioManager>().volume_to_use;
-                    GameObject.FindObjectOfType<AudioManager>().volume_to_use = store_bgm_volume / 4;
+                    if (GameObject.FindObjectOfType<AudioManager>())
+                    {
+                        store_bgm_volume = GameObject.FindObjectOfType<AudioManager>().volume_to_use;
+                        GameObject.FindObjectOfType<AudioManager>().volume_to_use = store_bgm_volume / 4;
+                    }
+                    
                     pause_flg = true;
                     Time.timeScale = 0.0f;
                 }
