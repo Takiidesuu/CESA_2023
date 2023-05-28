@@ -28,7 +28,9 @@ public class ScoreCount : MonoBehaviour
     public void SetScore()
     {
         int bonus = damageScript.GetHitPoint() * HPCoefficient;
-        scoreManager.Score = (BaseTiem - (int)CurrentTime) * Coefficient + bonus;
+        int timebonus = BaseTiem - (int)CurrentTime;
+        if (timebonus < 0) timebonus = 0;
+        scoreManager.Score = timebonus * Coefficient + bonus;
         scoreManager.ClearTime = (int)CurrentTime;
 
         int nowstage = StageDataManager.instance.now_stage;
