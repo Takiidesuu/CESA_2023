@@ -47,7 +47,12 @@ public class WorldSelect : MonoBehaviour
     public GameObject[] SubPreviewHorogram;  // サブプレビューホロオブジェクト
 
     public GameObject[] WorldSelectModel;    //ワールドモデル
+    public GameObject[] LockedWorldSelectModel;    //ワールドモデル
     public GameObject[] WorldSelectHorogram;    //ワールドモデル
+
+    //ワールド選択時の矢印
+    public GameObject LeftArrow;
+    public GameObject RightArrow;
 
     [SerializeField] private AnimationCurve curve = AnimationCurve.Linear(0f, 0f, 1f, 1f); // イージングカーブ
 
@@ -76,6 +81,9 @@ public class WorldSelect : MonoBehaviour
     public Material[] SubPreviewHorogramMaterial;  // サブプレビューホロオブジェクト
     public Material[] HorogramMaterial;
 
+    //ステージデータ
+    private GameObject SaveData;
+
     /// <summary>
     /// 平田
     /// </summary>
@@ -100,6 +108,9 @@ public class WorldSelect : MonoBehaviour
 
         // 初期値を設定
         targetIntensity = vignette.intensity.value;
+
+        //セーブデータ格納
+        SaveData = GameObject.Find("StageData");
 
         //BlackPanelを取得
         BlackPanel = BlackPanelImage.GetComponent<Image>();
@@ -207,7 +218,7 @@ public class WorldSelect : MonoBehaviour
             if (!isTransitioning)
             {
                 // 右キーでワールドまたはステージを1つ進める
-                if (selectingWorld)
+                if (selectingWorld && currentWorld != 3)
                 {
                     currentWorld = (currentWorld + 1) % numWorlds;
                 }
@@ -219,17 +230,12 @@ public class WorldSelect : MonoBehaviour
             }
         }
 
-        if (InputManager.instance)
-        {
-        
-        }
-
         if (InputManager.instance.press_menu_left)
         {
             if (!isTransitioning)
             {
                 // 左キーでワールドまたはステージを1つ戻す
-                if (selectingWorld)
+                if (selectingWorld && currentWorld != 0)
                 {
                     currentWorld = (currentWorld - 1 + numWorlds) % numWorlds;
                 }
@@ -404,13 +410,35 @@ public class WorldSelect : MonoBehaviour
 
     private void ChangeWorldModel(int currentWorld)
     {
-        for(int i = 0;i < WorldSelectModel.Length;i++)
+        for (int i = 0; i < WorldSelectModel.Length; i++)
         {
             WorldSelectModel[i].SetActive(false);
             WorldSelectHorogram[i].SetActive(false);
-        }
-        WorldSelectModel[currentWorld].SetActive(true);
-        WorldSelectHorogram[currentWorld].SetActive(true);
+            LockedWorldSelectModel[i].SetActive(false);
 
+        }
+        //各ステージの5面がクリアされている場合
+        if (currentWorld !=0 && SaveData.GetComponent<StageDataManager>().worlds[currentWorld - 1].stages[4].Score != 0)
+        {
+            WorldSelectModel[currentWorld].SetActive(true);
+            WorldSelectHorogram[currentWorld].SetActive(true);
+        }
+        else
+        {
+            LockedWorldSelectModel[currentWorld].SetActive(true);
+            WorldSelectHorogram[currentWorld].SetActive(true);
+        }
+        //矢印の表示切り替え
+        LeftArrow.SetActive(false);
+        RightArrow.SetActive(false);
+
+        if (currentWorld != 3 && currentWorld >= 0)
+        {
+            RightArrow.SetActive(true);
+        }
+        if(currentWorld != 0 && currentWorld <= 3)
+        {
+            LeftArrow.SetActive(true);
+        }
     }
 }
