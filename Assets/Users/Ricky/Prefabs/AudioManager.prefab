@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6227948084643354327}
   - component: {fileID: 6643819243521918605}
   - component: {fileID: -4561118853376321287}
+  - component: {fileID: 69131076}
   m_Layer: 0
   m_Name: AudioManager
   m_TagString: Untagged
@@ -49,13 +50,18 @@ MonoBehaviour:
   stage_select_bgm: {fileID: 8300000, guid: 70051d98874087c47bcbc3ad56e5070f, type: 3}
   stage_select_bgm_volume: 1
   world1_bgm: {fileID: 8300000, guid: 3f6c3c1caf706524e8649c2adc17994a, type: 3}
-  world1_bgm_volume: 0.29
+  world1_bgm_volume: 0.085
   world2_bgm: {fileID: 8300000, guid: d24528dc07d0e284997b391b3b0882bb, type: 3}
-  world2_bgm_volume: 0.26
+  world2_bgm_volume: 0.085
   world3_bgm: {fileID: 8300000, guid: da9216e9c1243644aa4fe87023a3993b, type: 3}
-  world3_bgm_volume: 0.24
-  world4_bgm: {fileID: 8300000, guid: 9782279893c913549a58e837f470069e, type: 3}
-  world4_bgm_volume: 0.24
+  world3_bgm_volume: 0.085
+  world4_bgm: {fileID: 8300000, guid: 74f49fb25cf1f4b43a1b97bc0de2e318, type: 3}
+  world4_bgm_volume: 0.085
+  clear_bgm: {fileID: 0}
+  clear_bgm_volume: 0.085
+  fadein_speed: 2
+  fadeout_speed: 2
+  bgm_wait_time: 1
 --- !u!82 &-4561118853376321287
 AudioSource:
   m_ObjectHideFlags: 0
@@ -65,7 +71,7 @@ AudioSource:
   m_GameObject: {fileID: 7010068029273703344}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -2992148726310458737, guid: c8dd697797e98cd408c15305b8093fd8, type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -152,3 +158,11 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!81 &69131076
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7010068029273703344}
+  m_Enabled: 1

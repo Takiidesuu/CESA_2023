@@ -130,7 +130,7 @@ public class StageStartScript : MonoBehaviour
         
         yield return new WaitForSeconds(delay);
         
-        Instantiate(start_effect, this.transform.position + new Vector3(0, 0, -4), Quaternion.identity);
+        Instantiate(start_effect, this.transform.position + new Vector3(0, -4, -4), Quaternion.identity);
         player_obj.transform.GetChild(2).gameObject.SetActive(true);
         
         yield return new WaitForSeconds(delay * 2);
