@@ -108,6 +108,7 @@ public class PlayerMove : MonoBehaviour
     /// <summary>
     /// 平田
     /// </summary>
+    Quaternion anirotate;
     private DeformStage deform_stage;
     private WallSwitch wall_switch;
     private MinMaxDeform min_max_deform;
@@ -115,6 +116,7 @@ public class PlayerMove : MonoBehaviour
     
     public void TookDamage(float damage_time)
     {
+        anirotate = transform.rotation;
         anim.speed = 0.0f;
         anim.SetTrigger("takeDamage");
         
@@ -652,6 +654,7 @@ public class PlayerMove : MonoBehaviour
         yield return new WaitForSeconds(delay);
         
         anim.speed = 1.0f;
+        transform.rotation = anirotate;
     }
     
     private void RotateGround()
