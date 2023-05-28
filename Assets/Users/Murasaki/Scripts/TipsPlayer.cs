@@ -18,6 +18,7 @@ public class TipsPlayer : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            tips.SetActive(true);
             isVisible = true;
             timer = 0f;
         }
@@ -27,6 +28,7 @@ public class TipsPlayer : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            tips.SetActive(false);
             isVisible = false;
             timer = 0f;
         }
@@ -52,6 +54,7 @@ public class TipsPlayer : MonoBehaviour
 
     private void Start()
     {
+        tips.SetActive(false);
         initialScale = tips.transform.localScale; // ゲームオブジェクトの初期のスケールを保存
         timer = 0f; // タイマーをリセット
     }
