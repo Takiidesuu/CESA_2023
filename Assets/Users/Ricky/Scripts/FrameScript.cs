@@ -13,14 +13,17 @@ public class FrameScript : MonoBehaviour
     [Header("電球UIモデル")]
     [SerializeField] private GameObject bulb_ui_model;
     
+    int worldId;
+    
     // Start is called before the first frame update
     void Start()
     {
-        int worldId = StageDataManager.instance.now_world + 1;
+        int tesStage;
+        StageUtilitys.GetCurrentWorldAndStage(out worldId,out tesStage);
         
         GameObject frame_to_use;
         
-        switch (worldId)
+        switch (worldId + 1)
         {
             case 1:
             frame_to_use = world1_frame;
@@ -50,5 +53,10 @@ public class FrameScript : MonoBehaviour
         frame_to_use.transform.localScale = new Vector3(15.855f, 28.98f, 6142.26f);
         
         frame_to_use.layer = LayerMask.NameToLayer("Frame");
+        
+        for (int i = 0; i < frame_to_use.transform.childCount; i++)
+        {
+            frame_to_use.transform.GetChild(i).gameObject.layer = LayerMask.NameToLayer("Frame");
+        }
     }
 }
