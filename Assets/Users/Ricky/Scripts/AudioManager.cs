@@ -86,7 +86,7 @@ public class AudioManager : MonoBehaviour
         world_record = -1;
         
         volume_t = 0;
-        switch_bgm_delay = 2;
+        switch_bgm_delay = 1.5f;
     }
     
     private void Update() 
@@ -118,6 +118,13 @@ public class AudioManager : MonoBehaviour
                 if (is_game)
                 {
                     if (lis.gameObject.tag == "Player" || lis == listener)
+                    {
+                        continue;
+                    }
+                }
+                else
+                {
+                    if (lis == listener)
                     {
                         continue;
                     }
@@ -158,6 +165,14 @@ public class AudioManager : MonoBehaviour
         }
         else
         {
+            if (current_scene == "StageSelect")
+            {
+                if (GameObject.FindObjectOfType<WorldSelect>().isTransitioning)
+                {
+                    volume_t -= Time.deltaTime;
+                }
+            }
+            
             EaseVolume();
         }
         

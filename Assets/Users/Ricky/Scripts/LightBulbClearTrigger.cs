@@ -8,7 +8,7 @@ public class LightBulbClearTrigger : MonoBehaviour
     
     public BlurScreenScript blur_sc {private get; set;}
     
-    private float return_to_normal_duration = 6.0f;
+    private float return_to_normal_duration = 5.0f;
     private float elapsed_time;
     
     private SoundManager soundManager;
@@ -32,7 +32,7 @@ public class LightBulbClearTrigger : MonoBehaviour
             if (elapsed_time > return_to_normal_duration / 2.0f)
             {
                 blur_sc.SetState(false);
-                Time.timeScale = 0.4f;
+                Time.timeScale = 0.45f;
             }
             else
             {
