@@ -55,7 +55,7 @@ public class WorldSelect : MonoBehaviour
 
     private bool selectingWorld = true; // ワールドを選択中かどうか
     private bool selectingStage = true; // ステージを選択中かどうか
-    private bool isTransitioning = false;
+    [HideInInspector] public bool isTransitioning = false;
     private Image BlackPanel;//BlackPanel
 
     // 変更後の強さ

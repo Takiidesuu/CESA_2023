@@ -86,7 +86,7 @@ public class ImageSlider : MonoBehaviour
        
         if (canSelect && InputManager.instance.GetMenuMoveFloat() < 0)
         {
-            soundManager.PlaySoundEffect("Cursor");
+            //soundManager.PlaySoundEffect("Cursor");
             timeSinceSelect = 0f;
             canSelect = false;
             select_button--;
@@ -97,7 +97,7 @@ public class ImageSlider : MonoBehaviour
         }
         else if (canSelect && InputManager.instance.GetMenuMoveFloat() > 0)
         {
-            soundManager.PlaySoundEffect("Cursor");
+            //soundManager.PlaySoundEffect("Cursor");
             timeSinceSelect = 0f;
             canSelect = false;
             select_button++;
