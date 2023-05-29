@@ -38,7 +38,7 @@ public class LoadSceneFade : MonoBehaviour
     private Vector2[,] StartPos;        //始まった場所
     private Vector2[,] split_position;  //分割の場所
     private MOVE[,] split_is_move;      //その場所にい移動したか
-    private Sprite[,] load_split;       //元の画像から分割した後の画像
+    private Texture[,] load_split;       //元の画像から分割した後の画像
     private GameObject[,] gameObjects;  //Imageとして生成したゲームオブジェクト
     private float[,] StartTime;              //始まった時間
 
@@ -118,10 +118,10 @@ public class LoadSceneFade : MonoBehaviour
                         }
                     }else if(split_is_move[y, x] == MOVE.COMPLETION)
                     {
-                        gameObjects[y, x].GetComponent<Image>().material.SetFloat("_Intensity", Mathf.Abs(Mathf.Sin((Time.time - StartTime[y, x]) * DarkTime) * ShinePower));
+                        gameObjects[y, x].GetComponent<RawImage>().material.SetFloat("_Intensity", Mathf.Abs(Mathf.Sin((Time.time - StartTime[y, x]) * DarkTime) * ShinePower));
                         if ((Time.time - StartTime[y, x]) * DarkTime > Mathf.PI)
                         {
-                            gameObjects[y,x].GetComponent<Image>().material.SetFloat("_Intensity", 0);
+                            gameObjects[y,x].GetComponent<RawImage>().material.SetFloat("_Intensity", 0);
                             split_is_move[y, x] = MOVE.END;
                             EndCount++;
                         }
@@ -178,7 +178,7 @@ public class LoadSceneFade : MonoBehaviour
         int height = WorldTextures[world].StageTextures[stage].height;
         int tileWidth = width / columns;
         int tileHeight = height / rows;
-        load_split = new Sprite[rows, columns];
+        load_split = new Texture[rows, columns];
         StartPos = new Vector2[rows, columns];
         split_position = new Vector2[rows, columns];
         split_is_move = new MOVE[rows, columns];
@@ -193,7 +193,7 @@ public class LoadSceneFade : MonoBehaviour
                 Texture2D tile = new Texture2D(tileWidth, tileHeight);
                 tile.SetPixels(pixels);
                 tile.Apply();
-                load_split[y, x] = Sprite.Create(tile, new Rect(0, 0, tileWidth, tileHeight), Vector2.zero);
+                load_split[y, x] = Sprite.Create(tile, new Rect(0, 0, tileWidth, tileHeight), Vector2.zero).texture;
             }
         }
 
@@ -202,16 +202,18 @@ public class LoadSceneFade : MonoBehaviour
             for (int x = 0; x < columns; x++)
             {
                 GameObject gameObject = new GameObject();
+                gameObject.layer = 15;
                 gameObject.SetActive(false);
                 gameObject.transform.parent = canvas.transform;
-                Image image = gameObject.AddComponent<Image>();
-                image.sprite = load_split[y, x];
+                RawImage image = gameObject.AddComponent<RawImage>();
+                image.texture = load_split[y, x];
                 Material newMaterial = new Material(GlowMat);
                 Instantiate(newMaterial);
-                newMaterial.SetTexture("_Texture", image.sprite.texture);
+                newMaterial.SetTexture("_Texture", image.texture);
                 newMaterial.SetFloat("_Intensity", 0.0f);
                 image.material = newMaterial;
                 image.GetComponent<RectTransform>().sizeDelta = new Vector2(1920 / columns, 1080 / rows);
+                gameObject.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
                 switch (display) {
 
                     case DISPLAY.ON:
