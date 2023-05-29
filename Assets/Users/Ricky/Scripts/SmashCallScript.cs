@@ -35,4 +35,9 @@ public class SmashCallScript : MonoBehaviour
     {
         player_script.taking_damage = false;
     }
+    
+    public void ResetRotation()
+    {
+        player_script.ResetRot();
+    }
 }

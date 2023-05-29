@@ -154,6 +154,17 @@ public class AudioManager : MonoBehaviour
         {
             if (!GameObject.FindObjectOfType<PauseManager>().pause_flg)
             {
+                if (GameObject.FindObjectOfType<LightBulbCollector>().IsCleared() && audio_source.clip != clear_bgm)
+                {
+                    volume_to_use = 0;
+                }
+                
+                if (audio_source.volume <= 0)
+                {
+                    audio_source.clip = clear_bgm;
+                    volume_to_use = clear_bgm_volume;
+                }
+                
                 EaseVolume();
                 AudioListener.pause = false;
             }
@@ -233,6 +244,21 @@ public class AudioManager : MonoBehaviour
         }
         
         audio_source.Stop();
+    }
+    
+    void SwitchBGM(string type)
+    {
+        switch (type)
+        {
+            case "Clear":
+            audio_source.clip = clear_bgm;
+            volume_to_use = clear_bgm_volume;
+            break;
+            case "GameOver":
+            break;
+            default:
+            break;
+        }
     }
     
     void EaseVolume()
