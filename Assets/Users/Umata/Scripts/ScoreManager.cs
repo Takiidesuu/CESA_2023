@@ -2,6 +2,8 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 public class ScoreManager : MonoBehaviour
 {
@@ -39,10 +41,36 @@ public class ScoreManager : MonoBehaviour
 
     private SoundManager soundManager;
 
+    /// <summary>
+    /// ひらた
+    /// </summary>
+    AsyncOperation asyncOperation;//進捗チェック
+    LoadSceneFade LoadSceneFade;
+    public GameObject Fade;
+
+    public GameObject postProcessVolume;
+    private Vignette vignette;
+
+    [SerializeField] private AnimationCurve curve = AnimationCurve.Linear(0f, 0f, 1f, 1f); // イージングカーブ
+    public float TransitionStartDelay;
+    private float startTime;
+    private float duration = 15;
+    private float BlackPanelDuration = 20;
+    private float targetIntensity = 1;
+    private RawImage BlackPanel;
+    private bool IsBlackPanel;
+    string world_to_load = "";
+
+    int current_world = StageDataManager.instance.now_world;
+    int current_stage = StageDataManager.instance.now_stage;
+
     //�A�C�e���ړ��p�X�N���v�g
     ItemMover itemmover;
     private void Start()
     {
+        postProcessVolume.transform.GetComponent<Volume>().profile.TryGet(out vignette);
+        LoadSceneFade = GameObject.Find("LoadSceneFade").GetComponent<LoadSceneFade>();
+        BlackPanel = GameObject.Find("FadeBlackPanel").GetComponent<RawImage>();
         transform.root.GetComponent<ScoreCount>().SetScore();
         soundManager = GetComponent<SoundManager>();
         itemmover = gameObject.GetComponent<ItemMover>();
@@ -84,7 +112,7 @@ public class ScoreManager : MonoBehaviour
                     time_countup_flg = true;
                 }
                 //�J�E���g�A�b�v�I��
-                if(timeLeft >= ClearTime)
+                if (timeLeft >= ClearTime)
                 {
                     time_countup_flg = true;
                     counting = false;
@@ -109,12 +137,12 @@ public class ScoreManager : MonoBehaviour
                     ScoreText.text = "" + Score.ToString();
                     score_countup_flg = true;
                 }
-                if(score >= Score)
+                if (score >= Score)
                 {
                     score_countup_flg = true;
                 }
             }
-            if(score_countup_flg)
+            if (score_countup_flg)
             {
                 if (score >= border_s)
                 {
@@ -150,45 +178,87 @@ public class ScoreManager : MonoBehaviour
                     itemmover.MoveItem(rank_c, rank_push_time, rank_pos.transform.position);
 
                 }
-                //�ŏI����
-                if (InputManager.instance.press_select)
+                if (!IsBlackPanel)
                 {
-                    int current_world = StageDataManager.instance.now_world + 1;
-                    int current_stage = StageDataManager.instance.now_stage + 1;
-
-                    string world_to_load = "StageSelect";
-
-                    bool change_to_select = false;
-
-                    if (current_stage < 5)
+                    if (InputManager.instance.press_select)
                     {
-                        current_stage++;
-                    }
-                    else
-                    {
-                        if (current_world < 4)
+
+                        current_world = StageDataManager.instance.now_world;
+                        current_stage = StageDataManager.instance.now_stage;
+                        
+
+                        bool change_to_select = false;
+
+                        if (current_stage < 4)
                         {
-                            current_world++;
-                            current_stage = 1;
+                            current_stage++;
                         }
                         else
                         {
-                            change_to_select = true;
+                            if (current_world < 3)
+                            {
+                                current_world++;
+                                current_stage = 0;
+                            }
+                            else
+                            {
+                                change_to_select = true;
+                            }
                         }
-                    }
 
-                    if (change_to_select)
-                    {
-                        world_to_load = "StageSelect";
-                    }
-                    else
-                    {
-                        world_to_load = "Stage" + current_world + "-" + current_stage;
-                    }
+                        if (change_to_select)
+                        {
+                            world_to_load = "StageSelect";
+                        }
+                        else
+                        {
+                            world_to_load = "Stage" + (current_world + 1) + "-" + (current_stage + 1);
+                        }
 
-                    SceneManager.LoadScene(world_to_load);
+                        IsBlackPanel = true;
+                        startTime = Time.time;
+                        postProcessVolume.SetActive(true);
+                    }
                 }
             }
         }
+        if (IsBlackPanel)
+        {
+            TransitionStartDelay += Time.deltaTime;
+
+
+                float t = (Time.time - startTime) / (duration / 12);
+                float intensity = Mathf.Lerp(vignette.intensity.value, targetIntensity, t * t);
+
+                // 値を設定
+                vignette.intensity.value = intensity;
+
+                float elapsedTime = Time.time - startTime;
+                float progress = Mathf.Clamp01(elapsedTime / (BlackPanelDuration / 12));
+
+                float alpha = curve.Evaluate(progress);
+                // Imageのカラーを更新する
+                Color color = BlackPanel.color;
+                BlackPanel.color = new Color(color.r, color.g, color.b, alpha);
+            
+
+            if (BlackPanel.color.a >= 1)
+            {
+                IsBlackPanel = false;
+
+                if (asyncOperation == null)
+                {
+                    postProcessVolume.SetActive(false);
+                    Fade.SetActive(true);
+                    asyncOperation = SceneManager.LoadSceneAsync(world_to_load);
+                    LoadSceneFade.SetTexture(current_world, current_stage);
+                }
+                asyncOperation.allowSceneActivation = false;
+            }
+        }
+
+        if (asyncOperation != null)
+            if (LoadSceneFade.SpliteOnceMove(asyncOperation.progress) > 0.9f)
+                asyncOperation.allowSceneActivation = true;
     }
 }
