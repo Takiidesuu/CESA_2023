@@ -54,6 +54,8 @@ public class AudioManager : MonoBehaviour
     private VOLUMESTATE volume_state = VOLUMESTATE.FADEIN;
     private float switch_bgm_delay;
     
+    private float clear_bgm_delay;
+    
     AudioListener listener;
     
     private void Awake() 
@@ -87,6 +89,7 @@ public class AudioManager : MonoBehaviour
         
         volume_t = 0;
         switch_bgm_delay = 1.5f;
+        clear_bgm_delay = 0;
     }
     
     private void Update() 
@@ -154,15 +157,33 @@ public class AudioManager : MonoBehaviour
         {
             if (!GameObject.FindObjectOfType<PauseManager>().pause_flg)
             {
-                if (GameObject.FindObjectOfType<LightBulbCollector>().IsCleared() && audio_source.clip != clear_bgm)
+                if (!GameOverManager.instance.game_over_state)
+                {
+                    if (GameObject.FindObjectOfType<LightBulbCollector>().IsCleared() && audio_source.clip != clear_bgm)
+                    {
+                        volume_to_use = 0;
+                    }
+                    else
+                    {
+                        clear_bgm_delay = 0;
+                    }
+                    
+                    if (audio_source.volume <= 0 && GameObject.FindObjectOfType<ScoreManager>() != null)
+                    {
+                        if (clear_bgm_delay < 3)
+                        {
+                            clear_bgm_delay += Time.deltaTime;
+                        }
+                        else
+                        {
+                            audio_source.clip = clear_bgm;
+                            volume_to_use = clear_bgm_volume;
+                        }
+                    }
+                }
+                else
                 {
                     volume_to_use = 0;
-                }
-                
-                if (audio_source.volume <= 0)
-                {
-                    audio_source.clip = clear_bgm;
-                    volume_to_use = clear_bgm_volume;
                 }
                 
                 EaseVolume();
@@ -244,21 +265,6 @@ public class AudioManager : MonoBehaviour
         }
         
         audio_source.Stop();
-    }
-    
-    void SwitchBGM(string type)
-    {
-        switch (type)
-        {
-            case "Clear":
-            audio_source.clip = clear_bgm;
-            volume_to_use = clear_bgm_volume;
-            break;
-            case "GameOver":
-            break;
-            default:
-            break;
-        }
     }
     
     void EaseVolume()

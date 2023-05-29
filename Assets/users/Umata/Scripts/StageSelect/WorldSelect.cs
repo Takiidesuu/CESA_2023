@@ -198,6 +198,7 @@ public class WorldSelect : MonoBehaviour
         {
             transform.GetComponent<StageSelectManager>().IsWorldSelect = true;
         }
+        
         if (InputManager.instance.press_menu_right)
         {
             if (!isTransitioning)
@@ -207,14 +208,10 @@ public class WorldSelect : MonoBehaviour
                 {
                     currentWorld = (currentWorld + 1) % numWorlds;
                 }
-                else
-                {
-                    currentStage = (currentStage + 1) % numStages;
-                }
+                
                 soundManager.PlaySoundEffect("Cursor");
             }
         }
-
         if (InputManager.instance.press_menu_left)
         {
             if (!isTransitioning)
@@ -224,12 +221,14 @@ public class WorldSelect : MonoBehaviour
                 {
                     currentWorld = (currentWorld - 1 + numWorlds) % numWorlds;
                 }
-                else
-                {
-                    currentStage = (currentStage - 1 + numStages) % numStages;
-                }
+ 
                 soundManager.PlaySoundEffect("Cursor");
             }
+        }
+        
+        if (!selectingWorld)
+        {
+            SwitchSelectedMenu();
         }
 
         if (InputManager.instance.press_cancel)
@@ -379,5 +378,68 @@ public class WorldSelect : MonoBehaviour
         {
             LeftArrow.SetActive(true);
         }
+    }
+    
+    private void SwitchSelectedMenu()
+    {
+        int next_id = 0;
+        int current_id = currentStage % numStages;
+        
+        if (InputManager.instance.press_menu_up)
+        {
+            next_id = -2;
+            if (current_id == 1)
+            {
+                next_id += 1;
+            }
+            
+            soundManager.PlaySoundEffect("Cursor");
+        }
+        
+        if (InputManager.instance.press_menu_down)
+        {
+            next_id = 2;
+            if (current_id == 4)
+            {
+                next_id -= 1;
+            }
+            
+            soundManager.PlaySoundEffect("Cursor");
+        }
+        
+        if (InputManager.instance.press_menu_left)
+        {
+            next_id = -1;
+            
+            if (current_id == 0)
+            {
+                next_id = 0;
+            }
+            else if (current_id % 2 != 0)
+            {
+                next_id += 2;
+            }
+            
+            soundManager.PlaySoundEffect("Cursor");
+        }
+        
+        if (InputManager.instance.press_menu_right)
+        {
+            next_id = 1;
+            
+            if (current_id == 0)
+            {
+                next_id = 0;
+            }
+            else if (current_id % 2 == 0)
+            {
+                current_id = -1;
+            }
+            
+            soundManager.PlaySoundEffect("Cursor");
+        }
+        
+        currentStage = (currentStage + next_id) % numStages;
+        currentStage = Mathf.Clamp(currentStage, 0, 9999);
     }
 }

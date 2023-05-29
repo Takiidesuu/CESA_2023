@@ -8,7 +8,7 @@ public class LightBulbClearTrigger : MonoBehaviour
     
     public BlurScreenScript blur_sc {private get; set;}
     
-    private float return_to_normal_duration = 5.0f;
+    private float return_to_normal_duration = 3.5f;
     private float elapsed_time;
     
     private SoundManager soundManager;
