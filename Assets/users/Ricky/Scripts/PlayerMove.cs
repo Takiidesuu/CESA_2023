@@ -60,7 +60,7 @@ public class PlayerMove : MonoBehaviour
     [Header("Prefab")]
     [Tooltip("火花")]
     [SerializeField] private GameObject spark_effect;
-    
+
     //コンポネント
     private Rigidbody rb;                   //リギッドボディー
     private CapsuleCollider col;            //コライダー
@@ -558,6 +558,7 @@ public class PlayerMove : MonoBehaviour
         //叩くSEの再生
         soundmanager.PlaySoundEffect("Strike");
 
+
         if (deform_stage)
         {
             bool isSmash = true;
@@ -589,6 +590,13 @@ public class PlayerMove : MonoBehaviour
                 Vector3 spawn_point = deform_stage.AddDeformpointDown(transform.position, transform.eulerAngles.y, (smash_power_num + 1) * smash_power_scalar * increase_power_scalar, is_flip);
                 spawn_point -= this.transform.up;
                 Instantiate(spark_effect, spawn_point, this.transform.rotation);
+                ////衝撃波の生成
+                //Quaternion lot;
+                //lot.x = 90;
+                //lot.y = 0;
+                //lot.z = 0;
+                //lot.w = 0;
+                //GameObject shock = Instantiate(ShockWave_effect, spawn_point, ShockWave_effect.transform.localRotation);
             }
         }
         else
