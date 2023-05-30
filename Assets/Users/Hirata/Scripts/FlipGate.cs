@@ -97,6 +97,7 @@ public class FlipGate : MonoBehaviour
 
     IEnumerator Flip(float value)
     {
+        soundManager.PlaySoundEffect("Flip");
         yield return new WaitForSeconds(value);
         if (FlipObj.CompareTag("Player"))
             FlipObj.GetComponent<PlayerMove>().FlipCharacter();

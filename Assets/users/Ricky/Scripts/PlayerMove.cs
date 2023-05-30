@@ -102,6 +102,8 @@ public class PlayerMove : MonoBehaviour
     
     private LightBulbCollector check_is_cleared;
     
+    private float y_rot_record;
+    
     public bool start_game {get; set;}
     public bool taking_damage {get; set;}
 
@@ -119,6 +121,8 @@ public class PlayerMove : MonoBehaviour
         anirotate = transform.rotation;
         anim.speed = 0.0f;
         anim.SetTrigger("takeDamage");
+        
+        soundmanager.PlaySoundEffect("TakeDamage");
         
         float damage_time_scaled = damage_time / 1.4f;
         StartCoroutine(StartDamageTimer(damage_time_scaled));
@@ -519,6 +523,18 @@ public class PlayerMove : MonoBehaviour
                 }
                 else
                 {
+                    y_rot_record = transform.localEulerAngles.y;
+                    if (y_rot_record > -1 && y_rot_record < 1)
+                    {
+                        transform.GetChild(0).transform.localEulerAngles = new Vector3(0, 180, 0);
+                    }
+                    else
+                    {
+                        transform.GetChild(0).transform.localEulerAngles = new Vector3(0, 0, 0);
+                    }
+                    
+                    transform.GetChild(0).transform.localPosition = new Vector3(0, -0.659f, -7.5f);
+            
                     if (smash_power_num < smash_power_scalar)
                     {
                         anim.speed = 1.5f;
@@ -530,6 +546,10 @@ public class PlayerMove : MonoBehaviour
             {
                 anim.SetTrigger("failSmash");
                 anim.ResetTrigger("holdSmash");
+                
+                y_rot_record = transform.GetChild(0).transform.localEulerAngles.y;
+                transform.GetChild(0).transform.localEulerAngles = new Vector3(0, 180, 0);
+                transform.GetChild(0).transform.localPosition = new Vector3(0, -0.659f, 3.75f);
             }
         }
     }
@@ -621,6 +641,12 @@ public class PlayerMove : MonoBehaviour
         smash_state = SMASHSTATE.NORMAL;
         taking_damage = false;
         anim.speed = 1.0f;
+    }
+    
+    public void ResetRot()
+    {
+        transform.GetChild(0).transform.localEulerAngles = new Vector3(0, 90, 0);
+        transform.GetChild(0).transform.localPosition = new Vector3(0, -0.659f, 0);
     }
     
     public void FlipCharacter()

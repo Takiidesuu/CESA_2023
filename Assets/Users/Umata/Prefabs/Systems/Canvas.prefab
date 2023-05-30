@@ -8445,7 +8445,6 @@ GameObject:
   - component: {fileID: 1459507278660977839}
   - component: {fileID: 693629671}
   - component: {fileID: 1023690585}
-  - component: {fileID: 1023690586}
   m_Layer: 5
   m_Name: GameOverManager
   m_TagString: Untagged
@@ -8521,11 +8520,15 @@ MonoBehaviour:
   - name: Cursor
     clip:
     - {fileID: 8300000, guid: b5c423074b6fbe64fbe9fb7b80fe1c66, type: 3}
-    volume: 0.637
+    volume: 0.462
   - name: OK
     clip:
     - {fileID: 8300000, guid: f539d2bafe339444a86b76f5bf7012cf, type: 3}
-    volume: 0.662
+    volume: 0.49
+  - name: GameOverJingle
+    clip:
+    - {fileID: 8300000, guid: aab03a6fbf0a4f64baa33bf3c2f11388, type: 3}
+    volume: 0.221
 --- !u!82 &1023690585
 AudioSource:
   m_ObjectHideFlags: 0
@@ -8622,23 +8625,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &1023690586
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4170642581814323461}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a3c4418ebfb0bd748b64be9b6765dc2e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  soundEffects:
-  - name: OK
-    clip:
-    - {fileID: 8300000, guid: f539d2bafe339444a86b76f5bf7012cf, type: 3}
-    volume: 0.492
 --- !u!1 &4171992346952281354
 GameObject:
   m_ObjectHideFlags: 0
@@ -13884,7 +13870,7 @@ MonoBehaviour:
   - name: ClearJingle
     clip:
     - {fileID: 8300000, guid: d48fd03b150826649af6959334ee3b9b, type: 3}
-    volume: 0.228
+    volume: 0.18
 --- !u!1 &6800561200985254470
 GameObject:
   m_ObjectHideFlags: 0

@@ -54,6 +54,8 @@ public class AudioManager : MonoBehaviour
     private VOLUMESTATE volume_state = VOLUMESTATE.FADEIN;
     private float switch_bgm_delay;
     
+    private float clear_bgm_delay;
+    
     AudioListener listener;
     
     private void Awake() 
@@ -87,6 +89,7 @@ public class AudioManager : MonoBehaviour
         
         volume_t = 0;
         switch_bgm_delay = 1.5f;
+        clear_bgm_delay = 0;
     }
     
     private void Update() 
@@ -142,6 +145,7 @@ public class AudioManager : MonoBehaviour
             }
             else
             {
+                world_record = 0;
                 listener.enabled = true;
             }
             
@@ -154,22 +158,85 @@ public class AudioManager : MonoBehaviour
         {
             if (!GameObject.FindObjectOfType<PauseManager>().pause_flg)
             {
+                if (!GameOverManager.instance.game_over_state)
+                {
+                    if (GameObject.FindObjectOfType<LightBulbCollector>().IsCleared() && audio_source.clip != clear_bgm)
+                    {
+                        volume_to_use = 0;
+                        
+                        GameObject back_sound = GameObject.Find("Sound");
+                        if (back_sound.GetComponent<AudioSource>() != null)
+                        {
+                            back_sound.GetComponent<AudioSource>().volume = 0;
+                        }
+                    }
+                    else
+                    {
+                        clear_bgm_delay = 0;
+                    }
+                    
+                    if (audio_source.volume <= 0 && GameObject.FindObjectOfType<ScoreManager>() != null)
+                    {
+                        if (clear_bgm_delay < 3)
+                        {
+                            clear_bgm_delay += Time.deltaTime;
+                        }
+                        else
+                        {
+                            audio_source.clip = clear_bgm;
+                            volume_to_use = clear_bgm_volume;
+                        }
+                    }
+                }
+                else
+                {
+                    GameObject back_sound = GameObject.Find("Sound");
+                    if (back_sound != null)
+                    {
+                        if (back_sound.GetComponent<AudioSource>() != null)
+                        {
+                            back_sound.GetComponent<AudioSource>().volume = 0;
+                        }
+                    }
+                        
+                    volume_to_use = 0;
+                }
+                
                 EaseVolume();
                 AudioListener.pause = false;
             }
             else
             {
                 AudioListener.pause = true;
-                audio_source.volume = volume_to_use / 2;
+                
+                if (GameObject.FindObjectOfType<PauseManager>().switch_scene)
+                {
+                    audio_source.volume -= Time.deltaTime;
+                    volume_to_use -= Time.deltaTime;
+                }
+                else
+                {
+                    audio_source.volume = volume_to_use / 2;
+                }
             }
         }
         else
         {
+            AudioListener.pause = false;
+            
+            if (current_scene == "Title")
+            {
+                if (GameObject.FindObjectOfType<ImageSlider>().transitioning)
+                {
+                    volume_t -= Time.deltaTime;
+                }
+            }
+            
             if (current_scene == "StageSelect")
             {
                 if (GameObject.FindObjectOfType<WorldSelect>().isTransitioning)
                 {
-                    volume_t -= Time.deltaTime;
+                    volume_t -= Time.deltaTime / 2.0f;
                 }
             }
             
