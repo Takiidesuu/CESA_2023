@@ -9,10 +9,15 @@ public class ArmMove : MonoBehaviour
 
     public float movementSpeed = 5f; // 移動速度
 
+    public GameObject CreateBallObj;
+
     private List<Transform> waypoints = new List<Transform>(); // 経由するチェックポイントとエンドポイントのリスト
     private Transform currentTarget;  // 現在の目標位置
     private int currentIndex = 0;     // 現在のウェイポイントのインデックス
     private bool isMoving = false;    // 移動中かどうかのフラグ
+
+    private bool hasReachedEndPos = false;   // EndPosに到達したかどうかのフラグ
+    private bool hasReachedStartPos = false; // 開始地点に到達したかどうかのフラグ
 
     private void Start()
     {
@@ -53,6 +58,19 @@ public class ArmMove : MonoBehaviour
         float distanceThreshold = 0.1f;
         if (Vector3.Distance(transform.position, currentTarget.position) < distanceThreshold)
         {
+            if (hasReachedEndPos)
+            {
+                // EndPosに到達した場合に実行する命令文を追加
+                // 例えば、CreateBallObjを生成するなどの処理を追加する
+                CreateBall();
+            }
+            else if (hasReachedStartPos)
+            {
+                // 開始地点に到達した場合に実行する命令文を追加
+                // 例えば、特定の処理を実行するなどの処理を追加する
+                DoSomething();
+            }
+
             currentIndex++;
             // ウェイポイントの最後に到達した場合、2秒停止して新しいウェイポイントを設定する
             if (currentIndex >= waypoints.Count)
@@ -80,6 +98,10 @@ public class ArmMove : MonoBehaviour
 
         currentIndex = 0;
         currentTarget = waypoints[currentIndex];
+
+        // ターゲット位置がEndPosか開始地点かを判別する
+        hasReachedEndPos = currentTarget.CompareTag("ArmEndPoint");
+        hasReachedStartPos = currentTarget.CompareTag("ArmCheckPoint");
     }
 
     private void ShuffleList<T>(List<T> list)
@@ -105,5 +127,24 @@ public class ArmMove : MonoBehaviour
         isMoving = false;
         yield return new WaitForSeconds(seconds);
         StartMoving();
+    }
+
+    // EndPosに到達した場合に実行する命令文の例
+    private void CreateBall()
+    {
+        // CreateBallObjを生成するなどの処理を追加する
+        if (CreateBallObj != null)
+        {
+            Vector3 movepos = transform.position;
+            movepos.y = -60;
+            Instantiate(CreateBallObj,movepos, Quaternion.identity);
+            CreateBallObj.GetComponent<ElectricBallArm>().UpObject(transform.position,this.gameObject);
+        }
+    }
+
+    // 開始地点に到達した場合に実行する命令文の例
+    private void DoSomething()
+    {
+        // 特定の処理を実行するなどの処理を追加する
     }
 }

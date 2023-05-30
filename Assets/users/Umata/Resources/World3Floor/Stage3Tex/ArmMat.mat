@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-4453594848179919232
+--- !u!114 &-7911714918358103812
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -20,28 +20,25 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: SpeedBooster_main
-  m_Shader: {fileID: -6465566751694194690, guid: 4b839a257539c63448fa6cbc1ba2a0a3, type: 3}
-  m_ShaderKeywords: 
+  m_Name: ArmMat
+  m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
+  m_ShaderKeywords: _METALLICSPECGLOSSMAP _NORMALMAP _OCCLUSIONMAP _PARALLAXMAP
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
+  m_CustomRenderQueue: 2000
+  stringTagMap:
+    RenderType: Opaque
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - Texture2D_db55806f75974d67a0f67d1dae278446:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _BaseMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 0799c261cd496c443a2af890eafba67b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: d7a0156765219f645989f50763cd19db, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -61,23 +58,19 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 0799c261cd496c443a2af890eafba67b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: dd0d0978c976a9a47af9b547eb218a57, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: f92773e79a80bc049a41fc601222c53d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _SampleTexture2D_25f562494a8342f69035f3761d83733a_Texture_1:
-        m_Texture: {fileID: 2800000, guid: 6cf91b1e71bf6f8429cf685c68885d73, type: 3}
+        m_Texture: {fileID: 2800000, guid: a087d04467852974bb0d9895bf9c6055, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
@@ -97,11 +90,6 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - Vector1_3925d9df04234a01aaf98bc4a535e5b2: 0.61
-    - Vector1_8f030572354140588e3b29077af6f410: 1
-    - Vector1_a1e9e0bfac684b50a7ff49fc052079c8: 1
-    - Vector1_b6859f8f289248309501a72e073ba376: 3
-    - Vector1_e0158f28433245d8b48c0ba9421236f5: 0
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
@@ -129,11 +117,6 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - Color_78fcf18b55f849d9a9d7693a359bd1a4: {r: 0, g: 102.75575, b: 102.75575, a: 1}
-    - Color_be465ca0f0f1449783c4b8ee093b000d: {r: 0.3584906, g: 0.3584906, b: 0.3584906, a: 0.2705882}
-    - Color_d700f29e846b467b87133da40a4587a6: {r: 0.02720471, g: 0.02720471, b: 0.02720471, a: 1}
-    - Color_eed712af46234df680257d53126b45c1: {r: 0, g: 0.82625246, b: 1, a: 1}
-    - Vector2_41c164d86c744160a239d8a41b6426de: {r: 1, g: 1, b: 0, a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
