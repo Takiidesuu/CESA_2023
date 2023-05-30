@@ -72,6 +72,11 @@ public class ScoreManager : MonoBehaviour
 
     //�A�C�e���ړ��p�X�N���v�g
     ItemMover itemmover;
+    
+    public bool isTransition()
+    {
+        return IsBlackPanel;
+    }
 
     private void Start()
     {

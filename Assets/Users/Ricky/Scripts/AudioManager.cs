@@ -178,16 +178,73 @@ public class AudioManager : MonoBehaviour
                         clear_bgm_delay = 0;
                     }
                     
-                    if (audio_source.volume <= 0 && GameObject.FindObjectOfType<ScoreManager>() != null)
+                    if (GameObject.FindObjectOfType<ScoreManager>() != null)
                     {
-                        if (clear_bgm_delay < 3)
+                        if (GameObject.FindObjectOfType<ScoreManager>().isTransition())
                         {
-                            clear_bgm_delay += Time.deltaTime;
+                            volume_t -= Time.deltaTime;
+                            switch_bgm_delay = 1;
                         }
                         else
                         {
-                            audio_source.clip = clear_bgm;
-                            volume_to_use = clear_bgm_volume;
+                            if (audio_source.volume <= 0)
+                            {
+                                if (clear_bgm_delay < 3)
+                                {
+                                    clear_bgm_delay += Time.deltaTime;
+                                }
+                                else
+                                {
+                                    audio_source.clip = clear_bgm;
+                                    volume_to_use = clear_bgm_volume;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        switch (world_record)
+                        {
+                            case 1:
+                            if (audio_source.clip != world1_bgm)
+                            {
+                                audio_source.clip = world1_bgm;
+                                volume_to_use = world1_bgm_volume;
+                            }
+                            
+                            break;
+                            case 2:
+                            if (audio_source.clip != world2_bgm)
+                            {
+                                audio_source.clip = world2_bgm;
+                                volume_to_use = world2_bgm_volume;
+                            }
+                            
+                            break;
+                            case 3:
+                            if (audio_source.clip != world3_bgm)
+                            {
+                                audio_source.clip = world3_bgm;
+                                volume_to_use = world3_bgm_volume;
+                            }
+                            
+                            break;
+                            case 4:
+                            if (audio_source.clip != world4_bgm)
+                            {
+                                audio_source.clip = world4_bgm;
+                                volume_to_use = world4_bgm_volume;
+                            }
+                            
+                            break;
+                            default:
+                            if (audio_source.clip != world1_bgm)
+                            {
+                                audio_source.clip = world1_bgm;
+                                volume_to_use = world1_bgm_volume;
+                            }
+                            
+                            break;
                         }
                     }
                 }
@@ -215,7 +272,7 @@ public class AudioManager : MonoBehaviour
                 if (GameObject.FindObjectOfType<PauseManager>().switch_scene)
                 {
                     audio_source.volume -= Time.deltaTime;
-                    volume_to_use -= Time.deltaTime;
+                    volume_t -= Time.deltaTime;
                 }
                 else
                 {
