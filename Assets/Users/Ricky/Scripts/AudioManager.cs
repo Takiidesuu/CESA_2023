@@ -165,9 +165,12 @@ public class AudioManager : MonoBehaviour
                         volume_to_use = 0;
                         
                         GameObject back_sound = GameObject.Find("Sound");
-                        if (back_sound.GetComponent<AudioSource>() != null)
+                        if (back_sound != null)
                         {
-                            back_sound.GetComponent<AudioSource>().volume = 0;
+                            if (back_sound.GetComponent<AudioSource>() != null)
+                            {
+                                back_sound.GetComponent<AudioSource>().volume = 0;
+                            }
                         }
                     }
                     else

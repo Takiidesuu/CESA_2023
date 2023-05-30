@@ -38,6 +38,6 @@ public class SmashCallScript : MonoBehaviour
     
     public void ResetRotation()
     {
-        player_script.ResetRot();
+        
     }
 }
