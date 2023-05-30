@@ -10,6 +10,8 @@ public class ScoreManager : MonoBehaviour
     //�RD��ԃe�L�X�g
     public TextMeshPro ScoreText;
     public TextMeshPro TimeText;
+    public TextMeshPro HiScoreText;
+
 
     public string NextSceneName;    //���V�[���̃e�L�X�g
 
@@ -35,6 +37,7 @@ public class ScoreManager : MonoBehaviour
     private float elapsedtime;
     public GameObject TimeTextObj;
     public GameObject ScoreTextObj;
+    public GameObject HiScoreTextObj;
     //��x�������s���Ȃ��悤�t���O�Ǘ�
     private bool time_countup_flg;
     private bool score_countup_flg;
@@ -44,6 +47,9 @@ public class ScoreManager : MonoBehaviour
     /// <summary>
     /// ひらた
     /// </summary>
+    Camera MainCamera;
+    RawImage rawImage;
+    RenderTexture renderTexture;
     AsyncOperation asyncOperation;//進捗チェック
     LoadSceneFade LoadSceneFade;
     public GameObject Fade;
@@ -61,13 +67,22 @@ public class ScoreManager : MonoBehaviour
     private bool IsBlackPanel;
     string world_to_load = "";
 
-    int current_world = StageDataManager.instance.now_world;
-    int current_stage = StageDataManager.instance.now_stage;
+    int current_world = -1;
+    int current_stage = -1;
 
     //�A�C�e���ړ��p�X�N���v�g
     ItemMover itemmover;
+
     private void Start()
     {
+        if (StageDataManager.instance != null)
+        {
+            current_world = StageDataManager.instance.now_world;
+            current_stage = StageDataManager.instance.now_stage;
+        }
+        rawImage = GameObject.Find("ResultWindow").GetComponent<RawImage>();
+        renderTexture = (RenderTexture)Resources.Load("MainCamera");
+        MainCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
         postProcessVolume.transform.GetComponent<Volume>().profile.TryGet(out vignette);
         LoadSceneFade = GameObject.Find("LoadSceneFade").GetComponent<LoadSceneFade>();
         BlackPanel = GameObject.Find("FadeBlackPanel").GetComponent<RawImage>();
@@ -76,6 +91,8 @@ public class ScoreManager : MonoBehaviour
         itemmover = gameObject.GetComponent<ItemMover>();
         TimeText = TimeTextObj.transform.GetComponent<TextMeshPro>();
         ScoreText = ScoreTextObj.transform.GetComponent<TextMeshPro>();
+        HiScoreTextObj = GameObject.Find("HiScoreText");
+        HiScoreText = HiScoreTextObj.transform.GetComponent<TextMeshPro>();
         timeLeft = 0;
         ScoreText.text = "" + score.ToString();
         TimeText.text = "" + timeLeft.ToString();
@@ -89,6 +106,11 @@ public class ScoreManager : MonoBehaviour
         border_a = StageDataManager.instance.GetCurrentStageData().rank_a_border;
         border_b = StageDataManager.instance.GetCurrentStageData().rank_b_border;
         border_c = StageDataManager.instance.GetCurrentStageData().rank_c_border;
+        HiScoreText.text = StageDataManager.instance.GetCurrentStageData().Score.ToString();
+        int nowstage = StageDataManager.instance.now_stage;
+        int nowworld = StageDataManager.instance.now_world;
+        if (StageDataManager.instance.GetCurrentStageData().Score < Score)
+            StageDataManager.instance.worlds[nowworld].stages[nowstage].Score = Score;
     }
 
     private void Update()
@@ -130,11 +152,15 @@ public class ScoreManager : MonoBehaviour
                 score = Mathf.Min(score, Score);
 
                 ScoreText.text = "" + score.ToString();
+                if (int.Parse(HiScoreText.text) < score)
+                    HiScoreText.text = score.ToString();
 
                 if (InputManager.instance.press_select)
                 {
                     counting = true;
                     ScoreText.text = "" + Score.ToString();
+                    if (int.Parse(HiScoreText.text) < score)
+                        HiScoreText.text = score.ToString();
                     score_countup_flg = true;
                 }
                 if (score >= Score)
@@ -216,6 +242,8 @@ public class ScoreManager : MonoBehaviour
                         }
 
                         IsBlackPanel = true;
+                        MainCamera.targetTexture = renderTexture;
+                        rawImage.enabled = false;
                         startTime = Time.time;
                         postProcessVolume.SetActive(true);
                     }
