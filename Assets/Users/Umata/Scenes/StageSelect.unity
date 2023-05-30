@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.35187143, g: 0.29124707, b: 0.25864658, a: 1}
+  m_IndirectSpecularColor: {r: 0.35210246, g: 0.29140958, b: 0.25881842, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -13684,6 +13684,63 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 912305931}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1001 &924003108
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 6227948084643354327, guid: bb020d1c23690354bbf749582f227feb, type: 3}
+      propertyPath: m_RootOrder
+      value: 28
+      objectReference: {fileID: 0}
+    - target: {fileID: 6227948084643354327, guid: bb020d1c23690354bbf749582f227feb, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6227948084643354327, guid: bb020d1c23690354bbf749582f227feb, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6227948084643354327, guid: bb020d1c23690354bbf749582f227feb, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6227948084643354327, guid: bb020d1c23690354bbf749582f227feb, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6227948084643354327, guid: bb020d1c23690354bbf749582f227feb, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6227948084643354327, guid: bb020d1c23690354bbf749582f227feb, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6227948084643354327, guid: bb020d1c23690354bbf749582f227feb, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6227948084643354327, guid: bb020d1c23690354bbf749582f227feb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6227948084643354327, guid: bb020d1c23690354bbf749582f227feb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6227948084643354327, guid: bb020d1c23690354bbf749582f227feb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7010068029273703344, guid: bb020d1c23690354bbf749582f227feb, type: 3}
+      propertyPath: m_Name
+      value: AudioManager
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: bb020d1c23690354bbf749582f227feb, type: 3}
 --- !u!1 &937486636
 GameObject:
   m_ObjectHideFlags: 0
@@ -35938,6 +35995,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  isTransitioning: 0
   duration: 1
   BlackPanelDuration: 20
   TransitionStartDelay: 0
@@ -36067,20 +36125,20 @@ MonoBehaviour:
   soundEffects:
   - name: Cursor
     clip:
-    - {fileID: 8300000, guid: b5c423074b6fbe64fbe9fb7b80fe1c66, type: 3}
-    volume: 1
+    - {fileID: 8300000, guid: 41f973006dbe86b42be8efdea907119c, type: 3}
+    volume: 0.263
   - name: OK
     clip:
-    - {fileID: 8300000, guid: f539d2bafe339444a86b76f5bf7012cf, type: 3}
-    volume: 1
+    - {fileID: 8300000, guid: b83e74e00431ff44fb64521ddba8a588, type: 3}
+    volume: 0.297
   - name: Cancel
     clip:
-    - {fileID: 8300000, guid: 9d1c0f573ee5c0941b05769a8288bcb5, type: 3}
-    volume: 1
+    - {fileID: 8300000, guid: d4de57771380f9c4cac825b295e4960b, type: 3}
+    volume: 0.311
   - name: GO
     clip:
-    - {fileID: 8300000, guid: 5153b9e39c7c20f48a2f9788b0e83384, type: 3}
-    volume: 1
+    - {fileID: 8300000, guid: b4b1a48e0d99d5840b2261e945dcec22, type: 3}
+    volume: 0.407
 --- !u!1 &1706742803
 GameObject:
   m_ObjectHideFlags: 0

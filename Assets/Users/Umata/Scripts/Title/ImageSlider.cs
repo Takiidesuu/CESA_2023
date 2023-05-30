@@ -24,6 +24,8 @@ public class ImageSlider : MonoBehaviour
     private float[] init_positions; 
     private float timeSinceSelect = 0f;
     private bool canSelect = true; 
+    
+    public bool transitioning {get; private set;}
 
     private SoundManager soundManager;
 
@@ -49,6 +51,8 @@ public class ImageSlider : MonoBehaviour
         SetSelectedButton(select_button);
 
         soundManager = GetComponent<SoundManager>();
+        
+        transitioning = false;
     }
 
     void Update()
@@ -63,6 +67,8 @@ public class ImageSlider : MonoBehaviour
             {
 
             });
+
+            transitioning = true;
 
             Invoke("ChangeScene", 1.5f);
         }

@@ -75,11 +75,18 @@ public class GameOverManager : MonoBehaviour
     
     private bool play_jingle;
     
+    private bool start_anim;
+    
     private MENU current_menu = MENU.RETRY;
     
     public void SwitchToGameOver()
     {
-        game_over_state = true;
+       // if (!game_over_state)
+       // {
+            //Invoke("StartAnim", 1);
+            game_over_state = true;
+        //}
+        
         black_panel.SetActive(true);
         
         AudioSource[] game_audios = GameObject.FindObjectsOfType<AudioSource>();
@@ -130,6 +137,8 @@ public class GameOverManager : MonoBehaviour
         accept_button_input = false;
         
         play_jingle = true;
+        
+        start_anim = false;
     }
 
     // Update is called once per frame
@@ -247,16 +256,19 @@ public class GameOverManager : MonoBehaviour
     {
         bool result = false;
         
-        if (black_panel_rect.localPosition != Vector3.zero)
-        {
-            black_panel_rect.localPosition = Vector3.MoveTowards(black_panel_rect.localPosition, Vector3.zero, 200.0f);
-        }
-        else
-        {
-            result = true;
-            failed_pic.SetActive(true);
-            player_obj.SetActive(true);
-        }
+        //if (start_anim)
+        //{
+            if (black_panel_rect.localPosition != Vector3.zero)
+            {
+                black_panel_rect.localPosition = Vector3.MoveTowards(black_panel_rect.localPosition, Vector3.zero, 200.0f);
+            }
+            else
+            {
+                result = true;
+                failed_pic.SetActive(true);
+                player_obj.SetActive(true);
+            }
+       // }
         
         return result;
     }
@@ -318,5 +330,10 @@ public class GameOverManager : MonoBehaviour
         }
         
         move_button = true;
+    }
+    
+    void StartAnim()
+    {
+        start_anim = true;
     }
 }

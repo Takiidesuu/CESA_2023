@@ -26,7 +26,7 @@ public class PauseManager : MonoBehaviour
     
     private RectTransform curtain_transform;
     
-    private bool switch_scene = false;
+    public bool switch_scene {get; private set;}
     
     private SoundManager soundManager;
     
@@ -62,6 +62,8 @@ public class PauseManager : MonoBehaviour
         
         soundManager = GetComponent<SoundManager>();
         GetComponent<AudioSource>().ignoreListenerPause = true;
+        
+        switch_scene = false;
     }
 
     // Update is called once per frame

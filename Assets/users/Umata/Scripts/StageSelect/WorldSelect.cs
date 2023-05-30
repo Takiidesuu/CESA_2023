@@ -207,9 +207,8 @@ public class WorldSelect : MonoBehaviour
                 if (selectingWorld && currentWorld != 3)
                 {
                     currentWorld = (currentWorld + 1) % numWorlds;
+                    soundManager.PlaySoundEffect("Cursor");
                 }
-                
-                soundManager.PlaySoundEffect("Cursor");
             }
         }
         if (InputManager.instance.press_menu_left)
@@ -220,9 +219,9 @@ public class WorldSelect : MonoBehaviour
                 if (selectingWorld && currentWorld != 0)
                 {
                     currentWorld = (currentWorld - 1 + numWorlds) % numWorlds;
+                    soundManager.PlaySoundEffect("Cursor");
                 }
- 
-                soundManager.PlaySoundEffect("Cursor");
+
             }
         }
         
@@ -392,6 +391,10 @@ public class WorldSelect : MonoBehaviour
             {
                 next_id += 1;
             }
+            else if (current_id == 0)
+            {
+                next_id = 4;
+            }
             
             soundManager.PlaySoundEffect("Cursor");
         }
@@ -413,7 +416,7 @@ public class WorldSelect : MonoBehaviour
             
             if (current_id == 0)
             {
-                next_id = 0;
+                next_id = 1;
             }
             else if (current_id % 2 != 0)
             {
@@ -433,7 +436,7 @@ public class WorldSelect : MonoBehaviour
             }
             else if (current_id % 2 == 0)
             {
-                current_id = -1;
+                next_id = -1;
             }
             
             soundManager.PlaySoundEffect("Cursor");

@@ -122,6 +122,8 @@ public class PlayerMove : MonoBehaviour
         anim.speed = 0.0f;
         anim.SetTrigger("takeDamage");
         
+        soundmanager.PlaySoundEffect("TakeDamage");
+        
         float damage_time_scaled = damage_time / 1.4f;
         StartCoroutine(StartDamageTimer(damage_time_scaled));
         InputManager.instance.VibrateController(damage_time_scaled, 0.1f);
