@@ -226,15 +226,15 @@ public class ScoreManager : MonoBehaviour
                         }
                         else
                         {
-                            if (current_world < 3)
-                            {
+                            //if (current_world < 3)
+                            //{
                                 current_world++;
                                 current_stage = 0;
-                            }
-                            else
-                            {
-                                change_to_select = true;
-                            }
+                            //}
+                            //else
+                            //{
+                            change_to_select = true;
+                            //}
                         }
 
                         if (change_to_select)
