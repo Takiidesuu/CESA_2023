@@ -206,7 +206,7 @@ public class AudioManager : MonoBehaviour
                         switch (world_record)
                         {
                             case 1:
-                            if (audio_source.clip != world1_bgm)
+                            if (audio_source.clip != world1_bgm || volume_to_use != world1_bgm_volume)
                             {
                                 audio_source.clip = world1_bgm;
                                 volume_to_use = world1_bgm_volume;
@@ -215,7 +215,7 @@ public class AudioManager : MonoBehaviour
                             
                             break;
                             case 2:
-                            if (audio_source.clip != world2_bgm)
+                            if (audio_source.clip != world2_bgm || volume_to_use != world2_bgm_volume)
                             {
                                 audio_source.clip = world2_bgm;
                                 volume_to_use = world2_bgm_volume;
@@ -224,7 +224,7 @@ public class AudioManager : MonoBehaviour
                             
                             break;
                             case 3:
-                            if (audio_source.clip != world3_bgm)
+                            if (audio_source.clip != world3_bgm || volume_to_use != world3_bgm_volume)
                             {
                                 audio_source.clip = world3_bgm;
                                 volume_to_use = world3_bgm_volume;
@@ -233,7 +233,7 @@ public class AudioManager : MonoBehaviour
                             
                             break;
                             case 4:
-                            if (audio_source.clip != world4_bgm)
+                            if (audio_source.clip != world4_bgm || volume_to_use != world4_bgm_volume)
                             {
                                 audio_source.clip = world4_bgm;
                                 volume_to_use = world4_bgm_volume;
@@ -242,7 +242,7 @@ public class AudioManager : MonoBehaviour
                             
                             break;
                             default:
-                            if (audio_source.clip != world1_bgm)
+                            if (audio_source.clip != world1_bgm || volume_to_use != world1_bgm_volume)
                             {
                                 audio_source.clip = world1_bgm;
                                 volume_to_use = world1_bgm_volume;
@@ -263,7 +263,7 @@ public class AudioManager : MonoBehaviour
                             back_sound.GetComponent<AudioSource>().volume = 0;
                         }
                     }
-                        
+                    
                     volume_to_use = 0;
                 }
                 
