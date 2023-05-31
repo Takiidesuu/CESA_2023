@@ -210,6 +210,7 @@ public class AudioManager : MonoBehaviour
                             {
                                 audio_source.clip = world1_bgm;
                                 volume_to_use = world1_bgm_volume;
+                                volume_state = VOLUMESTATE.FADEIN;
                             }
                             
                             break;
@@ -218,6 +219,7 @@ public class AudioManager : MonoBehaviour
                             {
                                 audio_source.clip = world2_bgm;
                                 volume_to_use = world2_bgm_volume;
+                                volume_state = VOLUMESTATE.FADEIN;
                             }
                             
                             break;
@@ -226,6 +228,7 @@ public class AudioManager : MonoBehaviour
                             {
                                 audio_source.clip = world3_bgm;
                                 volume_to_use = world3_bgm_volume;
+                                volume_state = VOLUMESTATE.FADEIN;
                             }
                             
                             break;
@@ -234,6 +237,7 @@ public class AudioManager : MonoBehaviour
                             {
                                 audio_source.clip = world4_bgm;
                                 volume_to_use = world4_bgm_volume;
+                                volume_state = VOLUMESTATE.FADEIN;
                             }
                             
                             break;
@@ -242,6 +246,7 @@ public class AudioManager : MonoBehaviour
                             {
                                 audio_source.clip = world1_bgm;
                                 volume_to_use = world1_bgm_volume;
+                                volume_state = VOLUMESTATE.FADEIN;
                             }
                             
                             break;
