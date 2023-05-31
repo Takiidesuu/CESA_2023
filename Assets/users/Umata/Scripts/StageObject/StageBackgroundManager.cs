@@ -90,14 +90,19 @@ public class StageBackgroundManager : MonoBehaviour
     {
         float SecondComplateRate = (float)Canvas.GetComponent<LightBulbCollector>().LightBulb_active / (float)Canvas.GetComponent<LightBulbCollector>().LightBulb_num;
         //SEÄ¶
-        if(SecondComplateRate - ComplateRate > 0)
+        
+        if (StageDataManager.instance.now_world + 1 != 3)
         {
-            SoundManager.PlaySoundEffect("GearMove");
+            if(SecondComplateRate - ComplateRate > 0)
+            {
+                SoundManager.PlaySoundEffect("GearMove");
+            }
+            else
+            {
+                SoundManager.PlaySoundEffect("ReverseGear");
+            }
         }
-        else
-        {
-            SoundManager.PlaySoundEffect("ReverseGear");
-        }
+        
         for (int i = 0; i < GearObjects.Length; i++)
         {
             GearObjects[i].ChangeGearMode(SecondComplateRate, SecondComplateRate - ComplateRate, AddTime);

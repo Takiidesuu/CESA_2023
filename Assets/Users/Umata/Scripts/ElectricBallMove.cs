@@ -41,7 +41,6 @@ public class ElectricBallMove : MonoBehaviour
     
     LightBulbCollector check_is_cleared;
     
-    private AudioSource audioSource;
     private SoundManager soundManager;
     
     private bool is_dead;
