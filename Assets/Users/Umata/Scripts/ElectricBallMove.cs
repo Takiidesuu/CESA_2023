@@ -108,10 +108,13 @@ public class ElectricBallMove : MonoBehaviour
 
             //Z軸を強制的にPlayer座標に設定
             transform.position = playerpos;
-            
-            if (!soundManager.CheckIsPlaying("Move"))
+
+            if (soundManager != null)
             {
-                soundManager.PlaySoundEffect("Move");
+                if (!soundManager.CheckIsPlaying("Move"))
+                {
+                    soundManager.PlaySoundEffect("Move");
+                }
             }
         }
         else
