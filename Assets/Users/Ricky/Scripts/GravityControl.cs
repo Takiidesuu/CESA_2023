@@ -137,12 +137,10 @@ public class GravityControl : MonoBehaviour
 
                     real_gravity_power = gravity_power;
                     
-                    GameObject.FindObjectOfType<CameraMove>().ShakeCamera(20, 0.2f, this.transform.up);
+                    GameObject.FindObjectOfType<CameraMove>().ShakeCamera(30, 0.2f, false);
                     InputManager.instance.VibrateController(0.2f, 0.5f);
 
                     soundManager.PlaySoundEffect("Strike");
-
-                    Invoke("Shake", 0.05f);
                 }
                 
                 
@@ -166,11 +164,6 @@ public class GravityControl : MonoBehaviour
 
         Vector3 real_grav_dir = gravity_dir * gravity_number * real_gravity_power * increase_gravity_scalar;
         rb.AddForce(real_grav_dir);
-    }
-    
-    void Shake()
-    {
-        GameObject.Find("Main Camera").GetComponent<CameraMove>().ShakeCamera(20, 0.1f, this.transform.up);
     }
 
     private Vector3 CheckFloorAngle()

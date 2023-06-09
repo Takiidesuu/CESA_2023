@@ -69,6 +69,10 @@ public class ScoreManager : MonoBehaviour
 
     int current_world = -1;
     int current_stage = -1;
+    
+    private Rigidbody rb;
+    
+    private float input_delay;
 
     //�A�C�e���ړ��p�X�N���v�g
     ItemMover itemmover;
@@ -116,11 +120,15 @@ public class ScoreManager : MonoBehaviour
         int nowworld = StageDataManager.instance.now_world;
         if (StageDataManager.instance.GetCurrentStageData().Score < Score)
             StageDataManager.instance.worlds[nowworld].stages[nowstage].Score = Score;
+            
+        rb = this.transform.GetChild(0).GetComponent<Rigidbody>();
+        input_delay = 0;
     }
 
     private void Update()
     {
         elapsedtime += Time.deltaTime;
+        
         if (counting)
         {
             if (!time_countup_flg)
@@ -128,16 +136,20 @@ public class ScoreManager : MonoBehaviour
                 timeLeft = Mathf.RoundToInt(elapsedtime / CountUpTime * ClearTime);
                 timeLeft = Mathf.Min(timeLeft, ClearTime);
                 TimeText.text = "" + Mathf.RoundToInt(timeLeft).ToString();
-
-                if (InputManager.instance.press_select)
+                
+                if (rb.velocity == Vector3.zero)
                 {
-                    counting = false;
-                    timeLeft = ClearTime;
-                    TimeText.text = "" + Mathf.RoundToInt(timeLeft).ToString();
-                    score = 0;
-                    elapsedtime = 0;
-                    time_countup_flg = true;
+                    if (InputManager.instance.press_select)
+                    {
+                        counting = false;
+                        timeLeft = ClearTime;
+                        TimeText.text = "" + Mathf.RoundToInt(timeLeft).ToString();
+                        score = 0;
+                        elapsedtime = 0;
+                        time_countup_flg = true;
+                    }
                 }
+                
                 //�J�E���g�A�b�v�I��
                 if (timeLeft >= ClearTime)
                 {
@@ -160,13 +172,15 @@ public class ScoreManager : MonoBehaviour
                 if (int.Parse(HiScoreText.text) < score)
                     HiScoreText.text = score.ToString();
 
-                if (InputManager.instance.press_select)
+                if (rb.velocity == Vector3.zero)
                 {
-                    counting = true;
-                    ScoreText.text = "" + Score.ToString();
-                    if (int.Parse(HiScoreText.text) < score)
-                        HiScoreText.text = score.ToString();
-                    score_countup_flg = true;
+                    if (InputManager.instance.press_select)
+                    {
+                        ScoreText.text = "" + Score.ToString();
+                        if (int.Parse(HiScoreText.text) < score)
+                            HiScoreText.text = score.ToString();
+                        score_countup_flg = true;
+                    }
                 }
                 if (score >= Score)
                 {
@@ -211,46 +225,51 @@ public class ScoreManager : MonoBehaviour
                 }
                 if (!IsBlackPanel)
                 {
-                    if (InputManager.instance.press_select)
+                    if (input_delay > 0.6f)
                     {
-
-                        current_world = StageDataManager.instance.now_world;
-                        current_stage = StageDataManager.instance.now_stage;
-                        
-
-                        bool change_to_select = false;
-
-                        if (current_stage < 4)
+                        if (InputManager.instance.press_select)
                         {
-                            current_stage++;
-                        }
-                        else
-                        {
-                            //if (current_world < 3)
-                            //{
-                                current_world++;
-                                current_stage = 0;
-                            //}
-                            //else
-                            //{
-                            change_to_select = true;
-                            //}
-                        }
+                            current_world = StageDataManager.instance.now_world;
+                            current_stage = StageDataManager.instance.now_stage;
 
-                        if (change_to_select)
-                        {
-                            world_to_load = "StageSelect";
-                        }
-                        else
-                        {
-                            world_to_load = "Stage" + (current_world + 1) + "-" + (current_stage + 1);
-                        }
+                            bool change_to_select = false;
 
-                        IsBlackPanel = true;
-                        MainCamera.targetTexture = renderTexture;
-                        rawImage.enabled = false;
-                        startTime = Time.time;
-                        postProcessVolume.SetActive(true);
+                            if (current_stage < 4)
+                            {
+                                current_stage++;
+                            }
+                            else
+                            {
+                                //if (current_world < 3)
+                                //{
+                                    current_world++;
+                                    current_stage = 0;
+                                //}
+                                //else
+                                //{
+                                change_to_select = true;
+                                //}
+                            }
+
+                            if (change_to_select)
+                            {
+                                world_to_load = "StageSelect";
+                            }
+                            else
+                            {
+                                world_to_load = "Stage" + (current_world + 1) + "-" + (current_stage + 1);
+                            }
+
+                            IsBlackPanel = true;
+                            MainCamera.targetTexture = renderTexture;
+                            rawImage.enabled = false;
+                            startTime = Time.time;
+                            postProcessVolume.SetActive(true);
+                        }
+                    }
+                    else
+                    {
+                        input_delay += Time.deltaTime;
                     }
                 }
             }

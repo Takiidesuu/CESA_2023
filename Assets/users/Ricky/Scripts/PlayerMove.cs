@@ -373,7 +373,7 @@ public class PlayerMove : MonoBehaviour
             circle_color.startSize = 8.0f * (smash_power_num / smash_threshold);
             
             InputManager.instance.VibrateController(Time.deltaTime, 0.1f);
-            camera_obj.GetComponent<CameraMove>().ShakeCamera(0.1f, Time.deltaTime, this.transform.up);
+            camera_obj.GetComponent<CameraMove>().ShakeCamera(0.1f, Time.deltaTime, false);
             
             break;
             
@@ -546,7 +546,7 @@ public class PlayerMove : MonoBehaviour
         
         float hit_stop_time = 0.15f * (smash_power_num / smash_max_time);
         
-        camera_obj.GetComponent<CameraMove>().ShakeCamera(0.5f, hit_stop_time, this.transform.up);
+        camera_obj.GetComponent<CameraMove>().ShakeCamera(1, hit_stop_time, this.transform.up);
         InputManager.instance.VibrateController(hit_stop_time, 0.3f);
     }
 
@@ -616,7 +616,7 @@ public class PlayerMove : MonoBehaviour
         
         float vibration_dur = 0.05f + (smash_power_num / smash_max_time) * 0.2f;
         
-        camera_obj.GetComponent<CameraMove>().ShakeCamera(smash_power_num / 2.0f * camera_vibration, vibration_dur, this.transform.up);
+        camera_obj.GetComponent<CameraMove>().ShakeCamera(smash_power_num * camera_vibration * 2, vibration_dur, this.transform.up);
         InputManager.instance.VibrateController(vibration_dur, (0.1f * smash_vibration) + (smash_power_num / smash_max_time * 0.5f));
     }
 

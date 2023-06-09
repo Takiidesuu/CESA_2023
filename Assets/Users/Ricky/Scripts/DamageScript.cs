@@ -62,6 +62,7 @@ public class DamageScript : MonoBehaviour
                     if (this.gameObject.tag == "Player")
                     {
                         this.GetComponent<PlayerMove>().TookDamage(invincible_duration * 1.2f);
+                        Camera.main.GetComponent<CameraMove>().ShakeCamera(10, Time.deltaTime, true);
                         
                         prev_angle = this.transform.eulerAngles.y;
                         this.transform.eulerAngles = new Vector3(this.transform.eulerAngles.x, 90.0f, this.transform.eulerAngles.z);
