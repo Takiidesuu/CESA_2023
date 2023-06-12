@@ -282,6 +282,8 @@ public class PlayerMove : MonoBehaviour
             {
                 anim.SetBool("isWalking", false);
             }
+            
+            anim.SetBool("isOnAir", !is_grounded);
         }
     }
     

@@ -229,6 +229,8 @@ public class ScoreManager : MonoBehaviour
                     {
                         if (InputManager.instance.press_select)
                         {
+                            GameDataManager.instance.SaveGame();
+                            
                             current_world = StageDataManager.instance.now_world;
                             current_stage = StageDataManager.instance.now_stage;
 

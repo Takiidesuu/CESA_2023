@@ -277,7 +277,7 @@ public class GameOverManager : MonoBehaviour
     {
         var img = obj_to_change.GetComponent<Image>();
         var img_color = img.color;
-        img_color.a = Mathf.MoveTowards(img_color.a, 255.0f, Time.unscaledDeltaTime * 10.0f);
+        img_color.a = Mathf.MoveTowards(img_color.a, 1.0f, Time.unscaledDeltaTime);
         img.color = img_color;
     }
     

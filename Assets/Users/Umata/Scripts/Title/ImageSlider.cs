@@ -40,14 +40,12 @@ public class ImageSlider : MonoBehaviour
 
     void Start()
     {
-       
         init_positions = new float[images.Length];
         for (int i = 0; i < images.Length; i++)
         {
             init_positions[i] = images[i].rectTransform.anchoredPosition.x;
         }
 
-       
         SetSelectedButton(select_button);
 
         soundManager = GetComponent<SoundManager>();
@@ -57,7 +55,6 @@ public class ImageSlider : MonoBehaviour
 
     void Update()
     {
-       
         if (InputManager.instance.press_select)
         {
             soundManager.PlaySoundEffect("OK");
@@ -72,7 +69,6 @@ public class ImageSlider : MonoBehaviour
 
             Invoke("ChangeScene", 1.5f);
         }
-       
         //続き無いためコメントアウト
         //if (!is_firsttime)
         //{
@@ -86,16 +82,34 @@ public class ImageSlider : MonoBehaviour
         //    color.a = 0.5f;
         //    images[1].color = color;
         //}
+        
+        if (!GameDataManager.instance.CheckForExistingFile())
+        {
+            Color nowColor = images[1].color;
+            nowColor.a = 0.5f;
+            images[1].color = nowColor;
+        }
+        else
+        {
+            Color nowColor = images[1].GetComponent<Image>().color;
+            nowColor.a = 1.0f;
+            images[1].GetComponent<Image>().color = nowColor;
+        }
 
         timeSinceSelect += Time.deltaTime;
 
-       
         if (canSelect && InputManager.instance.GetMenuMoveFloat() < 0)
         {
             //soundManager.PlaySoundEffect("Cursor");
             timeSinceSelect = 0f;
             canSelect = false;
             select_button--;
+            
+            if (select_button == 1 && !GameDataManager.instance.CheckForExistingFile())
+            {
+                select_button--;
+            }
+            
             if (select_button < 0)
             {
                 select_button = images.Length - 1;
@@ -107,13 +121,18 @@ public class ImageSlider : MonoBehaviour
             timeSinceSelect = 0f;
             canSelect = false;
             select_button++;
+            
+            if (select_button == 1 && !GameDataManager.instance.CheckForExistingFile())
+            {
+                select_button++;
+            }
+            
             if (select_button >= images.Length)
             {
                 select_button = 0;
             }
         }
 
-       
         if (timeSinceSelect >= select_delay)
         {
             canSelect = true;
@@ -122,12 +141,10 @@ public class ImageSlider : MonoBehaviour
         SetSelectedButton(select_button);
     }
 
-   
     void SetSelectedButton(int index)
     {
         for (int i = 0; i < images.Length; i++)
         {
-          
             float x = init_positions[i];
             if (i == index)
             {
@@ -141,15 +158,17 @@ public class ImageSlider : MonoBehaviour
         }
     }
 
-     void ChangeScene()
+    void ChangeScene()
     {
         switch (select_button)
         {
             case 0:
                 SceneManager.LoadScene(scene_start_name);
+                GameDataManager.instance.ResetGame();
                 break;
             case 1:
                 SceneManager.LoadScene(scene_continue_name);
+                GameDataManager.instance.LoadGame();
                 break;
 
             case 2:
