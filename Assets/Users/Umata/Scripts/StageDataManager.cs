@@ -71,4 +71,19 @@ public class StageDataManager : MonoBehaviour
             now_stage = stage;
         }
     }
+    
+    public void ResetData()
+    {
+        for (int i = 0; i < worlds.Length; i++)
+        {
+            for (int a = 0; a < worlds[i].stages.Length; a++)
+            {
+                worlds[i].stages[a].rank_a_border = 0;
+                worlds[i].stages[a].rank_b_border = 0;
+                worlds[i].stages[a].rank_c_border = 0;
+                worlds[i].stages[a].rank_s_border = 0;
+                worlds[i].stages[a].Score = 0;
+            }
+        }
+    }
 }

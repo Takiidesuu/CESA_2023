@@ -78,6 +78,7 @@ public class GameDataManager : MonoBehaviour
         if (CheckForExistingFile())
         {
             File.Delete(Application.persistentDataPath + "/SaveData" + current_save_slot + ".dat");
+            StageDataManager.instance.ResetData();
             Debug.Log("Data reset complete!");
         }
         else
