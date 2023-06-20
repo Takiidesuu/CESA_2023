@@ -458,6 +458,8 @@ public class PlayerMove : MonoBehaviour
             ground_obj_parent = ground_obj.transform.root.gameObject;
             deform_stage = ground_obj_parent.GetComponent<DeformStage>();
             min_max_deform = ground_obj_parent.GetComponent<MinMaxDeform>();
+            
+            anim.SetBool("afterSmashState", false);
         }
         else
         {
@@ -620,6 +622,8 @@ public class PlayerMove : MonoBehaviour
         
         camera_obj.GetComponent<CameraMove>().ShakeCamera(smash_power_num * camera_vibration * 2, vibration_dur, this.transform.up);
         InputManager.instance.VibrateController(vibration_dur, (0.1f * smash_vibration) + (smash_power_num / smash_max_time * 0.5f));
+        
+        anim.SetBool("afterSmashState", true);
     }
 
     public void ResetAnim()

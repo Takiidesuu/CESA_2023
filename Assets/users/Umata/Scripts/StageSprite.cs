@@ -76,7 +76,7 @@ public class StageSprite : MonoBehaviour
             rank_B_image.gameObject.SetActive(false);
             rank_C_image.gameObject.SetActive(true);
         }
-        else if (CurrentScore < rank_C)
+        else if (CurrentScore < rank_C || CurrentScore <= 0)
         {
             rank_S_image.gameObject.SetActive(false);
             rank_A_image.gameObject.SetActive(false);
