@@ -69,7 +69,7 @@ public class ImageSlider : MonoBehaviour
 
             Invoke("ChangeScene", 1.5f);
         }
-        //‘±‚«–³‚¢‚½‚ßƒRƒƒ“ƒgƒAƒEƒg
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ßƒRï¿½ï¿½ï¿½ï¿½ï¿½gï¿½Aï¿½Eï¿½g
         //if (!is_firsttime)
         //{
         //    Color color = images[1].color;
@@ -173,6 +173,10 @@ public class ImageSlider : MonoBehaviour
 
             case 2:
                 SceneManager.LoadScene(scene_option_name);
+                break;
+
+            case 3:
+                Application.Quit();
                 break;
         }
     }
