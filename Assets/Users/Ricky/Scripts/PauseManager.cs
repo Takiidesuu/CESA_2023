@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEditor.EventSystems;
 
 public class PauseManager : MonoBehaviour
 {
@@ -17,7 +18,8 @@ public class PauseManager : MonoBehaviour
     }
     
     public static PauseManager instance;
-    
+    public GameObject Optionwindow;
+
     public bool pause_flg {get; private set;}
     
     private MENU_OPTION selected_option;
@@ -63,6 +65,7 @@ public class PauseManager : MonoBehaviour
         soundManager = GetComponent<SoundManager>();
         GetComponent<AudioSource>().ignoreListenerPause = true;
         
+
         switch_scene = false;
     }
 
@@ -105,20 +108,30 @@ public class PauseManager : MonoBehaviour
                 }
                 else
                 {
+                    int j = 0;
                     foreach (Transform child in transform)
                     {
+                        if (j > 1) break;
                         child.gameObject.SetActive(true);
+                        j++;
                     }
-                    
+
                     if (InputManager.instance.press_start || InputManager.instance.press_cancel)
                     {
-                        pause_flg = false;
-                        if (GameObject.FindObjectOfType<AudioManager>())
+                        if (Optionwindow.activeSelf)
                         {
-                            GameObject.FindObjectOfType<AudioManager>().volume_to_use = store_bgm_volume;
+                            Optionwindow.SetActive(false);
+                            soundManager.PlaySoundEffect("Cancel");
                         }
-                        soundManager.PlaySoundEffect("Cancel");
-                        Time.timeScale = 1.0f;
+                        else {
+                            pause_flg = false;
+                            if (GameObject.FindObjectOfType<AudioManager>())
+                            {
+                                GameObject.FindObjectOfType<AudioManager>().volume_to_use = store_bgm_volume;
+                            }
+                            soundManager.PlaySoundEffect("Cancel");
+                            Time.timeScale = 1.0f;
+                        }
                     }
                     
                     selected_option = GetNextMenu(InputManager.instance.GetMenuMoveFloat());
@@ -159,7 +172,8 @@ public class PauseManager : MonoBehaviour
                             }
                             break;
                             case MENU_OPTION.OPTION:
-                            
+                                Optionwindow.SetActive(true);
+
                             break;
                             case MENU_OPTION.STAGESELECT:
                             switch_scene = true;
@@ -197,56 +211,59 @@ public class PauseManager : MonoBehaviour
     MENU_OPTION GetNextMenu(int iinput)
     {
         MENU_OPTION new_menu = selected_option;
-        
-        if (iinput > 0)
+
+        if (!Optionwindow.activeSelf)
         {
-            soundManager.PlaySoundEffect("Cursor");
-            
-            switch (selected_option)
+            if (iinput > 0)
             {
-                case MENU_OPTION.RESUME:
-                new_menu = MENU_OPTION.RETRY;
-                break;
-                case MENU_OPTION.RETRY:
-                new_menu = MENU_OPTION.OPTION;
-                break;
-                case MENU_OPTION.OPTION:
-                new_menu = MENU_OPTION.STAGESELECT;
-                break;
-                case MENU_OPTION.STAGESELECT:
-                new_menu = MENU_OPTION.TITLE;
-                break;
-                case MENU_OPTION.TITLE:
-                new_menu = MENU_OPTION.RESUME;
-                break;
+                soundManager.PlaySoundEffect("Cursor");
+
+                switch (selected_option)
+                {
+                    case MENU_OPTION.RESUME:
+                        new_menu = MENU_OPTION.RETRY;
+                        break;
+                    case MENU_OPTION.RETRY:
+                        new_menu = MENU_OPTION.OPTION;
+                        break;
+                    case MENU_OPTION.OPTION:
+                        new_menu = MENU_OPTION.STAGESELECT;
+                        break;
+                    case MENU_OPTION.STAGESELECT:
+                        new_menu = MENU_OPTION.TITLE;
+                        break;
+                    case MENU_OPTION.TITLE:
+                        new_menu = MENU_OPTION.RESUME;
+                        break;
+                }
             }
-        }
-        else if (iinput < 0)
-        {
-            soundManager.PlaySoundEffect("Cursor");
-            
-            switch (selected_option)
+            else if (iinput < 0)
             {
-                case MENU_OPTION.RESUME:
-                new_menu = MENU_OPTION.TITLE;
-                break;
-                case MENU_OPTION.RETRY:
-                new_menu = MENU_OPTION.RESUME;
-                break;
-                case MENU_OPTION.OPTION:
-                new_menu = MENU_OPTION.RETRY;
-                break;
-                case MENU_OPTION.STAGESELECT:
-                new_menu = MENU_OPTION.OPTION;
-                break;
-                case MENU_OPTION.TITLE:
-                new_menu = MENU_OPTION.STAGESELECT;
-                break;
+                soundManager.PlaySoundEffect("Cursor");
+
+                switch (selected_option)
+                {
+                    case MENU_OPTION.RESUME:
+                        new_menu = MENU_OPTION.TITLE;
+                        break;
+                    case MENU_OPTION.RETRY:
+                        new_menu = MENU_OPTION.RESUME;
+                        break;
+                    case MENU_OPTION.OPTION:
+                        new_menu = MENU_OPTION.RETRY;
+                        break;
+                    case MENU_OPTION.STAGESELECT:
+                        new_menu = MENU_OPTION.OPTION;
+                        break;
+                    case MENU_OPTION.TITLE:
+                        new_menu = MENU_OPTION.STAGESELECT;
+                        break;
+                }
             }
-        }
-        else
-        {
-            new_menu = selected_option;
+            else
+            {
+                new_menu = selected_option;
+            }
         }
         
         return new_menu;

@@ -27,6 +27,8 @@ public class ImageSlider : MonoBehaviour
     
     public bool transitioning {get; private set;}
 
+    public GameObject OptionWindow;
+
     private SoundManager soundManager;
 
     [SerializeField] Color color1 = Color.white, color2 = Color.white;
@@ -55,90 +57,115 @@ public class ImageSlider : MonoBehaviour
 
     void Update()
     {
-        if (InputManager.instance.press_select)
+        if (OptionWindow.activeSelf)
         {
-            soundManager.PlaySoundEffect("OK");
-
-            group.blocksRaycasts = false;
-            fade.FadeIn(1, () =>
+            if (InputManager.instance.press_cancel)
             {
-
-            });
-
-            transitioning = true;
-
-            Invoke("ChangeScene", 1.5f);
-        }
-        //続き無いためコメントアウト
-        //if (!is_firsttime)
-        //{
-        //    Color color = images[1].color;
-        //    color.a = 1;
-        //    images[1].color = color;
-        //}
-        //else
-        //{
-        //    Color color = images[1].color;
-        //    color.a = 0.5f;
-        //    images[1].color = color;
-        //}
-        
-        if (!GameDataManager.instance.CheckForExistingFile())
-        {
-            Color nowColor = images[1].color;
-            nowColor.a = 0.5f;
-            images[1].color = nowColor;
+                OptionWindow.SetActive(false);
+            }
         }
         else
         {
-            Color nowColor = images[1].GetComponent<Image>().color;
-            nowColor.a = 1.0f;
-            images[1].GetComponent<Image>().color = nowColor;
-        }
-
-        timeSinceSelect += Time.deltaTime;
-
-        if (canSelect && InputManager.instance.GetMenuMoveFloat() < 0)
-        {
-            //soundManager.PlaySoundEffect("Cursor");
-            timeSinceSelect = 0f;
-            canSelect = false;
-            select_button--;
-            
-            if (select_button == 1 && !GameDataManager.instance.CheckForExistingFile())
+            if (InputManager.instance.press_select)
             {
+                soundManager.PlaySoundEffect("OK");
+
+                if (select_button != 2)
+                {
+                    group.blocksRaycasts = false;
+                    fade.FadeIn(1, () =>
+                    {
+
+                    });
+
+                    transitioning = true;
+
+                    Invoke("ChangeScene", 1.5f);
+                }
+                else
+                {
+                    OptionWindow.SetActive(true);
+                }
+            }
+            //続き無いためコメントアウト
+            //if (!is_firsttime)
+            //{
+            //    Color color = images[1].color;
+            //    color.a = 1;
+            //    images[1].color = color;
+            //}
+            //else
+            //{
+            //    Color color = images[1].color;
+            //    color.a = 0.5f;
+            //    images[1].color = color;
+            //}
+            if (InputManager.instance.press_cancel)
+            {
+//#if UNITY_EDITOR
+//                UnityEditor.EditorApplication.isPlaying = false;
+//#else
+//    Application.Quit();
+//#endif
+            }
+
+            if (!GameDataManager.instance.CheckForExistingFile())
+            {
+                Color nowColor = images[1].color;
+                nowColor.a = 0.5f;
+                images[1].color = nowColor;
+            }
+            else
+            {
+                Color nowColor = images[1].GetComponent<Image>().color;
+                nowColor.a = 1.0f;
+                images[1].GetComponent<Image>().color = nowColor;
+            }
+
+            timeSinceSelect += Time.deltaTime;
+
+            if (canSelect && InputManager.instance.GetMenuMoveFloat() < 0)
+            {
+                //soundManager.PlaySoundEffect("Cursor");
+                timeSinceSelect = 0f;
+                canSelect = false;
                 select_button--;
+
+                if (select_button == 1 && !GameDataManager.instance.CheckForExistingFile())
+                {
+                    select_button--;
+                }
+
+                if (select_button < 0)
+                {
+                    select_button = images.Length - 1;
+                }
             }
-            
-            if (select_button < 0)
+            else if (canSelect && InputManager.instance.GetMenuMoveFloat() > 0)
             {
-                select_button = images.Length - 1;
-            }
-        }
-        else if (canSelect && InputManager.instance.GetMenuMoveFloat() > 0)
-        {
-            //soundManager.PlaySoundEffect("Cursor");
-            timeSinceSelect = 0f;
-            canSelect = false;
-            select_button++;
-            
-            if (select_button == 1 && !GameDataManager.instance.CheckForExistingFile())
-            {
+                //soundManager.PlaySoundEffect("Cursor");
+                timeSinceSelect = 0f;
+                canSelect = false;
                 select_button++;
+
+                if (select_button == 1 && !GameDataManager.instance.CheckForExistingFile())
+                {
+                    select_button++;
+                }
+
+                if (select_button >= images.Length)
+                {
+                    select_button = 0;
+                }
             }
-            
-            if (select_button >= images.Length)
+
+            if (timeSinceSelect >= select_delay)
             {
-                select_button = 0;
+                canSelect = true;
             }
-        }
 
-        if (timeSinceSelect >= select_delay)
-        {
-            canSelect = true;
+            SetSelectedButton(select_button);
         }
-
-        SetSelectedButton(select_button);
     }
 
     void SetSelectedButton(int index)
@@ -172,7 +199,8 @@ public class ImageSlider : MonoBehaviour
                 break;
 
             case 2:
-                SceneManager.LoadScene(scene_option_name);
+                OptionWindow.SetActive(true);
+                //SceneManager.LoadScene(scene_option_name);
                 break;
         }
     }

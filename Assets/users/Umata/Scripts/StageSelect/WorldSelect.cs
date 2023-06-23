@@ -234,6 +234,12 @@ public class WorldSelect : MonoBehaviour
                     selectingWorld = true;
                     soundManager.PlaySoundEffect("Cancel");
                 }
+                else
+                {
+                    //ここにタイトルのフェードをほしい
+                    soundManager.PlaySoundEffect("Cancel");
+                    SceneManager.LoadScene("Title");
+                }
             }
         }
 
