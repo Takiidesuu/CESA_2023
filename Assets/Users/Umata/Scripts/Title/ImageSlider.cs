@@ -61,8 +61,37 @@ public class ImageSlider : MonoBehaviour
         {
             if (InputManager.instance.press_cancel)
             {
+<<<<<<< HEAD
                 OptionWindow.SetActive(false);
             }
+=======
+
+            });
+
+            transitioning = true;
+
+            Invoke("ChangeScene", 1.5f);
+        }
+        //�����������߃R�����g�A�E�g
+        //if (!is_firsttime)
+        //{
+        //    Color color = images[1].color;
+        //    color.a = 1;
+        //    images[1].color = color;
+        //}
+        //else
+        //{
+        //    Color color = images[1].color;
+        //    color.a = 0.5f;
+        //    images[1].color = color;
+        //}
+        
+        if (!GameDataManager.instance.CheckForExistingFile())
+        {
+            Color nowColor = images[1].color;
+            nowColor.a = 0.5f;
+            images[1].color = nowColor;
+>>>>>>> Ricky
         }
         else
         {
@@ -201,6 +230,10 @@ public class ImageSlider : MonoBehaviour
             case 2:
                 OptionWindow.SetActive(true);
                 //SceneManager.LoadScene(scene_option_name);
+                break;
+
+            case 3:
+                Application.Quit();
                 break;
         }
     }
