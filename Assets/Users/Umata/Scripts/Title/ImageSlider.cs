@@ -61,37 +61,8 @@ public class ImageSlider : MonoBehaviour
         {
             if (InputManager.instance.press_cancel)
             {
-<<<<<<< HEAD
                 OptionWindow.SetActive(false);
             }
-=======
-
-            });
-
-            transitioning = true;
-
-            Invoke("ChangeScene", 1.5f);
-        }
-        //ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩﬂÉRÔøΩÔøΩÔøΩÔøΩÔøΩgÔøΩAÔøΩEÔøΩg
-        //if (!is_firsttime)
-        //{
-        //    Color color = images[1].color;
-        //    color.a = 1;
-        //    images[1].color = color;
-        //}
-        //else
-        //{
-        //    Color color = images[1].color;
-        //    color.a = 0.5f;
-        //    images[1].color = color;
-        //}
-        
-        if (!GameDataManager.instance.CheckForExistingFile())
-        {
-            Color nowColor = images[1].color;
-            nowColor.a = 0.5f;
-            images[1].color = nowColor;
->>>>>>> Ricky
         }
         else
         {
@@ -99,7 +70,7 @@ public class ImageSlider : MonoBehaviour
             {
                 soundManager.PlaySoundEffect("OK");
 
-                if (select_button != 2)
+                if (select_button < 2)
                 {
                     group.blocksRaycasts = false;
                     fade.FadeIn(1, () =>
@@ -111,12 +82,16 @@ public class ImageSlider : MonoBehaviour
 
                     Invoke("ChangeScene", 1.5f);
                 }
-                else
+                else if (select_button == 2)
                 {
                     OptionWindow.SetActive(true);
                 }
+                else
+                {
+                    Invoke("ChangeScene", 0);
+                }
             }
-            //ë±Ç´ñ≥Ç¢ÇΩÇﬂÉRÉÅÉìÉgÉAÉEÉg
+            //Á∂ö„ÅçÁÑ°„ÅÑ„Åü„ÇÅ„Ç≥„É°„É≥„Éà„Ç¢„Ç¶„Éà
             //if (!is_firsttime)
             //{
             //    Color color = images[1].color;
@@ -229,9 +204,7 @@ public class ImageSlider : MonoBehaviour
 
             case 2:
                 OptionWindow.SetActive(true);
-                //SceneManager.LoadScene(scene_option_name);
                 break;
-
             case 3:
                 Application.Quit();
                 break;
