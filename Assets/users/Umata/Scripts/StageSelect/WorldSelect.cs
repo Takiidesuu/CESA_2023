@@ -84,6 +84,12 @@ public class WorldSelect : MonoBehaviour
     AsyncOperation asyncOperation;//進捗チェック
     private SoundManager soundManager;  //サウンドマネージャー
 
+    [SerializeField]
+    CanvasGroup group = null;
+
+    [SerializeField]
+    Fade fade = null;
+
     void Start()
     {
         soundManager = GetComponent<SoundManager>();
@@ -237,8 +243,13 @@ public class WorldSelect : MonoBehaviour
                 else
                 {
                     //ここにタイトルのフェードをほしい
+                    group.blocksRaycasts = false;
+                    fade.FadeIn(1, () =>
+                    {
+
+                    });
                     soundManager.PlaySoundEffect("Cancel");
-                    SceneManager.LoadScene("Title");
+                    Invoke("ChangeTitleScene", 1.5f);
                 }
             }
         }
@@ -447,5 +458,10 @@ public class WorldSelect : MonoBehaviour
         
         currentStage = (currentStage + next_id) % numStages;
         currentStage = Mathf.Clamp(currentStage, 0, 9999);
+    }
+
+    void ChangeTitleScene()
+    {
+        SceneManager.LoadScene("Title");
     }
 }
