@@ -21,13 +21,14 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: DoctorMat
-  m_Shader: {fileID: -6465566751694194690, guid: da0cb9ead95000540bf711121dcb48aa, type: 3}
+  m_Shader: {fileID: 4800000, guid: fe5a70800e2ad1848b8024e258093d4b, type: 3}
   m_ShaderKeywords: _EMISSION _NORMALMAP
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: 2003
-  stringTagMap: {}
+  stringTagMap:
+    RenderType: Opaque
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
@@ -123,8 +124,9 @@ Material:
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
-    - _QueueOffset: 0
+    - _QueueOffset: 3
     - _ReceiveShadows: 1
+    - _SampleGI: 0
     - _Shininess: 0
     - _Smoothness: 0.5
     - _SmoothnessSource: 0
@@ -137,8 +139,8 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - Color_c1863b8b78064e65b9009ef3beb10582: {r: 2.6390157, g: 2.6390157, b: 2.6390157, a: 0}
-    - Color_c7e3d016121d48dc8ed23591e980b40e: {r: 1, g: 1, b: 1, a: 1}
-    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - Color_c7e3d016121d48dc8ed23591e980b40e: {r: 0.022097087, g: 0.022097087, b: 0.022097087, a: 1}
+    - _BaseColor: {r: 8.47419, g: 8.47419, b: 8.47419, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
