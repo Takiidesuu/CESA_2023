@@ -1,0 +1,81 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5787321381508948698
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5787321381508948676}
+  - component: {fileID: 5787321381508948699}
+  m_Layer: 0
+  m_Name: LoadSceneFade
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5787321381508948676
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5787321381508948698}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 535.6946, y: 383.96368, z: 103.953125}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5787321381508948699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5787321381508948698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c3fdfabdf1cb694d9b74fbc5f8f4697, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canvas: {fileID: 0}
+  WorldTextures:
+  - StageTextures:
+    - {fileID: 2800000, guid: a4c2dfa0b19290b44b06930bfb7f722a, type: 3}
+    - {fileID: 2800000, guid: 38b201ba7fdd63e4a91f40bc91ddd3b6, type: 3}
+    - {fileID: 2800000, guid: 9b1b7bb5127d7454bbcb7b353777014f, type: 3}
+    - {fileID: 2800000, guid: 95117eaa94a4e0241942d0762d317c5c, type: 3}
+    - {fileID: 2800000, guid: 1e70ab3de41729249ab8708600fe7fb6, type: 3}
+  - StageTextures:
+    - {fileID: 2800000, guid: 836d5bf4850954642982df62bb7713e8, type: 3}
+    - {fileID: 2800000, guid: b2c2d46a30c8ebb4eb84dc5dac7d6050, type: 3}
+    - {fileID: 2800000, guid: a6aa2ed3c5e63454783a81969213fcf2, type: 3}
+    - {fileID: 2800000, guid: c45583e40a5e16a44abe4b168f0053e3, type: 3}
+    - {fileID: 2800000, guid: 8da0f5dcb959caa4bb4c9b3ffcf2fdef, type: 3}
+  - StageTextures:
+    - {fileID: 2800000, guid: 18ce3de3e22eff543965a82fade0d11d, type: 3}
+    - {fileID: 2800000, guid: 16d0255c2e711ea408a58a393966e74d, type: 3}
+    - {fileID: 2800000, guid: 279cea075a7288c45bf516397c4ffbfc, type: 3}
+    - {fileID: 2800000, guid: 3f50814e8ee66eb41aef7f46a67076e0, type: 3}
+    - {fileID: 2800000, guid: a001a3b47aed71d45a8437234095d712, type: 3}
+  - StageTextures:
+    - {fileID: 2800000, guid: 0c8b942d793568a41a9ec24fe5a152d7, type: 3}
+    - {fileID: 2800000, guid: 20b71da6776de5b45a7eb39b22a6bd56, type: 3}
+    - {fileID: 2800000, guid: d3b4b5d890ff1f14f9e3669684a014fb, type: 3}
+    - {fileID: 2800000, guid: d418e4910056b744aa36da434497a36a, type: 3}
+    - {fileID: 2800000, guid: 01a6a592897a78540b98fdc70c9da327, type: 3}
+  - StageTextures:
+    - {fileID: 2800000, guid: 867a0b599b8c2a54595f672a6f43131a, type: 3}
+  display: 0
+  rows: 3
+  columns: 5
+  MoveTime: 1
+  CreatTime: 0.1
+  ShinePower: 0.05
+  DarkTime: 10
+  GlowMat: {fileID: 2100000, guid: 36eb8becf1f102d41b0b0c02400f380b, type: 2}

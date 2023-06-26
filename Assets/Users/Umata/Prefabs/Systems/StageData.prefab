@@ -1,0 +1,165 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7909344435772032572
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7909344435772032574}
+  - component: {fileID: 7909344435772032573}
+  - component: {fileID: 4979875347084455517}
+  m_Layer: 0
+  m_Name: StageData
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7909344435772032574
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7909344435772032572}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 17.924738, y: 24.671019, z: -114.6201}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7909344435772032573
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7909344435772032572}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 301a4e112891c694b8aed7ec46d5ab88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  worlds:
+  - stages:
+    - rank_s_border: 5000
+      rank_a_border: 4500
+      rank_b_border: 4000
+      rank_c_border: 0
+      Score: 0
+    - rank_s_border: 4750
+      rank_a_border: 4500
+      rank_b_border: 4250
+      rank_c_border: 0
+      Score: 0
+    - rank_s_border: 5150
+      rank_a_border: 5000
+      rank_b_border: 4750
+      rank_c_border: 0
+      Score: 0
+    - rank_s_border: 5000
+      rank_a_border: 4500
+      rank_b_border: 4000
+      rank_c_border: 0
+      Score: 0
+    - rank_s_border: 5000
+      rank_a_border: 4500
+      rank_b_border: 4000
+      rank_c_border: 0
+      Score: 0
+  - stages:
+    - rank_s_border: 5000
+      rank_a_border: 4750
+      rank_b_border: 4500
+      rank_c_border: 0
+      Score: 0
+    - rank_s_border: 4800
+      rank_a_border: 4500
+      rank_b_border: 4200
+      rank_c_border: 0
+      Score: 0
+    - rank_s_border: 5000
+      rank_a_border: 4600
+      rank_b_border: 4100
+      rank_c_border: 0
+      Score: 0
+    - rank_s_border: 4500
+      rank_a_border: 4000
+      rank_b_border: 3000
+      rank_c_border: 0
+      Score: 0
+    - rank_s_border: 4000
+      rank_a_border: 3500
+      rank_b_border: 3000
+      rank_c_border: 0
+      Score: 0
+  - stages:
+    - rank_s_border: 5000
+      rank_a_border: 4750
+      rank_b_border: 4500
+      rank_c_border: 0
+      Score: 0
+    - rank_s_border: 5000
+      rank_a_border: 4500
+      rank_b_border: 3000
+      rank_c_border: 0
+      Score: 0
+    - rank_s_border: 4250
+      rank_a_border: 3750
+      rank_b_border: 3250
+      rank_c_border: 0
+      Score: 0
+    - rank_s_border: 5000
+      rank_a_border: 4250
+      rank_b_border: 3750
+      rank_c_border: 0
+      Score: 0
+    - rank_s_border: 4000
+      rank_a_border: 3000
+      rank_b_border: 2000
+      rank_c_border: 0
+      Score: 0
+  - stages:
+    - rank_s_border: 4500
+      rank_a_border: 3500
+      rank_b_border: 2500
+      rank_c_border: 0
+      Score: 0
+    - rank_s_border: 4500
+      rank_a_border: 4000
+      rank_b_border: 3500
+      rank_c_border: 0
+      Score: 0
+    - rank_s_border: 5000
+      rank_a_border: 4750
+      rank_b_border: 4500
+      rank_c_border: 0
+      Score: 0
+    - rank_s_border: 4500
+      rank_a_border: 4000
+      rank_b_border: 3500
+      rank_c_border: 0
+      Score: 0
+    - rank_s_border: 3500
+      rank_a_border: 3000
+      rank_b_border: 2500
+      rank_c_border: 0
+      Score: 0
+  now_world: 0
+  now_stage: 0
+--- !u!114 &4979875347084455517
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7909344435772032572}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21a60cb47298b3340b548577ab60a657, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
