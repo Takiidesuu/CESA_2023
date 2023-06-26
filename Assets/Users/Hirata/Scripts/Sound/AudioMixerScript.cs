@@ -25,9 +25,9 @@ public class AudioMixerScript : MonoBehaviour
         audioMixer.GetFloat("Master", out float master);
         audioMixer.GetFloat("BGM", out float bgm);
         audioMixer.GetFloat("SE", out float se);
-        Master_Slider.value = 100 * ConvertDbtoVolume(master);
-        BGM_Slider.value = 100 * ConvertDbtoVolume(bgm);
-        SE_Slider.value = 100 * ConvertDbtoVolume(se);
+        Master_Slider.value = ConvertDbtoVolume(master);
+        BGM_Slider.value = ConvertDbtoVolume(bgm);
+        SE_Slider.value = ConvertDbtoVolume(se);
     }
 
     void Update()
@@ -37,9 +37,9 @@ public class AudioMixerScript : MonoBehaviour
             audioMixer.GetFloat("Master", out float master);
             audioMixer.GetFloat("BGM", out float bgm);
             audioMixer.GetFloat("SE", out float se);
-            Master_Slider.value = 100 * ConvertDbtoVolume(master);
-            BGM_Slider.value = 100 * ConvertDbtoVolume(bgm);
-            SE_Slider.value = 100 * ConvertDbtoVolume(se);
+            Master_Slider.value = ConvertDbtoVolume(master);
+            BGM_Slider.value =  ConvertDbtoVolume(bgm);
+            SE_Slider.value = ConvertDbtoVolume(se);
         }
     }
 
