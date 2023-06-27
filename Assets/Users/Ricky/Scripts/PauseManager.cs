@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEditor.EventSystems;
+using Spine;
 
 public class PauseManager : MonoBehaviour
 {
@@ -18,7 +19,11 @@ public class PauseManager : MonoBehaviour
     }
     
     public static PauseManager instance;
+    
     public GameObject Optionwindow;
+    public GameObject black_panel;
+    public GameObject white_panel;
+    public GameObject star_panel;
 
     public bool pause_flg {get; private set;}
     
@@ -65,6 +70,8 @@ public class PauseManager : MonoBehaviour
         soundManager = GetComponent<SoundManager>();
         GetComponent<AudioSource>().ignoreListenerPause = true;
         
+        white_panel.SetActive(false);
+        black_panel.SetActive(false);
 
         switch_scene = false;
     }
@@ -76,42 +83,15 @@ public class PauseManager : MonoBehaviour
         {
             if (pause_flg)
             {
-                if (switch_scene)
+                if (!switch_scene)
                 {
-                    if (curtain_transform.localPosition != Vector3.zero)
-                    {
-                        curtain_transform.localPosition = Vector3.MoveTowards(curtain_transform.localPosition, Vector3.zero, Time.unscaledDeltaTime * 1000.0f);
-                    }
-                    else
-                    {
-                        // Switch scene
-                        switch (selected_option)
-                        {
-                            case MENU_OPTION.STAGESELECT:
-                            SceneManager.LoadScene("StageSelect");
-                            break;
-                            case MENU_OPTION.TITLE:
-                            StageDataManager.instance.now_world = -1;
-                            StageDataManager.instance.now_stage = -1;
-                            SceneManager.LoadScene("Title");
-                            break;
-                        }
-                        
-                        switch_scene = false;
-                        pause_flg = false;
-                        Time.timeScale = 1.0f;
-                        if (GameObject.FindObjectOfType<AudioManager>())
-                        {
-                            GameObject.FindObjectOfType<AudioManager>().volume_to_use = store_bgm_volume;
-                        }
-                    }
-                }
-                else
-                {
+                    white_panel.SetActive(false);
+                    black_panel.SetActive(false);
+                    
                     int j = 0;
                     foreach (Transform child in transform)
                     {
-                        if (j > 1) break;
+                        if (j > 0) break;
                         child.gameObject.SetActive(true);
                         j++;
                     }
@@ -173,13 +153,11 @@ public class PauseManager : MonoBehaviour
                             break;
                             case MENU_OPTION.OPTION:
                                 Optionwindow.SetActive(true);
-
                             break;
                             case MENU_OPTION.STAGESELECT:
-                            switch_scene = true;
-                            break;
                             case MENU_OPTION.TITLE:
                             switch_scene = true;
+                            StartCoroutine(SwitchScene());
                             break;
                         }
                     }
@@ -267,5 +245,52 @@ public class PauseManager : MonoBehaviour
         }
         
         return new_menu;
+    }
+    
+    IEnumerator SwitchScene()
+    {
+        white_panel.SetActive(true);
+        
+        yield return new WaitForSecondsRealtime(0.1f);
+        
+        white_panel.SetActive(false);
+        black_panel.SetActive(true);
+        star_panel.SetActive(true);
+        
+        Spine.Unity.SkeletonGraphic skeleton = star_panel.GetComponent<Spine.Unity.SkeletonGraphic>();
+        
+        string startString = skeleton.startingAnimation;
+        
+        skeleton.startingAnimation = "animation";
+        
+        yield return new WaitForSecondsRealtime(2.0f);
+        
+        skeleton.startingAnimation = startString;
+        
+        // Switch scene
+        switch (selected_option)
+        {
+            case MENU_OPTION.STAGESELECT:
+            SceneManager.LoadScene("StageSelect");
+            break;
+            case MENU_OPTION.TITLE:
+            StageDataManager.instance.now_world = -1;
+            StageDataManager.instance.now_stage = -1;
+            SceneManager.LoadScene("Title");
+            break;
+        }
+        
+        switch_scene = false;
+        pause_flg = false;
+        Time.timeScale = 1.0f;
+        if (GameObject.FindObjectOfType<AudioManager>())
+        {
+            GameObject.FindObjectOfType<AudioManager>().volume_to_use = store_bgm_volume;
+        }
+        
+        skeleton.startingAnimation = "animation";
+        white_panel.SetActive(false);
+        black_panel.SetActive(false);
+        star_panel.SetActive(false);
     }
 }
