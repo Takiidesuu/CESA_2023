@@ -115,6 +115,7 @@ public class PlayerMove : MonoBehaviour
     private WallSwitch wall_switch;
     private MinMaxDeform min_max_deform;
     private bool is_flip;
+    private Rotator_switch rotator_Switch;
     
     public void TookDamage(float damage_time)
     {
@@ -613,6 +614,10 @@ public class PlayerMove : MonoBehaviour
             {
                 wall_switch.WallMove();
             }
+            else if (rotator_Switch != null)
+            {
+                rotator_Switch.player_hit = rotator_Switch.player_hit ? false : true;
+            }
         }
         
         smash_state = SMASHSTATE.NORMAL;
@@ -689,7 +694,13 @@ public class PlayerMove : MonoBehaviour
         {
             is_grounded = true;
             if (other.gameObject.name == "Swich")
+            {
                 wall_switch = other.gameObject.GetComponent<WallSwitch>();
+            }
+            if (other.gameObject.name == "Switch")
+            {
+                rotator_Switch = other.gameObject.GetComponent<Rotator_switch>();
+            }
 
         }
         if (other.gameObject.layer == LayerMask.GetMask("ElectricalBall"))
@@ -712,7 +723,9 @@ public class PlayerMove : MonoBehaviour
         {
             is_grounded = false;
             if (other.gameObject.name == "Swich")
+            {
                 wall_switch = null;
+            }
         }
     }
     
