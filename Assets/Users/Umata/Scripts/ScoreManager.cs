@@ -176,6 +176,7 @@ public class ScoreManager : MonoBehaviour
                 {
                     if (InputManager.instance.press_select)
                     {
+                        score = Score;
                         ScoreText.text = "" + Score.ToString();
                         if (int.Parse(HiScoreText.text) < score)
                             HiScoreText.text = score.ToString();
@@ -242,15 +243,15 @@ public class ScoreManager : MonoBehaviour
                             }
                             else
                             {
-                                //if (current_world < 3)
-                                //{
+                                if (current_world < 3)
+                                {
                                     current_world++;
                                     current_stage = 0;
-                                //}
-                                //else
-                                //{
-                                change_to_select = true;
-                                //}
+                                }
+                                else
+                                {
+                                    change_to_select = true;
+                                }
                             }
 
                             if (change_to_select)
