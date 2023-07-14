@@ -40,6 +40,7 @@ public class PlayerNPC : MonoBehaviour
         origin_pos = this.transform.position;
         
         rotation_t = 0;
+        move_t = 0;
         
         if (move_dir == MOVEDIR.RIGHT)
         {

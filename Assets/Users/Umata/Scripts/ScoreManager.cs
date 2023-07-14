@@ -263,6 +263,8 @@ public class ScoreManager : MonoBehaviour
                                 world_to_load = "Stage" + (current_world + 1) + "-" + (current_stage + 1);
                             }
 
+                            GameObject.Find("TimeUI").SetActive(false);
+
                             IsBlackPanel = true;
                             MainCamera.targetTexture = renderTexture;
                             rawImage.enabled = false;
@@ -281,20 +283,19 @@ public class ScoreManager : MonoBehaviour
         {
             TransitionStartDelay += Time.deltaTime;
 
+            float t = (Time.time - startTime) / (duration / 12);
+            float intensity = Mathf.Lerp(vignette.intensity.value, targetIntensity, t * t);
 
-                float t = (Time.time - startTime) / (duration / 12);
-                float intensity = Mathf.Lerp(vignette.intensity.value, targetIntensity, t * t);
+            // 値を設定
+            vignette.intensity.value = intensity;
 
-                // 値を設定
-                vignette.intensity.value = intensity;
+            float elapsedTime = Time.time - startTime;
+            float progress = Mathf.Clamp01(elapsedTime / (BlackPanelDuration / 12));
 
-                float elapsedTime = Time.time - startTime;
-                float progress = Mathf.Clamp01(elapsedTime / (BlackPanelDuration / 12));
-
-                float alpha = curve.Evaluate(progress);
-                // Imageのカラーを更新する
-                Color color = BlackPanel.color;
-                BlackPanel.color = new Color(color.r, color.g, color.b, alpha);
+            float alpha = curve.Evaluate(progress);
+            // Imageのカラーを更新する
+            Color color = BlackPanel.color;
+            BlackPanel.color = new Color(color.r, color.g, color.b, alpha);
             
 
             if (BlackPanel.color.a >= 1)
