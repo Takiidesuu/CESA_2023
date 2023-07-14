@@ -33,7 +33,8 @@ public class PlayerNPC : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         anim = transform.GetChild(0).GetComponent<Animator>();
-        
+        anim.SetBool("isWalking", true);
+
         target_pos = GameObject.FindObjectOfType<TitleEventTrigger>().gameObject.transform.position;
         target_pos.y = this.transform.position.y;
         

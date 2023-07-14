@@ -28,6 +28,7 @@ public class ResultNPCScript : MonoBehaviour
         }
         else
         {
+            this.transform.localPosition = new Vector3(this.transform.localPosition.x, this.transform.localPosition.y, 3);
             animator.SetBool("ClearLow", true);
         }
     }
