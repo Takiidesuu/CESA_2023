@@ -240,7 +240,7 @@ public class ScoreManager : MonoBehaviour
 
                             bool change_to_select = false;
 
-                            if (current_stage < 4)
+                            if (current_stage < 5)
                             {
                                 current_stage++;
                             }
