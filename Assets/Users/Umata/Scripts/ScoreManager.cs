@@ -70,6 +70,12 @@ public class ScoreManager : MonoBehaviour
     int current_world = -1;
     int current_stage = -1;
     
+    private int selected_option = 0;
+    public GameObject retry_obj;
+    public GameObject next_obj;
+    private Spine.Unity.SkeletonAnimation retry_button;
+    private Spine.Unity.SkeletonAnimation next_button;
+    
     private Rigidbody rb;
     
     private float input_delay;
@@ -123,6 +129,11 @@ public class ScoreManager : MonoBehaviour
             
         rb = this.transform.GetChild(0).GetComponent<Rigidbody>();
         input_delay = 0;
+        
+        retry_button = retry_obj.GetComponent<Spine.Unity.SkeletonAnimation>();
+        next_button = next_obj.GetComponent<Spine.Unity.SkeletonAnimation>();
+        retry_button.AnimationName = "animation";
+        next_button.AnimationName = string.Empty;
     }
 
     private void Update()
@@ -228,6 +239,29 @@ public class ScoreManager : MonoBehaviour
                 {
                     if (input_delay > 0.6f)
                     {
+                        if (InputManager.instance.press_menu_right)
+                        {
+                            selected_option = 1;
+                        }
+                        if (InputManager.instance.press_menu_left)
+                        {
+                            selected_option = 0;
+                        }
+                        
+                        switch (selected_option)
+                        {
+                            case 0:
+                            next_button.AnimationName = string.Empty;
+                            next_button.ClearState();
+                            retry_button.AnimationName = "animation";
+                            break;
+                            case 1:
+                            next_button.AnimationName = "animation";
+                            retry_button.AnimationName = string.Empty;
+                            retry_button.ClearState();
+                            break;
+                        }
+                        
                         if (InputManager.instance.press_select)
                         {
                             if (GameDataManager.instance != null)
@@ -235,44 +269,54 @@ public class ScoreManager : MonoBehaviour
                                 GameDataManager.instance.SaveGame();
                             }
                             
-                            current_world = StageDataManager.instance.now_world;
-                            current_stage = StageDataManager.instance.now_stage;
-
-                            bool change_to_select = false;
-
-                            if (current_stage < 5)
+                            switch (selected_option)
                             {
-                                current_stage++;
-                            }
-                            else
-                            {
-                                if (current_world < 3)
+                                case 0:
+                                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                                
+                                break;
+                                case 1:
+                                
+                                current_world = StageDataManager.instance.now_world;
+                                current_stage = StageDataManager.instance.now_stage;
+
+                                bool change_to_select = false;
+
+                                if (current_stage < 5)
                                 {
-                                    current_world++;
-                                    current_stage = 0;
+                                    current_stage++;
                                 }
                                 else
                                 {
-                                    change_to_select = true;
+                                    if (current_world < 3)
+                                    {
+                                        current_world++;
+                                        current_stage = 0;
+                                    }
+                                    else
+                                    {
+                                        change_to_select = true;
+                                    }
                                 }
-                            }
 
-                            if (change_to_select)
-                            {
-                                world_to_load = "StageSelect";
-                            }
-                            else
-                            {
-                                world_to_load = "Stage" + (current_world + 1) + "-" + (current_stage + 1);
-                            }
+                                if (change_to_select)
+                                {
+                                    world_to_load = "StageSelect";
+                                }
+                                else
+                                {
+                                    world_to_load = "Stage" + (current_world + 1) + "-" + (current_stage + 1);
+                                }
 
-                            GameObject.Find("TimeUI").SetActive(false);
+                                GameObject.Find("TimeUI").SetActive(false);
 
-                            IsBlackPanel = true;
-                            MainCamera.targetTexture = renderTexture;
-                            rawImage.enabled = false;
-                            startTime = Time.time;
-                            postProcessVolume.SetActive(true);
+                                IsBlackPanel = true;
+                                MainCamera.targetTexture = renderTexture;
+                                rawImage.enabled = false;
+                                startTime = Time.time;
+                                postProcessVolume.SetActive(true);
+                                break;
+                            }
                         }
                     }
                     else
